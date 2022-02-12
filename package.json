@@ -6,6 +6,14 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "client:build": "yarn workspace client build",
+    "prehosting:deploy": "yarn client:build",
+    "hosting:deploy": "firebase deploy --only hosting",
+    "functions:build": "yarn workspace functions build",
+    "prefunctions:deploy": "yarn functions:build",
+    "functions:deploy": "firebase deploy --only functions"
+  },
   "devDependencies": {
     "firebase-tools": "^10.2.0",
     "typescript": "^4.5.5"
