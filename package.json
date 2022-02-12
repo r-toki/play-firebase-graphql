@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "client:dev": "yarn workspace client dev",
     "client:build": "yarn workspace client build",
     "prehosting:deploy": "yarn client:build",
     "hosting:deploy": "firebase deploy --only hosting",

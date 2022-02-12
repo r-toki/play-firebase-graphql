@@ -1,5 +1,8 @@
 import { ApolloServer, gql } from "apollo-server-cloud-functions";
+// import cors from "cors";
 import * as functions from "firebase-functions";
+
+const TOKYO = "asia-northeast1";
 
 const typeDefs = gql`
   type Query {
@@ -17,5 +20,6 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
+const handler = server.createHandler() as any;
 
-exports.api = functions.https.onRequest(server.createHandler() as any);
+exports.api = functions.region(TOKYO).https.onRequest(handler);
