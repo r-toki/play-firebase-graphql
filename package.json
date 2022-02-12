@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "firebase-tools": "^10.2.0",
+    "typescript": "^4.5.5"
   }
 }
