@@ -15,7 +15,7 @@
     "prefunctions:deploy": "yarn functions:build",
     "functions:deploy": "firebase deploy --only functions",
     "deploy:firestore": "firebase deploy --only firestore",
-    "emulators:start": "firebase emulators:start"
+    "emulators:start:functions": "firebase emulators:start --only functions"
   },
   "devDependencies": {
     "@eslint/create-config": "^0.1.2",

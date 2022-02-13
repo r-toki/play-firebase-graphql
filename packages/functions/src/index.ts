@@ -1,8 +1,13 @@
-import { ApolloServer, gql } from "apollo-server-cloud-functions";
-// import cors from "cors";
+import { ApolloServer, gql } from "apollo-server-express";
+import cors from "cors";
+import express from "express";
 import * as functions from "firebase-functions";
 
 const TOKYO = "asia-northeast1";
+
+const apiApp = express();
+
+apiApp.use(cors());
 
 const typeDefs = gql`
   type Query {
@@ -20,6 +25,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-const handler = server.createHandler() as any;
 
-exports.api = functions.region(TOKYO).https.onRequest(handler);
+server.start().then(() => {
+  server.applyMiddleware({ app: apiApp });
+});
+
+exports.api = functions.region(TOKYO).https.onRequest(apiApp);
