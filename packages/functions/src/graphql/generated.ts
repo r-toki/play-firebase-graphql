@@ -16,6 +16,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
+  helloWithAuth: Scalars['String'];
 };
 
 
@@ -101,6 +102,7 @@ export type ResolversParentTypes = {
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  helloWithAuth?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {

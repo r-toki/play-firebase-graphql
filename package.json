@@ -15,9 +15,10 @@
     "prefunctions:deploy": "yarn functions:build",
     "functions:deploy": "firebase deploy --only functions",
     "deploy:firestore": "firebase deploy --only firestore",
-    "emulators:start:functions": "firebase emulators:start --only functions",
-    "grahpql:generate": "graphql-codegen --config codegen.yml",
-    "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'"
+    "graphql:generate": "graphql-codegen --config codegen.yml",
+    "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'",
+    "emulators:start": "firebase emulators:start --only auth,functions",
+    "emulators:start:functions": "firebase emulators:start --only functions"
   },
   "devDependencies": {
     "@eslint/create-config": "^0.1.2",
