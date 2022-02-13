@@ -7,7 +7,9 @@ import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./resolvers";
 
 const apiApp = express();
+
 apiApp.use(cors());
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -20,6 +22,7 @@ const server = new ApolloServer({
     return { decodedIdToken: undefined, db: firestore() };
   },
 });
+
 server.start().then(() => {
   server.applyMiddleware({ app: apiApp });
 });
