@@ -1,0 +1,16 @@
+overwrite: true
+schema: "packages/functions/src/**/*.graphql"
+documents: "packages/client/src/**/*.tsx"
+generates:
+  packages/functions/src/graphql/generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+  packages/functions/src/graphql/typeDefs.ts:
+    plugins:
+      - "typescript-typedefs.js"
+  packages/client/src/graphql/generated.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typed-document-node"
