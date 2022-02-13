@@ -41,6 +41,5 @@ type ApolloWithTokenProviderProps = {
 
 export const ApolloWithTokenProvider: VFC<ApolloWithTokenProviderProps> = ({ children }) => {
   const client = useApolloClientWithTokenContainer();
-
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
