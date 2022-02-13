@@ -2,7 +2,7 @@ import { ApolloClient, ApolloProvider, gql, InMemoryCache, useQuery } from "@apo
 import { ReactNode, VFC } from "react";
 
 import { GRAPHQL_ENDPOINT } from "./constants";
-import { HelloDocument } from "./graphql/generated";
+import { GoodbyeDocument, HelloDocument } from "./graphql/generated";
 
 type ApolloClientWithTokenProps = {
   children: ReactNode;
@@ -21,12 +21,21 @@ gql`
   query hello {
     hello
   }
+
+  query goodbye {
+    hello
+  }
 `;
 
 const Hello: VFC = () => {
-  const { loading, error, data } = useQuery(HelloDocument);
-  const hello = data?.hello;
-  return <div>{hello}</div>;
+  const { data: hello } = useQuery(HelloDocument);
+  const { data: goodbye } = useQuery(GoodbyeDocument);
+  return (
+    <div>
+      <div>{hello?.hello}</div>
+      <div>{goodbye?.hello}</div>
+    </div>
+  );
 };
 
 const App: VFC = () => {
