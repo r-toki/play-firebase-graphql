@@ -1,3 +1,4 @@
+// SEE: https://github.com/dotansimha/graphql-code-generator/issues/3899#issuecomment-616591648
 const { printSchema } = require("graphql");
 
 module.exports = {
