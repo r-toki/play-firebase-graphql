@@ -15,7 +15,7 @@ const useAuthContainer = (): Value => {
   useEffect(() => {
     onAuthStateChanged(getAuth(), async (authUser) => {
       if (authUser) {
-        const token = await getIdToken(authUser);
+        const token = await getIdToken(authUser, true);
         setState({ initialized: true, uid: authUser.uid, token });
       } else {
         setState({ initialized: true, uid: undefined, token: undefined });
