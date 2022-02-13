@@ -15,7 +15,6 @@
     "node": "16"
   },
   "dependencies": {
-    "apollo-server-cloud-functions": "^3.6.3",
     "apollo-server-express": "^3.6.3",
     "cors": "^2.8.5",
     "express": "^4.17.2",
