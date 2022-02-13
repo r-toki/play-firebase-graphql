@@ -10,7 +10,7 @@ export const resolvers: Resolvers<Context> = {
   Query: {
     hello: () => "Hello world!",
     helloWithAuth: (parent, args, context) => {
-      if (!context.decodedIdToken) throw new AuthenticationError("");
+      if (!context.decodedIdToken) throw new AuthenticationError("authentication error");
       return "Hello world with auth!";
     },
   },

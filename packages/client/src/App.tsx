@@ -1,14 +1,15 @@
 import { gql, useQuery } from "@apollo/client";
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   getAuth,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { FormEventHandler, useEffect, VFC } from "react";
+import { FormEventHandler, VFC } from "react";
 
 import { ApolloWithTokenProvider } from "./context/ApolloWithToken";
-import { AuthProvider, useAuth } from "./context/Auth";
+import { useAuth } from "./context/Auth";
 import { HelloDocument, HelloWithAuthDocument } from "./graphql/generated";
 import { useTextInput } from "./hooks/useTextInput";
 
@@ -31,14 +32,14 @@ const Hello: VFC = () => {
       <div>
         <div>query hello</div>
         <div>loading: {hello.loading.toString()}</div>
-        <div>error: {(!!hello.error).toString()}</div>
+        <div>error: {hello.error?.message}</div>
         <div>data: {hello.data?.hello}</div>
       </div>
       <div style={{ width: "30px" }} />
       <div>
         <div>query helloWithAuth</div>
         <div>loading: {helloWithAuth.loading.toString()}</div>
-        <div>error: {(!!helloWithAuth.error).toString()}</div>
+        <div>error: {helloWithAuth.error?.message}</div>
         <div>data: {helloWithAuth.data?.helloWithAuth}</div>
       </div>
     </div>
@@ -49,9 +50,15 @@ const SignupForm: VFC = () => {
   const emailInput = useTextInput();
   const passwordInput = useTextInput();
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
+    try {
+      await createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
+      emailInput.reset();
+      passwordInput.reset();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -82,9 +89,15 @@ const LoginForm: VFC = () => {
   const emailInput = useTextInput();
   const passwordInput = useTextInput();
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
+    try {
+      await signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
+      emailInput.reset();
+      passwordInput.reset();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -113,12 +126,16 @@ const LoginForm: VFC = () => {
 
 const Index: VFC = () => {
   const authState = useAuth();
-  useEffect(() => {
-    console.log(authState);
-  }, [authState]);
 
   const onLogout = () => {
     signOut(getAuth());
+  };
+
+  const onDelete = () => {
+    const currentUser = getAuth().currentUser;
+    if (currentUser) {
+      deleteUser(currentUser);
+    }
   };
 
   return (
@@ -131,6 +148,10 @@ const Index: VFC = () => {
         <button onClick={onLogout} style={{ alignSelf: "end" }}>
           Logout
         </button>
+        <div style={{ width: "16px" }} />
+        <button onClick={onDelete} style={{ alignSelf: "end" }}>
+          Delete
+        </button>
       </div>
       <div style={{ height: "16px" }} />
       <div>uid: {authState.uid}</div>
@@ -141,13 +162,12 @@ const Index: VFC = () => {
 };
 
 const App: VFC = () => {
-  return (
-    <AuthProvider>
-      <ApolloWithTokenProvider>
-        <Index />
-      </ApolloWithTokenProvider>
-    </AuthProvider>
-  );
+  const authState = useAuth();
+  return authState.initialized ? (
+    <ApolloWithTokenProvider>
+      <Index />
+    </ApolloWithTokenProvider>
+  ) : null;
 };
 
 export default App;
