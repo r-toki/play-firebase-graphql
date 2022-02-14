@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@/_universal": ["./_admin"],
-      "@/_universal*": ["./_admin/*"]
+      "@/_universal/*": ["./_admin/*"]
     }
   },
   "include": ["src", "_admin"]

@@ -1,7 +1,21 @@
 {
   "name": "common",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "license": "MIT",
+  "exports": {
+    "./admin": "./dist/admin/src/index.js",
+    "./web": "./dist/web/src/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "admin": [
+        "./dist/admin/src/index.d.ts"
+      ],
+      "web": [
+        "./dist/web/src/index.d.ts"
+      ]
+    }
+  },
   "devDependencies": {
     "tsc-alias": "^1.6.0"
   },
