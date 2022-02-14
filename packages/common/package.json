@@ -1,7 +1,6 @@
 {
   "name": "common",
   "version": "1.0.0",
-  "private": true,
   "main": "dist/index.js",
   "devDependencies": {
     "tsc-alias": "^1.6.0"
