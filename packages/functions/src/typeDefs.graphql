@@ -1,4 +1,9 @@
 type Query {
   hello: String!
   helloWithAuth: String!
+  currentUser: User!
+}
+
+type User {
+  displayName: String!
 }

@@ -1,6 +1,8 @@
 {
+  "private": true,
   "name": "functions",
   "version": "0.0.0",
+  "license": "MIT",
   "main": "lib/webpack/index.js",
   "scripts": {
     "build": "tsc",

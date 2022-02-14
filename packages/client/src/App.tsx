@@ -1,4 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
+import { type UserData, usersPath } from "common/web";
 import {
   createUserWithEmailAndPassword,
   deleteUser,
@@ -6,11 +7,17 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { FormEventHandler, VFC } from "react";
+import { Timestamp } from "firebase/firestore";
+import { FormEventHandler, useEffect, VFC } from "react";
 
 import { ApolloWithTokenProvider } from "./context/ApolloWithToken";
 import { useAuth } from "./context/Auth";
-import { HelloDocument, HelloWithAuthDocument } from "./graphql/generated";
+import {
+  CurrentUserDocument,
+  CurrentUserQuery,
+  HelloDocument,
+  HelloWithAuthDocument,
+} from "./graphql/generated";
 import { useTextInput } from "./hooks/useTextInput";
 
 gql`
@@ -21,11 +28,18 @@ gql`
   query helloWithAuth {
     helloWithAuth
   }
+
+  query currentUser {
+    currentUser {
+      displayName
+    }
+  }
 `;
 
 const Hello: VFC = () => {
   const hello = useQuery(HelloDocument);
   const helloWithAuth = useQuery(HelloWithAuthDocument);
+  const currentUser = useQuery(CurrentUserDocument);
 
   return (
     <div style={{ display: "flex" }}>
@@ -41,6 +55,13 @@ const Hello: VFC = () => {
         <div>loading: {helloWithAuth.loading.toString()}</div>
         <div>error: {helloWithAuth.error?.message}</div>
         <div>data: {helloWithAuth.data?.helloWithAuth}</div>
+      </div>
+      <div style={{ width: "30px" }} />
+      <div>
+        <div>query currentUser.displayName</div>
+        <div>loading: {currentUser.loading.toString()}</div>
+        <div>error: {currentUser.error?.message}</div>
+        <div>data: {currentUser.data?.currentUser.displayName}</div>
       </div>
     </div>
   );

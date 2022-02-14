@@ -6,6 +6,9 @@ import { auth, firestore } from "firebase-admin";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./resolvers";
 
+const adminAuth = auth();
+const adminDb = firestore();
+
 const apiApp = express();
 
 apiApp.use(cors());
@@ -16,10 +19,10 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const idToken = req.header("authorization")?.split("Bearer ")[1];
     if (idToken) {
-      const decodedIdToken = await auth().verifyIdToken(idToken);
-      return { decodedIdToken, db: firestore() };
+      const decodedIdToken = await adminAuth.verifyIdToken(idToken);
+      return { decodedIdToken, db: adminDb };
     }
-    return { decodedIdToken: undefined, db: firestore() };
+    return { decodedIdToken: undefined, db: adminDb };
   },
 });
 

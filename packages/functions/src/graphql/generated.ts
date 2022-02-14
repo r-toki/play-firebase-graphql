@@ -15,8 +15,14 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  currentUser: User;
   hello: Scalars['String'];
   helloWithAuth: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  displayName: Scalars['String'];
 };
 
 
@@ -91,6 +97,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -98,14 +105,22 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Query: {};
   String: Scalars['String'];
+  User: User;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  currentUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   helloWithAuth?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 
