@@ -19,7 +19,7 @@
     "common:build": "yarn workspace common build",
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'",
-    "emulators:start": "firebase emulators:start --only auth,functions",
+    "emulators:start": "firebase emulators:start --only auth,functions,firestore",
     "emulators:start:functions": "firebase emulators:start --only functions"
   },
   "devDependencies": {
