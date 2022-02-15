@@ -3,10 +3,6 @@
   "name": "common",
   "version": "1.0.0",
   "license": "MIT",
-  "exports": {
-    "./admin": "./dist/admin/src/index.js",
-    "./web": "./dist/web/src/index.js"
-  },
   "typesVersions": {
     "*": {
       "admin": [

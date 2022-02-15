@@ -3,7 +3,7 @@
   "name": "functions",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "lib/webpack/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -16,6 +16,7 @@
     "node": "16"
   },
   "dependencies": {
+    "@rei-sogawa/path-builder": "^1.0.0",
     "apollo-server-express": "^3.6.3",
     "cors": "^2.8.5",
     "express": "^4.17.2",

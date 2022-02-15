@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { type UserData, usersPath } from "common/web";
+import type { UserData } from "common/web";
 import {
   createUserWithEmailAndPassword,
   deleteUser,
