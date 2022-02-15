@@ -11,7 +11,7 @@
     "preclient:build": "yarn common:build && yarn graphql:generate",
     "client:build": "yarn workspace client build",
     "preclient:deploy": "yarn client:build",
-    "client:deploy": "firebase deploy --only hosting",
+    "client:deploy": "firebase deploy --except functions",
     "prefunctions:build": "yarn common:build && yarn graphql:generate",
     "functions:build": "yarn workspace functions build",
     "prefunctions:deploy": "yarn functions:build",
@@ -19,8 +19,7 @@
     "common:build": "yarn workspace common build",
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'",
-    "emulators:start": "firebase emulators:start --only auth,functions,firestore",
-    "emulators:start:functions": "firebase emulators:start --only functions"
+    "emulators:start": "firebase emulators:start --only auth,functions,firestore"
   },
   "devDependencies": {
     "@eslint/create-config": "^0.1.2",
