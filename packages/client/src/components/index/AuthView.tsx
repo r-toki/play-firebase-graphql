@@ -20,7 +20,7 @@ import { FormEventHandler, useEffect, VFC } from "react";
 import { useDocument } from "react-firebase-hooks/firestore";
 
 import { useAuth } from "../../context/Auth";
-import { auth } from "../../firebaseApp";
+import { auth, db } from "../../firebaseApp";
 import { useTextInput } from "../../hooks/useTextInput";
 import { usersRef } from "../../lib/typed-ref";
 
@@ -96,7 +96,7 @@ const ProfileForm: VFC = () => {
   const { uid } = useAuth();
 
   useEffect(() => {
-    getDoc(doc(usersRef(), uid)).then((snap) => {
+    getDoc(doc(usersRef(db), uid)).then((snap) => {
       displayNameInput.reset(snap.data()?.displayName || "");
     });
   }, []);
@@ -106,7 +106,7 @@ const ProfileForm: VFC = () => {
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
-      await updateDoc(doc(usersRef(), uid), { displayName: displayNameInput.value });
+      await updateDoc(doc(usersRef(db), uid), { displayName: displayNameInput.value });
     } catch (e) {
       console.error(e);
     }
@@ -129,7 +129,7 @@ const ProfileForm: VFC = () => {
 export const AuthView: VFC = () => {
   const { uid } = useAuth();
 
-  const [userSnap] = useDocument(uid ? doc(usersRef(), uid) : null);
+  const [userSnap] = useDocument(uid ? doc(usersRef(db), uid) : null);
 
   const onLogout = () => {
     signOut(auth);
