@@ -17,8 +17,8 @@
     "tsc-alias": "^1.6.0"
   },
   "scripts": {
-    "build": "yarn build:web && yarn build:admin",
     "build:web": "tsc --project tsconfig.web.json && yarn tsc-alias -p tsconfig.web.json",
-    "build:admin": "tsc --project tsconfig.admin.json && yarn tsc-alias -p tsconfig.admin.json"
+    "build:admin": "tsc --project tsconfig.admin.json && yarn tsc-alias -p tsconfig.admin.json",
+    "build": "yarn build:web && yarn build:admin"
   }
 }

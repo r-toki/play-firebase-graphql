@@ -5,8 +5,15 @@ import { VFC } from "react";
 import { AuthView } from "../components/index/AuthView";
 
 gql`
-  query hello {
-    hello
+  query allUsers {
+    users {
+      ...userForIndexPage
+    }
+  }
+
+  fragment userForIndexPage on User {
+    id
+    displayName
   }
 `;
 

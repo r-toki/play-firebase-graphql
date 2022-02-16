@@ -16,14 +16,14 @@ export type UserTweetData = {
 };
 
 export type FollowingData = {
-  followerId: Pick<User, "id">;
-  followeeId: Pick<User, "id">;
+  followerId: Pick<UserDoc, "id">;
+  followeeId: Pick<UserDoc, "id">;
 };
 
 // Entity
 
-export type User = WithIdAndRef<UserData>;
+export type UserDoc = WithIdAndRef<UserData>;
 
-export type UserTweet = WithIdAndRef<UserTweetData>;
+export type UserTweetDoc = WithIdAndRef<UserTweetData>;
 
-export type Following = WithIdAndRef<FollowingData>;
+export type FollowingDoc = WithIdAndRef<FollowingData>;

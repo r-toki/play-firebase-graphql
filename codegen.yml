@@ -1,5 +1,5 @@
 overwrite: true
-schema: "packages/functions/src/**/*.graphql"
+schema: "./schema.graphql"
 documents: "packages/client/src/**/*.tsx"
 generates:
   packages/functions/src/graphql/generated.ts:
@@ -13,4 +13,5 @@ generates:
     plugins:
       - "typescript"
       - "typescript-operations"
-      - "typed-document-node"
+      # - "typed-document-node"
+      - "typescript-react-apollo"
