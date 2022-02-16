@@ -18,7 +18,7 @@ export const routes = {
     path: pathBuilder(INDEX),
     Component: Index,
     Layout: AppLayout,
-    Middleware: NoAuth,
+    Middleware: WithAuth,
   },
   [SIGNUP]: {
     path: pathBuilder(SIGNUP),
@@ -36,7 +36,7 @@ export const routes = {
     path: pathBuilder(USERS),
     Component: Index,
     Layout: AppLayout,
-    Middleware: NoAuth,
+    Middleware: WithAuth,
   },
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),

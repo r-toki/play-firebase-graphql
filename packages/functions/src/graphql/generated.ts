@@ -18,10 +18,17 @@ export type Query = {
   users: Array<User>;
 };
 
+export type Tweet = {
+  __typename?: 'Tweet';
+  content: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
   id: Scalars['String'];
+  tweets: Array<Tweet>;
 };
 
 
@@ -96,6 +103,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Tweet: ResolverTypeWrapper<Tweet>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -104,6 +112,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Query: {};
   String: Scalars['String'];
+  Tweet: Tweet;
   User: User;
 };
 
@@ -111,14 +120,22 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
+export type TweetResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tweet'] = ResolversParentTypes['Tweet']> = {
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tweets?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
+  Tweet?: TweetResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

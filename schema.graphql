@@ -5,4 +5,10 @@ type Query {
 type User {
   id: String!
   displayName: String!
+  tweets: [Tweet!]!
+}
+
+type Tweet {
+  id: String!
+  content: String!
 }

@@ -20,32 +20,37 @@ export type Query = {
   users: Array<User>;
 };
 
+export type Tweet = {
+  __typename?: 'Tweet';
+  content: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
   id: Scalars['String'];
+  tweets: Array<Tweet>;
 };
 
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string }> };
+export type AllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string }> }> };
 
-export type UserForIndexPageFragment = { __typename?: 'User', id: string, displayName: string };
 
-export const UserForIndexPageFragmentDoc = gql`
-    fragment userForIndexPage on User {
-  id
-  displayName
-}
-    `;
 export const AllUsersDocument = gql`
     query allUsers {
   users {
-    ...userForIndexPage
+    id
+    displayName
+    tweets {
+      id
+      content
+    }
   }
 }
-    ${UserForIndexPageFragmentDoc}`;
+    `;
 
 /**
  * __useAllUsersQuery__
