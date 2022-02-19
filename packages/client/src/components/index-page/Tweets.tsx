@@ -32,12 +32,20 @@ export const Tweets: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Tweets
       </Box>
-      {tweets.map((tweet) => (
-        <Stack key={tweet.id} border="1px">
-          <Box>{tweet.creator.displayName}</Box>
-          <Box>{tweet.content}</Box>
-        </Stack>
-      ))}
+      <Box borderWidth="1px" rounded="md">
+        {tweets.map((tweet) => (
+          <Box
+            key={tweet.id}
+            px="3"
+            py="2"
+            borderBottomWidth="1px"
+            _last={{ borderBottomWidth: "0" }}
+          >
+            <Box fontWeight="bold">{tweet.creator.displayName}</Box>
+            <Box>{tweet.content}</Box>
+          </Box>
+        ))}
+      </Box>
     </Stack>
   );
 };
