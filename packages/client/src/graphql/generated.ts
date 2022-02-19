@@ -23,6 +23,7 @@ export type Query = {
 export type Tweet = {
   __typename?: 'Tweet';
   content: Scalars['String'];
+  creator: User;
   id: Scalars['String'];
 };
 

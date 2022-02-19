@@ -13,6 +13,7 @@ export type UserTweetData = {
   content: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  creatorId: Pick<UserDoc, "id">;
 };
 
 export type FollowingData = {

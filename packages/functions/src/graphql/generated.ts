@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { UserDoc, UserTweetDoc } from '../lib/typed-ref/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -21,6 +22,7 @@ export type Query = {
 export type Tweet = {
   __typename?: 'Tweet';
   content: Scalars['String'];
+  creator: User;
   id: Scalars['String'];
 };
 
@@ -104,8 +106,8 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Tweet: ResolverTypeWrapper<Tweet>;
-  User: ResolverTypeWrapper<User>;
+  Tweet: ResolverTypeWrapper<UserTweetDoc>;
+  User: ResolverTypeWrapper<UserDoc>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -113,8 +115,8 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   Query: {};
   String: Scalars['String'];
-  Tweet: Tweet;
-  User: User;
+  Tweet: UserTweetDoc;
+  User: UserDoc;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
@@ -123,6 +125,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type TweetResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tweet'] = ResolversParentTypes['Tweet']> = ResolversObject<{
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

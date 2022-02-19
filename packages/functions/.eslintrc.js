@@ -13,5 +13,6 @@ module.exports = {
   rules: {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
+    "no-restricted-imports": ["error", "common", "common/web"],
   },
 };

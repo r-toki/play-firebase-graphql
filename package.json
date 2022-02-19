@@ -10,14 +10,13 @@
     "client:dev": "yarn workspace client dev",
     "preclient:build": "yarn common:build && yarn graphql:generate",
     "client:build": "yarn workspace client build",
-    "preclient:deploy": "yarn client:build",
+    "preclient:deploy": "yarn client:build && yarn graphql:generate",
     "client:deploy": "firebase deploy --except functions",
     "functions:dev": "yarn workspace functions watch",
     "prefunctions:build": "yarn common:build && yarn graphql:generate",
     "functions:build": "yarn workspace functions build",
     "prefunctions:deploy": "yarn functions:build",
     "functions:deploy": "firebase deploy --only functions",
-    "common:dev": "yarn workspace common watch",
     "common:build": "yarn workspace common build",
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'",
@@ -38,6 +37,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "firebase-tools": "^10.2.0",
     "graphql": "^16.3.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^4.5.5"
   }
 }

@@ -11,4 +11,5 @@ type User {
 type Tweet {
   id: String!
   content: String!
+  creator: User!
 }

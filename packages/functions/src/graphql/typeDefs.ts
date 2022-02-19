@@ -7,6 +7,7 @@ type Query {
 
 type Tweet {
   content: String!
+  creator: User!
   id: String!
 }
 

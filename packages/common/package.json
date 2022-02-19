@@ -13,12 +13,12 @@
       ]
     }
   },
-  "devDependencies": {
-    "tsc-alias": "^1.6.0"
-  },
   "scripts": {
     "build:web": "tsc --project tsconfig.web.json && yarn tsc-alias -p tsconfig.web.json",
     "build:admin": "tsc --project tsconfig.admin.json && yarn tsc-alias -p tsconfig.admin.json",
     "build": "yarn build:web && yarn build:admin"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.6.0"
   }
 }

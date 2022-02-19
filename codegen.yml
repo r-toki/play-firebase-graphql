@@ -1,5 +1,5 @@
 overwrite: true
-schema: "./schema.graphql"
+schema: "schema.graphql"
 documents: "packages/client/src/**/*.tsx"
 generates:
   packages/functions/src/graphql/generated.ts:
@@ -8,6 +8,9 @@ generates:
       - "typescript-resolvers"
     config:
       useIndexSignature: true
+      mappers:
+        User: ../lib/typed-ref/types#UserDoc
+        Tweet: ../lib/typed-ref/types#UserTweetDoc
   packages/functions/src/graphql/typeDefs.ts:
     plugins:
       - "typescript-typedefs.js"
