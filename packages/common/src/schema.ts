@@ -13,12 +13,12 @@ export type UserTweetData = {
   content: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  creatorId: Pick<UserDoc, "id">;
+  creatorId: UserDoc["id"];
 };
 
 export type FollowingData = {
-  followerId: Pick<UserDoc, "id">;
-  followeeId: Pick<UserDoc, "id">;
+  followerId: UserDoc["id"];
+  followeeId: UserDoc["id"];
 };
 
 // Entity

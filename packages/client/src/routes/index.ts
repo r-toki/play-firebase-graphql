@@ -5,7 +5,7 @@ import { Index } from "../pages";
 import { Login } from "../pages/login";
 import { Signup } from "../pages/signup";
 import { UserEdit } from "../pages/users/[id]/edit";
-import { ForAuth, NoAuth, WithAuth } from "./authenticate";
+import { AppPrivate, ForAuth, UserPrivate } from "./authenticate";
 
 const INDEX = "/";
 const SIGNUP = "/signup";
@@ -18,7 +18,7 @@ export const routes = {
     path: pathBuilder(INDEX),
     Component: Index,
     Layout: AppLayout,
-    Middleware: WithAuth,
+    Middleware: AppPrivate,
   },
   [SIGNUP]: {
     path: pathBuilder(SIGNUP),
@@ -36,13 +36,13 @@ export const routes = {
     path: pathBuilder(USERS),
     Component: Index,
     Layout: AppLayout,
-    Middleware: WithAuth,
+    Middleware: AppPrivate,
   },
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),
     Component: UserEdit,
     Layout: AppLayout,
-    Middleware: WithAuth,
+    Middleware: UserPrivate,
   },
   // TODO: 404
   // ["*"]: {

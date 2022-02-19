@@ -2,7 +2,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
 
 import { apiApp } from "./api";
-import { db } from "./firebaseApp";
+import { db } from "./firebase-app";
 import { usersRef } from "./lib/typed-ref/index";
 
 const TOKYO = "asia-northeast1";
@@ -15,7 +15,7 @@ exports.onAuthCreate = functionsAtTokyo.auth.user().onCreate(async (user) => {
   await usersRef(db)
     .doc(user.uid)
     .set({
-      displayName: user.displayName || "",
+      displayName: user.email?.split("@")[0] || "",
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });

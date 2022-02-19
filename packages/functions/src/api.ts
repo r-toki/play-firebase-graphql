@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import express from "express";
 
-import { auth, db, verifyIdToken } from "./firebaseApp";
+import { auth, db, verifyIdToken } from "./firebase-app";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./resolvers";
 

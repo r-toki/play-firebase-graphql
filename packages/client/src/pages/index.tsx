@@ -16,8 +16,6 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
-import { pathBuilder } from "@rei-sogawa/path-builder";
-import { UserTweetsPath } from "common/web";
 import { addDoc, Timestamp } from "firebase/firestore";
 import { FormEventHandler, useEffect, VFC } from "react";
 
@@ -25,7 +23,7 @@ import { db } from "../firebaseApp";
 import { useAllUsersQuery } from "../graphql/generated";
 import { useAuthed } from "../hooks/useAuthed";
 import { useTextInput } from "../hooks/useTextInput";
-import { usersRef, userTweetsRef } from "../lib/typed-ref";
+import { userTweetsRef } from "../lib/typed-ref";
 
 gql`
   query allUsers {
@@ -49,11 +47,6 @@ gql`
 
 export const Index: VFC = () => {
   const { uid } = useAuthed();
-
-  useEffect(() => {
-    console.log(usersRef(db));
-    console.log(userTweetsRef(db, { userId: uid }));
-  }, []);
 
   const allUsersQuery = useAllUsersQuery();
   const users = allUsersQuery.data?.users ?? [];
