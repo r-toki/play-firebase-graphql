@@ -2,7 +2,7 @@ import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FormEventHandler, useEffect, VFC } from "react";
 
-import { db } from "../../../firebaseApp";
+import { db } from "../../../firebase-app";
 import { useAuthed } from "../../../hooks/useAuthed";
 import { useTextInput } from "../../../hooks/useTextInput";
 import { usersRef } from "../../../lib/typed-ref";

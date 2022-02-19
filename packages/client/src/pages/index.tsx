@@ -17,9 +17,9 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { addDoc, Timestamp } from "firebase/firestore";
-import { FormEventHandler, useEffect, VFC } from "react";
+import { FormEventHandler, VFC } from "react";
 
-import { db } from "../firebaseApp";
+import { db } from "../firebase-app";
 import { useAllUsersQuery } from "../graphql/generated";
 import { useAuthed } from "../hooks/useAuthed";
 import { useTextInput } from "../hooks/useTextInput";

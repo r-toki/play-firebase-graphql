@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { FC } from "react";
 
 import { useAuth } from "../../context/Auth";
-import { auth } from "../../firebaseApp";
+import { auth } from "../../firebase-app";
 import { routes } from "../../routes";
 import { AppLink } from "./AppLink";
 
