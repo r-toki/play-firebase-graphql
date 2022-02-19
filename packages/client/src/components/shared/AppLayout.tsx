@@ -7,12 +7,18 @@ import { auth } from "../../firebase-app";
 import { routes } from "../../routes";
 import { AppLink } from "./AppLink";
 
-export const AppLayout: FC = ({ children }) => {
+const useAppLayout = () => {
   const { uid } = useAuth();
 
   const onLogout = () => {
     signOut(auth);
   };
+
+  return { uid, onLogout };
+};
+
+export const AppLayout: FC = ({ children }) => {
+  const { uid, onLogout } = useAppLayout();
 
   return (
     <Stack>
@@ -24,11 +30,9 @@ export const AppLayout: FC = ({ children }) => {
             </Heading>
             {uid ? (
               <HStack>
-                <Button>
-                  <AppLink to={routes["/users/:user_id/edit"].path({ user_id: uid })}>
-                    Edit Profile
-                  </AppLink>
-                </Button>
+                <AppLink to={routes["/users/:user_id/edit"].path({ user_id: uid })} rounded="md">
+                  <Button as="a">Edit Profile</Button>
+                </AppLink>
                 <Button onClick={onLogout}>Logout</Button>
               </HStack>
             ) : (

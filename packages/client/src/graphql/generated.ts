@@ -17,6 +17,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  tweets: Array<Tweet>;
   users: Array<User>;
 };
 
@@ -34,55 +35,48 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
-export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type TweetsForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, creator: { __typename?: 'User', tweets: Array<{ __typename?: 'Tweet', creator: { __typename?: 'User', id: string } }> } }> }> };
+export type TweetsForIndexPageQuery = { __typename?: 'Query', tweets: Array<{ __typename?: 'Tweet', id: string, content: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
 
 
-export const AllUsersDocument = gql`
-    query allUsers {
-  users {
+export const TweetsForIndexPageDocument = gql`
+    query tweetsForIndexPage {
+  tweets {
     id
-    displayName
-    tweets {
+    content
+    creator {
       id
-      content
-      creator {
-        tweets {
-          creator {
-            id
-          }
-        }
-      }
+      displayName
     }
   }
 }
     `;
 
 /**
- * __useAllUsersQuery__
+ * __useTweetsForIndexPageQuery__
  *
- * To run a query within a React component, call `useAllUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAllUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTweetsForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTweetsForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAllUsersQuery({
+ * const { data, loading, error } = useTweetsForIndexPageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAllUsersQuery(baseOptions?: Apollo.QueryHookOptions<AllUsersQuery, AllUsersQueryVariables>) {
+export function useTweetsForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AllUsersQuery, AllUsersQueryVariables>(AllUsersDocument, options);
+        return Apollo.useQuery<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>(TweetsForIndexPageDocument, options);
       }
-export function useAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllUsersQuery, AllUsersQueryVariables>) {
+export function useTweetsForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AllUsersQuery, AllUsersQueryVariables>(AllUsersDocument, options);
+          return Apollo.useLazyQuery<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>(TweetsForIndexPageDocument, options);
         }
-export type AllUsersQueryHookResult = ReturnType<typeof useAllUsersQuery>;
-export type AllUsersLazyQueryHookResult = ReturnType<typeof useAllUsersLazyQuery>;
-export type AllUsersQueryResult = Apollo.QueryResult<AllUsersQuery, AllUsersQueryVariables>;
+export type TweetsForIndexPageQueryHookResult = ReturnType<typeof useTweetsForIndexPageQuery>;
+export type TweetsForIndexPageLazyQueryHookResult = ReturnType<typeof useTweetsForIndexPageLazyQuery>;
+export type TweetsForIndexPageQueryResult = Apollo.QueryResult<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>;

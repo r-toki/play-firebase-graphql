@@ -3,13 +3,14 @@ import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/firestore-helper";
-import { usersRef, userTweetsRef } from "./../lib/typed-ref/index";
+import { tweetsRef, usersRef, userTweetsRef } from "./../lib/typed-ref/index";
 
 type Context = { decodedIdToken: DecodedIdToken | undefined; db: Firestore };
 
 export const resolvers: Resolvers<Context> = {
   Query: {
-    users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt")),
+    users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
+    tweets: (parent, args, { db }) => getDocs(tweetsRef(db).orderBy("createdAt", "desc")),
   },
   User: {
     tweets: (parent, args, { db }) =>

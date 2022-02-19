@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  tweets: Array<Tweet>;
   users: Array<User>;
 };
 
@@ -120,6 +121,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  tweets?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;
 

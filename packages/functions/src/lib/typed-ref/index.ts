@@ -7,6 +7,7 @@ import type {
   UserTweetData,
   UserTweetsPath,
 } from "common/admin";
+import { Firestore } from "firebase-admin/firestore";
 
 import { createConverter, createTypedCollectionRef } from "./helper";
 
@@ -19,6 +20,9 @@ export const userTweetsRef = createTypedCollectionRef(
   pathBuilder<UserTweetsPath>("users/:userId/tweets"),
   createConverter<UserTweetData>()
 );
+
+export const tweetsRef = (db: Firestore) =>
+  db.collectionGroup("tweets").withConverter(createConverter<UserTweetData>());
 
 export const followingRef = createTypedCollectionRef(
   pathBuilder<FollowingsPath>("followings"),
