@@ -15,7 +15,7 @@ export const createTypedCollectionRef = <Data, CollectionPath extends (...args: 
   collectionPath: CollectionPath,
   converter: FirestoreDataConverter<Data>
 ) => {
-  return (db: Firestore, ...collectionPathArgs: Parameters<CollectionPath>) => {
-    return db.collection(collectionPath(collectionPathArgs)).withConverter(converter);
+  return (db: Firestore, collectionPathOptions: Parameters<CollectionPath>[0]) => {
+    return db.collection(collectionPath(collectionPathOptions)).withConverter(converter);
   };
 };

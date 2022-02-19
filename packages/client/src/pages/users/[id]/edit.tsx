@@ -3,12 +3,12 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FormEventHandler, useEffect, VFC } from "react";
 
 import { db } from "../../../firebaseApp";
-import { useAuthenticated } from "../../../hooks/useAuthed";
+import { useAuthed } from "../../../hooks/useAuthed";
 import { useTextInput } from "../../../hooks/useTextInput";
 import { usersRef } from "../../../lib/typed-ref";
 
 const UserEditForm: VFC = () => {
-  const { uid } = useAuthenticated();
+  const { uid } = useAuthed();
 
   useEffect(() => {
     getDoc(doc(usersRef(db), uid)).then((snap) => {

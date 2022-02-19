@@ -16,14 +16,16 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
+import { pathBuilder } from "@rei-sogawa/path-builder";
+import { UserTweetsPath } from "common/web";
 import { addDoc, Timestamp } from "firebase/firestore";
-import { FormEventHandler, VFC } from "react";
+import { FormEventHandler, useEffect, VFC } from "react";
 
 import { db } from "../firebaseApp";
 import { useAllUsersQuery } from "../graphql/generated";
-import { useAuthenticated } from "../hooks/useAuthed";
+import { useAuthed } from "../hooks/useAuthed";
 import { useTextInput } from "../hooks/useTextInput";
-import { userTweetsRef } from "../lib/typed-ref";
+import { usersRef, userTweetsRef } from "../lib/typed-ref";
 
 gql`
   query allUsers {
@@ -33,13 +35,25 @@ gql`
       tweets {
         id
         content
+        creator {
+          tweets {
+            creator {
+              id
+            }
+          }
+        }
       }
     }
   }
 `;
 
 export const Index: VFC = () => {
-  const { uid } = useAuthenticated();
+  const { uid } = useAuthed();
+
+  useEffect(() => {
+    console.log(usersRef(db));
+    console.log(userTweetsRef(db, { userId: uid }));
+  }, []);
 
   const allUsersQuery = useAllUsersQuery();
   const users = allUsersQuery.data?.users ?? [];
@@ -53,6 +67,7 @@ export const Index: VFC = () => {
       content: tweetContentInput.value,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
+      creatorId: uid,
     });
     tweetContentInput.reset();
   };

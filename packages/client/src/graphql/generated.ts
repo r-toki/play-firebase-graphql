@@ -37,7 +37,7 @@ export type User = {
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string }> }> };
+export type AllUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, creator: { __typename?: 'User', tweets: Array<{ __typename?: 'Tweet', creator: { __typename?: 'User', id: string } }> } }> }> };
 
 
 export const AllUsersDocument = gql`
@@ -48,6 +48,13 @@ export const AllUsersDocument = gql`
     tweets {
       id
       content
+      creator {
+        tweets {
+          creator {
+            id
+          }
+        }
+      }
     }
   }
 }
