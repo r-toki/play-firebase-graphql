@@ -70,7 +70,7 @@ const stop = (ms = 0) =>
 const main = async () => {
   await Promise.all([clearAuth(), clearFirestore()]);
 
-  // FIXME: auth の方で重複エラーとか起きる
+  // FIXME: auth の方で email の重複エラーとか起きるので暫定対応
   await stop();
 
   const authUsers = await Promise.all(ArrayFactory.of(10).map(() => AuthUserFactory.of()));
