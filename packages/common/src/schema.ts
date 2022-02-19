@@ -21,7 +21,7 @@ export type FollowingData = {
   followeeId: UserDoc["id"];
 };
 
-// Entity
+// Doc
 
 export type UserDoc = WithIdAndRef<UserData>;
 
