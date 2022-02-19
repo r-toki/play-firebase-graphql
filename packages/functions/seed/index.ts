@@ -31,8 +31,12 @@ class DateFactory {
 
 class AuthUserFactory {
   static n = 0;
-  static of() {
-    return auth.createUser({ email: `user-${this.n++}@example.com`, password: "password" });
+  static of(init?: Partial<{ email: string; password: string }>) {
+    return auth.createUser({
+      email: `user-${this.n++}@example.com`,
+      password: "password",
+      ...init,
+    });
   }
 }
 
