@@ -40,6 +40,11 @@ export type TweetsForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TweetsForIndexPageQuery = { __typename?: 'Query', tweets: Array<{ __typename?: 'Tweet', id: string, content: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
 
+export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersForIndexPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string }> };
+
 
 export const TweetsForIndexPageDocument = gql`
     query tweetsForIndexPage {
@@ -80,3 +85,38 @@ export function useTweetsForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type TweetsForIndexPageQueryHookResult = ReturnType<typeof useTweetsForIndexPageQuery>;
 export type TweetsForIndexPageLazyQueryHookResult = ReturnType<typeof useTweetsForIndexPageLazyQuery>;
 export type TweetsForIndexPageQueryResult = Apollo.QueryResult<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>;
+export const UsersForIndexPageDocument = gql`
+    query usersForIndexPage {
+  users {
+    id
+    displayName
+  }
+}
+    `;
+
+/**
+ * __useUsersForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useUsersForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersForIndexPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>(UsersForIndexPageDocument, options);
+      }
+export function useUsersForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>(UsersForIndexPageDocument, options);
+        }
+export type UsersForIndexPageQueryHookResult = ReturnType<typeof useUsersForIndexPageQuery>;
+export type UsersForIndexPageLazyQueryHookResult = ReturnType<typeof useUsersForIndexPageLazyQuery>;
+export type UsersForIndexPageQueryResult = Apollo.QueryResult<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>;

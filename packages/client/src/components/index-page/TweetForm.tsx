@@ -43,6 +43,7 @@ export const TweetForm: VFC = () => {
             value={tweetContentInput.value}
             onChange={tweetContentInput.onChange}
             required
+            rows={5}
           />
           <Button type="submit">Post</Button>
         </Stack>

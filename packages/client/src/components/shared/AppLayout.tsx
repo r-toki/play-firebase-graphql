@@ -34,12 +34,12 @@ export const AppLayout: FC = ({ children }) => {
   const { uid, onLogout } = useAppLayout();
 
   return (
-    <Stack minH="100vh">
+    <Stack minH="100vh" spacing="4">
       <Box h="16" borderBottomWidth="1px" boxShadow="sm">
-        <Container w="container.lg" maxW="container.lg" h="full">
+        <Container maxW="container.lg" h="full">
           <Flex h="full" justifyContent="space-between" alignItems="center">
             <Heading>
-              <AppLink to={routes["/"].path()}>App</AppLink>
+              <AppLink to={routes["/"].path()}>Twitter Clone</AppLink>
             </Heading>
             {uid ? (
               <Box>
@@ -61,6 +61,7 @@ export const AppLayout: FC = ({ children }) => {
           </Flex>
         </Container>
       </Box>
+
       <Center>{children}</Center>
     </Stack>
   );
