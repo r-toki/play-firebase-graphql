@@ -26,9 +26,9 @@ export const AppPrivatePage: VFC<MiddlewareProps> = ({ children }) => {
 };
 
 export const UserPrivatePage: VFC<MiddlewareProps> = ({ children }) => {
-  const { currentUser } = useAuthed();
   const { user_id } = useParams();
-  if (currentUser.id !== user_id) return <Navigate to={routes["/"].path()} />;
+  const { currentUser } = useAuthed();
+  if (user_id !== currentUser.id) return <Navigate to={routes["/"].path()} />;
   return <>{children}</>;
 };
 
