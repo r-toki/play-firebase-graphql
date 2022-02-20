@@ -21,16 +21,8 @@ gql`
 `;
 
 const useTweets = () => {
-  const { data, error } = useTweetsForIndexPageQuery();
+  const { data } = useTweetsForIndexPageQuery();
   const tweets = data?.tweets ?? [];
-
-  useEffect(() => {
-    console.log(tweets);
-  }, [tweets]);
-
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
 
   return { tweets };
 };
