@@ -32,11 +32,10 @@ export class AuthUserFactory {
 export class UserTweetFactory {
   static n = 0;
   static of(init: Pick<UserTweetData, "creatorId"> & Partial<UserTweetData>) {
-    const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), this.n++));
     return userTweetsRef(db, { userId: init.creatorId }).add({
       content: "MyString",
-      createdAt,
-      updatedAt: createdAt,
+      createdAt: Timestamp.fromDate(DateFactory.of()),
+      updatedAt: Timestamp.fromDate(DateFactory.of()),
       ...init,
     });
   }
