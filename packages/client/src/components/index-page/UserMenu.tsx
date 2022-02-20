@@ -35,7 +35,7 @@ export const UserMenu: VFC = () => {
           <Flex justifyContent="space-between" alignItems="center">
             <HStack spacing="4">
               <Avatar />
-              <Box fontWeight="bold">user name</Box>
+              <Box fontWeight="bold">MyString</Box>
             </HStack>
             <HamburgerIcon />
           </Flex>

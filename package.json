@@ -21,7 +21,7 @@
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "graphql:generate:watch": "graphql-codegen --config codegen.yml --watch 'packages/**/src/**/*.ts'",
     "emulators:start": "firebase emulators:start --only auth,functions,firestore --import=./emulators-export --export-on-exit",
-    "seed": "yarn workspace functions seed"
+    "seed": "yarn workspace test seed"
   },
   "devDependencies": {
     "@eslint/create-config": "^0.1.2",

@@ -7,8 +7,7 @@
   "scripts": {
     "build": "tsc",
     "logs": "firebase functions:log",
-    "watch": "tsc -w",
-    "seed": "ts-node test-helper/seed"
+    "watch": "tsc -w"
   },
   "engines": {
     "node": "16"
