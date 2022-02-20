@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { useEffect, VFC } from "react";
+import { VFC } from "react";
 
 import { useTweetsForIndexPageQuery } from "../../graphql/generated";
 import { AppList, AppListItem } from "../shared/AppList";

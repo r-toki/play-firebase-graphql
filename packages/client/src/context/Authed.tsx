@@ -4,6 +4,8 @@ import { createContext, ReactNode, useContext, VFC } from "react";
 import { CurrentUserFragment } from "../graphql/generated";
 import { assertIsDefined } from "../lib/type-utils";
 
+// NOTE: firebase auth -> apollo client init -> fetch currentUser の順になるので若干構造が複雑
+
 gql`
   fragment currentUser on User {
     id

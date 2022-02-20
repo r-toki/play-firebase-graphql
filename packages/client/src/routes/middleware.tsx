@@ -33,7 +33,7 @@ export const UserPrivatePage: VFC<MiddlewareProps> = ({ children }) => {
 };
 
 type ComposeProps = {
-  components: Array<React.JSXElementConstructor<React.PropsWithChildren<any>>>;
+  components: Array<VFC<{ children: ReactNode } & any>>;
   children: React.ReactNode;
 };
 
