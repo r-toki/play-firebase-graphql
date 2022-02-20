@@ -22,8 +22,7 @@ export const Index: VFC = () => {
       w="xs"
       h="full"
       px="4"
-      pt="4"
-      pb="12"
+      py="4"
       flexDirection="column"
       justifyContent="space-between"
     >

@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, HStack, Stack } from "@chakra-ui/react";
+import { format } from "date-fns";
 import { VFC } from "react";
 
 import { useTweetsForIndexPageQuery } from "../../graphql/generated";
@@ -10,6 +11,7 @@ gql`
     tweets {
       id
       content
+      createdAt
       creator {
         id
         displayName
@@ -37,8 +39,13 @@ export const Tweets: VFC = () => {
         <AppList>
           {tweets.map((tweet) => (
             <AppListItem key={tweet.id}>
-              <Box fontWeight="bold">{tweet.creator.displayName}</Box>
-              <Box>{tweet.content}</Box>
+              <Box>
+                <HStack>
+                  <Box fontWeight="bold">{tweet.creator.displayName}</Box>
+                  <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
+                </HStack>
+                <Box>{tweet.content}</Box>
+              </Box>
             </AppListItem>
           ))}
         </AppList>

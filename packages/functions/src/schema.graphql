@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
   users: [User!]!
   tweets: [Tweet!]!
@@ -12,5 +14,6 @@ type User {
 type Tweet {
   id: String!
   content: String!
+  createdAt: DateTime!
   creator: User!
 }

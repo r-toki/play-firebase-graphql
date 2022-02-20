@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: string;
 };
 
 export type Query = {
@@ -24,6 +25,7 @@ export type Query = {
 export type Tweet = {
   __typename?: 'Tweet';
   content: Scalars['String'];
+  createdAt: Scalars['DateTime'];
   creator: User;
   id: Scalars['String'];
 };
@@ -38,7 +40,7 @@ export type User = {
 export type TweetsForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TweetsForIndexPageQuery = { __typename?: 'Query', tweets: Array<{ __typename?: 'Tweet', id: string, content: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
+export type TweetsForIndexPageQuery = { __typename?: 'Query', tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -51,6 +53,7 @@ export const TweetsForIndexPageDocument = gql`
   tweets {
     id
     content
+    createdAt
     creator {
       id
       displayName

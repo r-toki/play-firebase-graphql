@@ -1,6 +1,8 @@
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
+scalar DateTime
+
 type Query {
   tweets: [Tweet!]!
   users: [User!]!
@@ -8,6 +10,7 @@ type Query {
 
 type Tweet {
   content: String!
+  createdAt: DateTime!
   creator: User!
   id: String!
 }
