@@ -1,6 +1,7 @@
 scalar DateTime
 
 type Query {
+  user(id: ID!): User!
   users: [User!]!
   tweets: [Tweet!]!
 }
@@ -16,4 +17,13 @@ type Tweet {
   content: String!
   createdAt: DateTime!
   creator: User!
+}
+
+input UpdateProfileInput {
+  displayName: String!
+  updatedAt: DateTime
+}
+
+type Mutation {
+  updateProfile(id: ID!, input: UpdateProfileInput!): User!
 }

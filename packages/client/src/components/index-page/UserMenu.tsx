@@ -4,15 +4,16 @@ import { signOut } from "firebase/auth";
 import { VFC } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuthed } from "../../context/Authed";
 import { auth } from "../../firebase-app";
-import { useAuthed } from "../../hooks/useAuthed";
 import { routes } from "../../routes";
 
 const useUserMenu = () => {
-  const { uid } = useAuthed();
+  const { currentUser } = useAuthed();
   const navigate = useNavigate();
 
-  const onEditProfile = () => navigate(routes["/users/:user_id/edit"].path({ user_id: uid }));
+  const onEditProfile = () =>
+    navigate(routes["/users/:user_id/edit"].path({ user_id: currentUser.id }));
   const onLogout = () => signOut(auth);
 
   return { onEditProfile, onLogout };

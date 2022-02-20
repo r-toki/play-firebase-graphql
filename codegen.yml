@@ -1,6 +1,6 @@
 overwrite: true
 schema: "packages/functions/src/schema.graphql"
-documents: "packages/client/src/**/*.tsx"
+documents: "packages/client/src/**/*.{ts,tsx}"
 generates:
   packages/functions/src/graphql/generated.ts:
     plugins:
@@ -19,6 +19,6 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-    config:
-      scalars:
-        DateTime: string
+config:
+  scalars:
+    DateTime: string

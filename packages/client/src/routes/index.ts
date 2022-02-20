@@ -1,11 +1,10 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
 
-import { AppLayout } from "../components/shared/AppLayout";
 import { Index } from "../pages";
 import { Login } from "../pages/login";
 import { Signup } from "../pages/signup";
-import { UserEdit } from "../pages/users/[id]/edit";
-import { AppPrivate, ForAuth, UserPrivate } from "./authenticate";
+import { UserEdit } from "../pages/users/[user_id]/edit";
+import { AppPrivatePage, ForAuthPage, UserPrivatePage } from "./middleware";
 
 const INDEX = "/";
 const SIGNUP = "/signup";
@@ -17,37 +16,30 @@ export const routes = {
   [INDEX]: {
     path: pathBuilder(INDEX),
     Component: Index,
-    Layout: AppLayout,
-    Middleware: AppPrivate,
+    middleware: [AppPrivatePage],
   },
   [SIGNUP]: {
     path: pathBuilder(SIGNUP),
     Component: Signup,
-    Layout: AppLayout,
-    Middleware: ForAuth,
+    middleware: [ForAuthPage],
   },
   [LOGIN]: {
     path: pathBuilder(LOGIN),
     Component: Login,
-    Layout: AppLayout,
-    Middleware: ForAuth,
+    middleware: [ForAuthPage],
   },
   [USERS]: {
     path: pathBuilder(USERS),
     Component: Index,
-    Layout: AppLayout,
-    Middleware: AppPrivate,
+    middleware: [AppPrivatePage],
   },
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),
     Component: UserEdit,
-    Layout: AppLayout,
-    Middleware: UserPrivate,
+    middleware: [AppPrivatePage, UserPrivatePage],
   },
   // TODO: 404
   // ["*"]: {
-  //   path: pathBuilder(INDEX),
-  //   Component: Index,
   // },
 };
 

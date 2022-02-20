@@ -1,5 +1,6 @@
-import { Firestore } from "firebase-admin/firestore";
+import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
+import { isUndefined, omitBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/firestore-helper";
@@ -10,8 +11,28 @@ type Context = { decodedIdToken: DecodedIdToken | undefined; db: Firestore };
 
 export const resolvers: Resolvers<Context> = {
   Query: {
+    user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
     users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
     tweets: (parent, args, { db }) => getDocs(tweetsRef(db).orderBy("createdAt", "desc")),
+  },
+  Mutation: {
+    updateProfile: async (parent, args, { db }) => {
+      await usersRef(db)
+        .doc(args.id)
+        .set(
+          omitBy(
+            {
+              displayName: args.input.displayName,
+              updatedAt: args.input.updatedAt
+                ? Timestamp.fromDate(new Date(args.input.updatedAt))
+                : undefined,
+            },
+            isUndefined
+          ),
+          { merge: true }
+        );
+      return getDoc(usersRef(db).doc(args.id));
+    },
   },
   User: {
     tweets: (parent, args, { db }) =>

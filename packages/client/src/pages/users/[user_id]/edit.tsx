@@ -1,29 +1,38 @@
+import { gql } from "@apollo/client";
 import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { FormEventHandler, useEffect, VFC } from "react";
+import { FormEventHandler, VFC } from "react";
 
 import { AppLink } from "../../../components/shared/AppLink";
-import { db } from "../../../firebase-app";
-import { useAuthed } from "../../../hooks/useAuthed";
+import { useAuthed } from "../../../context/Authed";
+import { useUpdateProfileMutation } from "../../../graphql/generated";
 import { useTextInput } from "../../../hooks/useTextInput";
-import { usersRef } from "../../../lib/typed-ref";
 import { routes } from "../../../routes";
 
+gql`
+  mutation updateProfile($id: ID!, $input: UpdateProfileInput!) {
+    updateProfile(id: $id, input: $input) {
+      id
+      displayName
+    }
+  }
+`;
+
 const UserEditForm: VFC = () => {
-  const { uid } = useAuthed();
+  const { currentUser } = useAuthed();
 
-  const [displayNameInput, resetDisplayNameInput] = useTextInput();
+  const [updateProfile] = useUpdateProfileMutation();
 
-  useEffect(() => {
-    getDoc(doc(usersRef(db), uid)).then((snap) => {
-      resetDisplayNameInput(snap.data()?.displayName || "");
-    });
-  }, []);
+  const [displayNameInput] = useTextInput(currentUser?.displayName);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
-      await updateDoc(doc(usersRef(db), uid), { displayName: displayNameInput.value });
+      await updateProfile({
+        variables: {
+          id: currentUser.id,
+          input: { displayName: displayNameInput.value },
+        },
+      });
     } catch (e) {
       console.error(e);
     }
