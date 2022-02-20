@@ -2,10 +2,12 @@ import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FormEventHandler, useEffect, VFC } from "react";
 
+import { AppLink } from "../../../components/shared/AppLink";
 import { db } from "../../../firebase-app";
 import { useAuthed } from "../../../hooks/useAuthed";
 import { useTextInput } from "../../../hooks/useTextInput";
 import { usersRef } from "../../../lib/typed-ref";
+import { routes } from "../../../routes";
 
 const UserEditForm: VFC = () => {
   const { uid } = useAuthed();
@@ -47,6 +49,7 @@ export const UserEdit: VFC = () => {
       <Stack>
         <Heading>User Edit</Heading>
         <UserEditForm />
+        <AppLink to={routes["/"].path()}>Back</AppLink>
       </Stack>
     </Container>
   );

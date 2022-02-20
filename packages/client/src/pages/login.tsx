@@ -42,9 +42,9 @@ const LoginForm: VFC = () => {
 
 export const Login: VFC = () => {
   return (
-    <Container>
+    <Container py="4">
       <Stack>
-        <Heading>Login</Heading>
+        <Heading textAlign="center">Login</Heading>
         <LoginForm />
         <AppLink to={routes["/signup"].path()}>to Signup</AppLink>
       </Stack>

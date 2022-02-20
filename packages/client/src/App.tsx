@@ -12,16 +12,14 @@ const App: VFC = () => {
       <BrowserRouter>
         <Routes>
           {paths.map((path) => {
-            const { Component, Layout, Middleware } = routes[path];
+            const { Component, Middleware } = routes[path];
             return (
               <Route
                 key={path}
                 path={path}
                 element={
                   <Middleware>
-                    <Layout>
-                      <Component />
-                    </Layout>
+                    <Component />
                   </Middleware>
                 }
               />
