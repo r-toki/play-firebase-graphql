@@ -1,10 +1,17 @@
 import { ChangeEventHandler, useState } from "react";
 
-export const useTextInput = (initValue = "") => {
+type Target = HTMLInputElement | HTMLTextAreaElement;
+
+type UseTextInputReturn = [
+  { value: string; onChange: ChangeEventHandler<Target> },
+  (resetValue?: string) => void
+];
+
+export const useTextInput = (initValue = ""): UseTextInputReturn => {
   const [value, setValue] = useState(initValue);
-  const onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
+  const onChange: ChangeEventHandler<Target> = (e) => {
     setValue(e.target.value);
   };
   const reset = (resetValue = "") => setValue(resetValue);
-  return { value, onChange, reset };
+  return [{ value, onChange }, reset];
 };

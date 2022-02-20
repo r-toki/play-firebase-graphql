@@ -10,7 +10,7 @@ import { userTweetsRef } from "../../lib/typed-ref";
 const useTweetForm = () => {
   const { uid } = useAuthed();
 
-  const tweetContentInput = useTextInput();
+  const [tweetContentInput, resetTweetContentInput] = useTextInput();
 
   const onCreateTweet: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ const useTweetForm = () => {
       updatedAt: Timestamp.now(),
       creatorId: uid,
     });
-    tweetContentInput.reset();
+    resetTweetContentInput();
   };
 
   return {
@@ -39,12 +39,7 @@ export const TweetForm: VFC = () => {
       </Box>
       <form onSubmit={onCreateTweet}>
         <Stack>
-          <Textarea
-            value={tweetContentInput.value}
-            onChange={tweetContentInput.onChange}
-            required
-            rows={5}
-          />
+          <Textarea {...tweetContentInput} required rows={5} />
           <Button type="submit">Post</Button>
         </Stack>
       </form>

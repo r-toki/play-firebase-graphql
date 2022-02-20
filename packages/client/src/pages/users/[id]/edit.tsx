@@ -12,13 +12,13 @@ import { routes } from "../../../routes";
 const UserEditForm: VFC = () => {
   const { uid } = useAuthed();
 
+  const [displayNameInput, resetDisplayNameInput] = useTextInput();
+
   useEffect(() => {
     getDoc(doc(usersRef(db), uid)).then((snap) => {
-      displayNameInput.reset(snap.data()?.displayName || "");
+      resetDisplayNameInput(snap.data()?.displayName || "");
     });
   }, []);
-
-  const displayNameInput = useTextInput();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const UserEditForm: VFC = () => {
       <Stack>
         <FormControl>
           <FormLabel>Display Name</FormLabel>
-          <Input value={displayNameInput.value} onChange={displayNameInput.onChange} />
+          <Input {...displayNameInput} />
         </FormControl>
 
         <Button type="submit">Update</Button>

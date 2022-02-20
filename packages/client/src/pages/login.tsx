@@ -7,15 +7,13 @@ import { useTextInput } from "../hooks/useTextInput";
 import { routes } from "../routes";
 
 const LoginForm: VFC = () => {
-  const emailInput = useTextInput();
-  const passwordInput = useTextInput();
+  const [emailInput] = useTextInput();
+  const [passwordInput] = useTextInput();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
-      emailInput.reset();
-      passwordInput.reset();
     } catch (e) {
       console.error(e);
     }
@@ -26,12 +24,12 @@ const LoginForm: VFC = () => {
       <Stack>
         <FormControl>
           <FormLabel>Email</FormLabel>
-          <Input type="email" value={emailInput.value} onChange={emailInput.onChange} />
+          <Input type="email" {...emailInput} />
         </FormControl>
 
         <FormControl>
           <FormLabel>Password</FormLabel>
-          <Input type="password" value={passwordInput.value} onChange={passwordInput.onChange} />
+          <Input type="password" {...passwordInput} />
         </FormControl>
 
         <Button type="submit">Login</Button>
