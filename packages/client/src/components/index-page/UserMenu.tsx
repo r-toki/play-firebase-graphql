@@ -16,11 +16,11 @@ const useUserMenu = () => {
     navigate(routes["/users/:user_id/edit"].path({ user_id: currentUser.id }));
   const onLogout = () => signOut(auth);
 
-  return { onEditProfile, onLogout };
+  return { currentUser, onEditProfile, onLogout };
 };
 
 export const UserMenu: VFC = () => {
-  const { onEditProfile, onLogout } = useUserMenu();
+  const { currentUser, onEditProfile, onLogout } = useUserMenu();
 
   return (
     <Box>
@@ -36,7 +36,7 @@ export const UserMenu: VFC = () => {
           <Flex justifyContent="space-between" alignItems="center">
             <HStack spacing="4">
               <Avatar />
-              <Box fontWeight="bold">MyString</Box>
+              <Box fontWeight="bold">{currentUser.displayName}</Box>
             </HStack>
             <HamburgerIcon />
           </Flex>
