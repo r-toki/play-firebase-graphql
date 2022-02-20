@@ -29,6 +29,7 @@ export type MutationUpdateProfileArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  feed: Array<Tweet>;
   tweets: Array<Tweet>;
   user: User;
   users: Array<User>;
@@ -59,10 +60,10 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
-export type TweetsForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+export type FeedForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TweetsForIndexPageQuery = { __typename?: 'Query', tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -92,9 +93,9 @@ export const CurrentUserFragmentDoc = gql`
   displayName
 }
     `;
-export const TweetsForIndexPageDocument = gql`
-    query tweetsForIndexPage {
-  tweets {
+export const FeedForIndexPageDocument = gql`
+    query feedForIndexPage {
+  feed {
     id
     content
     createdAt
@@ -107,31 +108,31 @@ export const TweetsForIndexPageDocument = gql`
     `;
 
 /**
- * __useTweetsForIndexPageQuery__
+ * __useFeedForIndexPageQuery__
  *
- * To run a query within a React component, call `useTweetsForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useTweetsForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFeedForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTweetsForIndexPageQuery({
+ * const { data, loading, error } = useFeedForIndexPageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useTweetsForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>) {
+export function useFeedForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>(TweetsForIndexPageDocument, options);
+        return Apollo.useQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
       }
-export function useTweetsForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>) {
+export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>(TweetsForIndexPageDocument, options);
+          return Apollo.useLazyQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
         }
-export type TweetsForIndexPageQueryHookResult = ReturnType<typeof useTweetsForIndexPageQuery>;
-export type TweetsForIndexPageLazyQueryHookResult = ReturnType<typeof useTweetsForIndexPageLazyQuery>;
-export type TweetsForIndexPageQueryResult = Apollo.QueryResult<TweetsForIndexPageQuery, TweetsForIndexPageQueryVariables>;
+export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
+export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
+export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
 export const UsersForIndexPageDocument = gql`
     query usersForIndexPage {
   users {

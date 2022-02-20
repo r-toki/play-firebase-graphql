@@ -29,6 +29,7 @@ export type MutationUpdateProfileArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  feed: Array<Tweet>;
   tweets: Array<Tweet>;
   user: User;
   users: Array<User>;
@@ -162,6 +163,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  feed?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
   tweets?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;

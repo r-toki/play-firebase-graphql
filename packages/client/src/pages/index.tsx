@@ -1,9 +1,9 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
+import { Feed } from "../components/index-page/Feed";
 import { News } from "../components/index-page/News";
 import { TweetForm } from "../components/index-page/TweetForm";
-import { Tweets } from "../components/index-page/Tweets";
 import { UserMenu } from "../components/index-page/UserMenu";
 import { Users } from "../components/index-page/Users";
 import { AppLayout } from "../components/shared/AppLayout";
@@ -12,7 +12,7 @@ export const Index: VFC = () => {
   const main = (
     <Stack maxW="100%" w="xl" px="4" py="4" spacing="6">
       <TweetForm />
-      <Tweets />
+      <Feed />
     </Stack>
   );
 

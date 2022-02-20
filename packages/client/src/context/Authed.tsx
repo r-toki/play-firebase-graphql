@@ -5,6 +5,7 @@ import { CurrentUserFragment } from "../graphql/generated";
 import { assertIsDefined } from "../lib/type-utils";
 
 // NOTE: firebase auth -> apollo client init -> fetch currentUser の順になるので若干構造が複雑
+//       middleware で少し頑張ってる
 
 gql`
   fragment currentUser on User {

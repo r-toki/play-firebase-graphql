@@ -3,12 +3,12 @@ import { Box, HStack, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { VFC } from "react";
 
-import { useTweetsForIndexPageQuery } from "../../graphql/generated";
+import { useFeedForIndexPageQuery } from "../../graphql/generated";
 import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
-  query tweetsForIndexPage {
-    tweets {
+  query feedForIndexPage {
+    feed {
       id
       content
       createdAt
@@ -20,15 +20,15 @@ gql`
   }
 `;
 
-const useTweets = () => {
-  const { data } = useTweetsForIndexPageQuery();
-  const tweets = data?.tweets ?? [];
+const useFeed = () => {
+  const { data } = useFeedForIndexPageQuery();
+  const tweets = data?.feed ?? [];
 
   return { tweets };
 };
 
-export const Tweets: VFC = () => {
-  const { tweets } = useTweets();
+export const Feed: VFC = () => {
+  const { tweets } = useFeed();
 
   return (
     <Stack>

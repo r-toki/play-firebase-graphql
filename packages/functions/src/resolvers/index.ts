@@ -1,10 +1,11 @@
+import { AuthenticationError } from "apollo-server-express";
 import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
-import { isUndefined, omitBy } from "lodash";
+import { chunk, isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/firestore-helper";
-import { tweetsRef, usersRef, userTweetsRef } from "./../lib/typed-ref/index";
+import { tweetsRef, usersRef, userTweetsRef, followingRef } from "./../lib/typed-ref/index";
 import { DateTime } from "./DateTime";
 
 type Context = { decodedIdToken: DecodedIdToken | undefined; db: Firestore };
@@ -14,6 +15,18 @@ export const resolvers: Resolvers<Context> = {
     user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
     users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
     tweets: (parent, args, { db }) => getDocs(tweetsRef(db).orderBy("createdAt", "desc")),
+    feed: async (parent, args, { decodedIdToken, db }) => {
+      if (!decodedIdToken) throw new AuthenticationError("unauthorized");
+      const followers = await getDocs(
+        followingRef(db).where("followeeId", "==", decodedIdToken.uid)
+      );
+      const chunkedTweets = await Promise.all(
+        chunk([decodedIdToken.uid, followers.map((v) => v.id)], 10).map((ids) =>
+          getDocs(tweetsRef(db).where("creatorId", "in", ids))
+        )
+      );
+      return orderBy(chunkedTweets.flat(), "createdAt", "desc");
+    },
   },
   Mutation: {
     updateProfile: async (parent, args, { db }) => {
