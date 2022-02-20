@@ -14,13 +14,15 @@ export const News: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         News
       </Box>
-      <AppList>
-        {news.map((topic) => (
-          <AppListItem key={topic.id}>
-            <Box fontWeight="bold">{topic.title}</Box>
-          </AppListItem>
-        ))}
-      </AppList>
+      {news.length && (
+        <AppList>
+          {news.map((topic) => (
+            <AppListItem key={topic.id}>
+              <Box fontWeight="bold">{topic.title}</Box>
+            </AppListItem>
+          ))}
+        </AppList>
+      )}
     </Stack>
   );
 };

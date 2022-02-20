@@ -8,7 +8,7 @@
     "build": "tsc",
     "logs": "firebase functions:log",
     "watch": "tsc -w",
-    "seed": "ts-node seed/index"
+    "seed": "ts-node test-helper/seed"
   },
   "engines": {
     "node": "16"

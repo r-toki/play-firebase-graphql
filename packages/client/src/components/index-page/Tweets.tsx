@@ -33,14 +33,16 @@ export const Tweets: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Tweets
       </Box>
-      <AppList>
-        {tweets.map((tweet) => (
-          <AppListItem key={tweet.id}>
-            <Box fontWeight="bold">{tweet.creator.displayName}</Box>
-            <Box>{tweet.content}</Box>
-          </AppListItem>
-        ))}
-      </AppList>
+      {tweets.length && (
+        <AppList>
+          {tweets.map((tweet) => (
+            <AppListItem key={tweet.id}>
+              <Box fontWeight="bold">{tweet.creator.displayName}</Box>
+              <Box>{tweet.content}</Box>
+            </AppListItem>
+          ))}
+        </AppList>
+      )}
     </Stack>
   );
 };

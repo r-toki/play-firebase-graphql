@@ -1,13 +1,10 @@
 import * as admin from "firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
-import request from "request";
 
 import { userTweetsRef } from "../src/lib/typed-ref/index";
 import { UserTweetData } from "../src/lib/typed-ref/types";
-
-const PROJECT_ID = "playground-67a20";
-const FIREBASE_AUTH_EMULATOR_HOST = "localhost:9099";
-const FIRESTORE_EMULATOR_HOST = "localhost:8080";
+import { clearAuth, clearFirestore } from "./clear-emulator";
+import { FIREBASE_AUTH_EMULATOR_HOST, FIRESTORE_EMULATOR_HOST, PROJECT_ID } from "./constants";
 
 process.env.FIREBASE_AUTH_EMULATOR_HOST = FIREBASE_AUTH_EMULATOR_HOST;
 process.env.FIRESTORE_EMULATOR_HOST = FIRESTORE_EMULATOR_HOST;
@@ -52,18 +49,6 @@ class UserTweetFactory {
   }
 }
 
-const clearFirestore = () =>
-  request({
-    url: `http://${FIRESTORE_EMULATOR_HOST}/emulator/v1/projects/${PROJECT_ID}/databases/(default)/documents`,
-    method: "DELETE",
-  });
-
-const clearAuth = () =>
-  request({
-    url: `http://${FIREBASE_AUTH_EMULATOR_HOST}/emulator/v1/projects/${PROJECT_ID}/accounts`,
-    method: "DELETE",
-  });
-
 const stop = (ms = 0) =>
   new Promise((resolve) =>
     setTimeout(() => {
@@ -78,7 +63,7 @@ const main = async () => {
   await stop();
 
   const authUsers = await Promise.all(ArrayFactory.of(10).map(() => AuthUserFactory.of()));
-  const userTweets = await Promise.all(
+  await Promise.all(
     authUsers.flatMap((authUser) =>
       ArrayFactory.of(10).map(() => UserTweetFactory.of({ creatorId: authUser.uid }))
     )

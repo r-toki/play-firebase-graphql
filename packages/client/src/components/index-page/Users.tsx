@@ -29,13 +29,15 @@ export const Users: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Users
       </Box>
-      <AppList>
-        {users.map((user) => (
-          <AppListItem key={user.id}>
-            <Box fontWeight="bold">{user.displayName}</Box>
-          </AppListItem>
-        ))}
-      </AppList>
+      {users.length && (
+        <AppList>
+          {users.map((user) => (
+            <AppListItem key={user.id}>
+              <Box fontWeight="bold">{user.displayName}</Box>
+            </AppListItem>
+          ))}
+        </AppList>
+      )}
     </Stack>
   );
 };
