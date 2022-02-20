@@ -1,7 +1,7 @@
 import { AuthenticationError } from "apollo-server-express";
 import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
-import { first, isUndefined, omitBy, orderBy } from "lodash";
+import { isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/firestore-helper";
@@ -47,15 +47,15 @@ export const resolvers: Resolvers<Context> = {
 
       let i = 0;
       while (i < limit) {
-        const pushed = first(orderBy(followerRecentTweets, "createdAt", "desc"));
-        if (!pushed) return res;
-        res.push(pushed);
-        followerRecentTweets = followerRecentTweets.filter(({ id }) => id !== pushed.id);
+        const [head, ...rest] = orderBy(followerRecentTweets, "createdAt", "desc");
+        if (!head) return res;
+        res.push(head);
+        followerRecentTweets = rest;
         const candidate = await getDocs(
           tweetsRef(db)
-            .where("creatorId", "==", pushed.creatorId)
+            .where("creatorId", "==", head.creatorId)
             .orderBy("createdAt", "desc")
-            .startAfter(pushed.createdAt)
+            .startAfter(head.createdAt)
             .limit(1)
         );
         followerRecentTweets.push(...candidate);
