@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
-import { addDoc, deleteDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { FollowingDoc } from "interfaces/web";
 import { useEffect, useState, VFC } from "react";
 

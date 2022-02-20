@@ -18,7 +18,7 @@ export const resolvers: Resolvers<Context> = {
     feed: async (parent, args, { decodedIdToken, db }) => {
       // TODO: 後でクエリカーソルを引数化する
       const startAfter = Timestamp.fromDate(new Date());
-      const limit = 20;
+      const limit = 50;
 
       if (!decodedIdToken) throw new AuthenticationError("unauthorized");
 
