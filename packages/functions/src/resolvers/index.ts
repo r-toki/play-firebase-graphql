@@ -27,13 +27,13 @@ export const resolvers: Resolvers<Context> = {
         ref: FirebaseFirestore.DocumentReference<UserTweetData>;
       } & UserTweetData)[] = [];
 
-      const followers = await getDocs(
+      const followings = await getDocs(
         followingRef(db).where("followeeId", "==", decodedIdToken.uid)
       );
 
       let followerRecentTweets = (
         await Promise.all(
-          [decodedIdToken.uid, ...followers.map((v) => v.id)].map((id) =>
+          [decodedIdToken.uid, ...followings.map((v) => v.followerId)].map((id) =>
             getDocs(
               tweetsRef(db)
                 .where("creatorId", "==", id)

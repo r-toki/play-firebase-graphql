@@ -1,8 +1,13 @@
 import { gql } from "@apollo/client";
-import { Box, Stack } from "@chakra-ui/react";
-import { VFC } from "react";
+import { Box, Button, Flex, Stack } from "@chakra-ui/react";
+import { addDoc, deleteDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { FollowingDoc } from "interfaces/web";
+import { useEffect, useState, VFC } from "react";
 
+import { useAuthed } from "../../context/Authed";
+import { db } from "../../firebase-app";
 import { useUsersForIndexPageQuery } from "../../graphql/generated";
+import { followingRef } from "../../lib/typed-ref";
 import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
@@ -15,14 +20,35 @@ gql`
 `;
 
 const useUsers = () => {
-  const { data } = useUsersForIndexPageQuery();
-  const users = data?.users ?? [];
+  const { currentUser } = useAuthed();
 
-  return { users };
+  const { data } = useUsersForIndexPageQuery();
+  const users = data?.users.filter(({ id }) => id !== currentUser.id) ?? [];
+
+  const [followings, setFollowings] = useState<FollowingDoc[]>([]);
+
+  const followerIds = followings.map(({ followerId }) => followerId);
+
+  useEffect(() => {
+    getDocs(query(followingRef(db), where("followeeId", "==", currentUser.id))).then((res) =>
+      setFollowings(res.docs.map((doc) => ({ id: doc.id, ref: doc.ref, ...doc.data() })))
+    );
+  }, []);
+
+  const toggleFollow = (followerId: string) => {
+    const targetFollower = followings.find((following) => following.followerId === followerId);
+    if (targetFollower) {
+      return deleteDoc(targetFollower.ref);
+    } else {
+      return addDoc(followingRef(db), { followerId, followeeId: currentUser.id });
+    }
+  };
+
+  return { users, followerIds, toggleFollow };
 };
 
 export const Users: VFC = () => {
-  const { users } = useUsers();
+  const { users, followerIds, toggleFollow } = useUsers();
 
   return (
     <Stack>
@@ -33,7 +59,18 @@ export const Users: VFC = () => {
         <AppList>
           {users.map((user) => (
             <AppListItem key={user.id}>
-              <Box fontWeight="bold">{user.displayName}</Box>
+              <Flex justifyContent="space-between">
+                <Box fontWeight="bold">{user.displayName}</Box>
+                {followerIds.includes(user.id) ? (
+                  <Button size="xs" onClick={() => toggleFollow(user.id)}>
+                    unfollow
+                  </Button>
+                ) : (
+                  <Button size="xs" onClick={() => toggleFollow(user.id)}>
+                    follow
+                  </Button>
+                )}
+              </Flex>
             </AppListItem>
           ))}
         </AppList>
