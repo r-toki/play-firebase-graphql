@@ -1,6 +1,8 @@
 import { Box, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
+import { AppList, AppListItem } from "../shared/AppList";
+
 export const News: VFC = () => {
   const news = [
     { id: "1", title: "mock-news-1" },
@@ -12,19 +14,13 @@ export const News: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         News
       </Box>
-      <Box borderWidth="1px" rounded="md">
+      <AppList>
         {news.map((topic) => (
-          <Box
-            key={topic.id}
-            px="3"
-            py="2"
-            borderBottomWidth="1px"
-            _last={{ borderBottomWidth: "0" }}
-          >
+          <AppListItem key={topic.id}>
             <Box fontWeight="bold">{topic.title}</Box>
-          </Box>
+          </AppListItem>
         ))}
-      </Box>
+      </AppList>
     </Stack>
   );
 };

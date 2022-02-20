@@ -3,6 +3,7 @@ import { Box, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
 import { useTweetsForIndexPageQuery } from "../../graphql/generated";
+import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
   query tweetsForIndexPage {
@@ -32,20 +33,14 @@ export const Tweets: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Tweets
       </Box>
-      <Box borderWidth="1px" rounded="md">
+      <AppList>
         {tweets.map((tweet) => (
-          <Box
-            key={tweet.id}
-            px="3"
-            py="2"
-            borderBottomWidth="1px"
-            _last={{ borderBottomWidth: "0" }}
-          >
+          <AppListItem key={tweet.id}>
             <Box fontWeight="bold">{tweet.creator.displayName}</Box>
             <Box>{tweet.content}</Box>
-          </Box>
+          </AppListItem>
         ))}
-      </Box>
+      </AppList>
     </Stack>
   );
 };

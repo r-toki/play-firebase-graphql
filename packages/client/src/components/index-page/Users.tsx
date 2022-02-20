@@ -3,6 +3,7 @@ import { Box, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
 import { useUsersForIndexPageQuery } from "../../graphql/generated";
+import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
   query usersForIndexPage {
@@ -28,19 +29,13 @@ export const Users: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Users
       </Box>
-      <Box borderWidth="1px" rounded="md">
+      <AppList>
         {users.map((user) => (
-          <Box
-            key={user.id}
-            px="3"
-            py="2"
-            borderBottomWidth="1px"
-            _last={{ borderBottomWidth: "0" }}
-          >
+          <AppListItem key={user.id}>
             <Box fontWeight="bold">{user.displayName}</Box>
-          </Box>
+          </AppListItem>
         ))}
-      </Box>
+      </AppList>
     </Stack>
   );
 };
