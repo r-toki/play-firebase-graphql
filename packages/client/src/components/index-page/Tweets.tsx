@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Box, HStack, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { VFC } from "react";
+import { useEffect, VFC } from "react";
 
 import { useTweetsForIndexPageQuery } from "../../graphql/generated";
 import { AppList, AppListItem } from "../shared/AppList";
@@ -21,8 +21,16 @@ gql`
 `;
 
 const useTweets = () => {
-  const { data } = useTweetsForIndexPageQuery();
+  const { data, error } = useTweetsForIndexPageQuery();
   const tweets = data?.tweets ?? [];
+
+  useEffect(() => {
+    console.log(tweets);
+  }, [tweets]);
+
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
 
   return { tweets };
 };
