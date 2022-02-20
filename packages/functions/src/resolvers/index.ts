@@ -1,10 +1,11 @@
 import { AuthenticationError } from "apollo-server-express";
 import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
-import { chunk, isUndefined, omitBy, orderBy } from "lodash";
+import { first, isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/firestore-helper";
+import { UserTweetData } from "../lib/typed-ref/types";
 import { tweetsRef, usersRef, userTweetsRef, followingRef } from "./../lib/typed-ref/index";
 import { DateTime } from "./DateTime";
 
@@ -14,18 +15,54 @@ export const resolvers: Resolvers<Context> = {
   Query: {
     user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
     users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
-    tweets: (parent, args, { db }) => getDocs(tweetsRef(db).orderBy("createdAt", "desc")),
     feed: async (parent, args, { decodedIdToken, db }) => {
+      // TODO: 後でクエリカーソルを引数化する
+      const startAfter = Timestamp.fromDate(new Date());
+      const limit = 20;
+
       if (!decodedIdToken) throw new AuthenticationError("unauthorized");
+
+      const res: ({
+        id: string;
+        ref: FirebaseFirestore.DocumentReference<UserTweetData>;
+      } & UserTweetData)[] = [];
+
       const followers = await getDocs(
         followingRef(db).where("followeeId", "==", decodedIdToken.uid)
       );
-      const chunkedTweets = await Promise.all(
-        chunk([decodedIdToken.uid, followers.map((v) => v.id)], 10).map((ids) =>
-          getDocs(tweetsRef(db).where("creatorId", "in", ids))
+
+      let followerRecentTweets = (
+        await Promise.all(
+          [decodedIdToken.uid, ...followers.map((v) => v.id)].map((id) =>
+            getDocs(
+              tweetsRef(db)
+                .where("creatorId", "==", id)
+                .orderBy("createdAt", "desc")
+                .startAfter(startAfter)
+                .limit(1)
+            )
+          )
         )
-      );
-      return orderBy(chunkedTweets.flat(), "createdAt", "desc");
+      ).flat();
+
+      let i = 0;
+      while (i < limit) {
+        const pushed = first(orderBy(followerRecentTweets, "createdAt", "desc"));
+        if (!pushed) return res;
+        res.push(pushed);
+        followerRecentTweets = followerRecentTweets.filter(({ id }) => id !== pushed.id);
+        const candidate = await getDocs(
+          tweetsRef(db)
+            .where("creatorId", "==", pushed.creatorId)
+            .orderBy("createdAt", "desc")
+            .startAfter(pushed.createdAt)
+            .limit(1)
+        );
+        followerRecentTweets.push(...candidate);
+        i++;
+      }
+
+      return res;
     },
   },
   Mutation: {

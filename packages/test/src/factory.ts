@@ -4,6 +4,8 @@ import { userTweetsRef } from "functions/src/lib/typed-ref";
 import { UserTweetData } from "functions/src/lib/typed-ref/types";
 import { auth, db } from "./firebase-app";
 
+import { addHours } from "date-fns";
+
 export class ArrayFactory {
   static of(init = 0) {
     return Array.from({ length: init });
@@ -30,10 +32,11 @@ export class AuthUserFactory {
 export class UserTweetFactory {
   static n = 0;
   static of(init: Pick<UserTweetData, "creatorId"> & Partial<UserTweetData>) {
+    const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), this.n++));
     return userTweetsRef(db, { userId: init.creatorId }).add({
       content: "MyString",
-      createdAt: Timestamp.fromDate(DateFactory.of()),
-      updatedAt: Timestamp.fromDate(DateFactory.of()),
+      createdAt,
+      updatedAt: createdAt,
       ...init,
     });
   }

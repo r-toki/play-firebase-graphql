@@ -9,7 +9,6 @@ type Mutation {
 
 type Query {
   feed: [Tweet!]!
-  tweets: [Tweet!]!
   user(id: ID!): User!
   users: [User!]!
 }

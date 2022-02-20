@@ -30,7 +30,6 @@ export type MutationUpdateProfileArgs = {
 export type Query = {
   __typename?: 'Query';
   feed: Array<Tweet>;
-  tweets: Array<Tweet>;
   user: User;
   users: Array<User>;
 };
