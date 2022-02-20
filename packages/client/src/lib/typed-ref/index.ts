@@ -6,7 +6,7 @@ import type {
   UsersPath,
   UserTweetData,
   UserTweetsPath,
-} from "common/web";
+} from "interfaces/web";
 
 import { createConverter, createTypedCollectionRef } from "./helper";
 

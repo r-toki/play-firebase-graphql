@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    commonjs: true,
+    interfacesjs: true,
     es2021: true,
     node: true,
   },
@@ -13,6 +13,6 @@ module.exports = {
   rules: {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "no-restricted-imports": ["error", "common", "common/web"],
+    "no-restricted-imports": ["error", "interfaces", "interfaces/web"],
   },
 };

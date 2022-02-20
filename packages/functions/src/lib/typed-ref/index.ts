@@ -6,7 +6,7 @@ import type {
   UsersPath,
   UserTweetData,
   UserTweetsPath,
-} from "common/admin";
+} from "interfaces/admin";
 import { Firestore } from "firebase-admin/firestore";
 
 import { createConverter, createTypedCollectionRef } from "./helper";

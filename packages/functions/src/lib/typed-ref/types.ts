@@ -1,1 +1,1 @@
-export * from "common/admin";
+export * from "interfaces/admin";
