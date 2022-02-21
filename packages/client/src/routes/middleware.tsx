@@ -22,7 +22,7 @@ export const WithAuthed: VFC<MiddlewareProps> = ({ children }) => {
   if (!called) return null;
   if (loading) return null;
   const currentUser = data?.user;
-  if (!currentUser) return <Navigate to={routes["/users/:user_id/edit"].path({ user_id: uid })} />;
+  if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
 
   return <AuthedProvider currentUser={currentUser}>{children}</AuthedProvider>;
 };
