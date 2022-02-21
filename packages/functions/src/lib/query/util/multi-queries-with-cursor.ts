@@ -1,5 +1,6 @@
 import { Query, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { first } from "lodash";
+
 import { getSnaps } from "./get";
 
 export const multiQueriesWithCursor = async <T, U>(
