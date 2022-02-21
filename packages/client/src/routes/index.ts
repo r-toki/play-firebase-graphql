@@ -4,13 +4,15 @@ import { Index } from "../pages";
 import { Login } from "../pages/login";
 import { Signup } from "../pages/signup";
 import { UserEdit } from "../pages/users/[user_id]/edit";
-import { WithAuthed, WithoutAuth } from "./middleware";
+import { UserNew } from "../pages/users/new";
+import { UserNewMiddleware, UserPrivate, WithAuthed, WithoutAuth } from "./middleware";
 
 const INDEX = "/";
 const SIGNUP = "/signup";
 const LOGIN = "/login";
 const USERS = "/users";
 const USER_EDIT = "/users/:user_id/edit";
+const USER_NEW = "/users/new";
 
 export const routes = {
   [INDEX]: {
@@ -36,7 +38,12 @@ export const routes = {
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),
     Component: UserEdit,
-    middleware: [WithAuthed],
+    middleware: [WithAuthed, UserPrivate],
+  },
+  [USER_NEW]: {
+    path: pathBuilder(USER_NEW),
+    Component: UserNew,
+    middleware: [UserNewMiddleware],
   },
   // TODO: 404
   // ["*"]: {
