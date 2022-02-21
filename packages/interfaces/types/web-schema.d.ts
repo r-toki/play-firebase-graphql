@@ -1,7 +1,7 @@
 import { _UserData, _FollowingData, _UserTweetData } from "./schema";
 import { Timestamp, DocumentReference } from "firebase/firestore";
 
-type WithIdAndRef<T> = { id: string; ref: DocumentReference } & T;
+type WithIdAndRef<T> = { id: string; ref: DocumentReference<T> } & T;
 
 export type UserData = _UserData<Timestamp>;
 export type UserTweetData = _UserTweetData<Timestamp>;

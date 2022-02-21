@@ -10,3 +10,6 @@ export const getDocs = <T>(collectionRef: CollectionReference<T> | Query<T>) =>
   collectionRef
     .get()
     .then(({ docs }) => docs.map((doc) => ({ id: doc.id, ref: doc.ref, ...doc.data() })));
+
+export const getSnaps = <T>(collectionRef: CollectionReference<T> | Query<T>) =>
+  collectionRef.get().then(({ docs }) => docs);

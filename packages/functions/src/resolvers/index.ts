@@ -4,7 +4,7 @@ import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
-import { getDoc, getDocs } from "../lib/firestore-helper";
+import { getDoc, getDocs } from "../lib/query/util/get";
 import { UserTweetData } from "../lib/typed-ref/types";
 import { tweetsRef, usersRef, userTweetsRef, followingRef } from "./../lib/typed-ref/index";
 import { DateTime } from "./DateTime";
