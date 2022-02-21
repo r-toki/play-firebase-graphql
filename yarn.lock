@@ -3624,7 +3624,7 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
-chokidar@^3.0.2, chokidar@^3.5.2, chokidar@^3.5.3:
+chokidar@^3.0.2, chokidar@^3.5.2:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
   integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
@@ -3831,11 +3831,6 @@ commander@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.1.tgz#9fd602bd936294e9e9ef46a3f4d6964044b18068"
   integrity sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==
-
-commander@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.0.0.tgz#86d58f24ee98126568936bd1d3574e0308a99a40"
-  integrity sha512-JJfP2saEKbQqvW+FI93OYUB4ByV5cizMpFMiiJI8xDbBvQvSkIk0VvQdn1CZ8mqAO8Loq2h0gYTYtDFUZUeERw==
 
 common-tags@1.8.2, common-tags@^1.8.0:
   version "1.8.2"
@@ -7327,11 +7322,6 @@ mute-stream@0.0.8:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mylas@^2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/mylas/-/mylas-2.1.9.tgz#8329626f95c0ce522ca7d3c192eca6221d172cdc"
-  integrity sha512-pa+cQvmhoM8zzgitPYZErmDt9EdTNVnXsH1XFjMeM4TyG4FFcgxrvK1+jwabVFwUOEDaSWuXBMjg43kqt/Ydlg==
-
 nan@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
@@ -9418,17 +9408,6 @@ ts-node@^9:
     make-error "^1.1.1"
     source-map-support "^0.5.17"
     yn "3.1.1"
-
-tsc-alias@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/tsc-alias/-/tsc-alias-1.6.1.tgz#f4199dc9f2c847c816131bf4b13203d2ac853221"
-  integrity sha512-cvnfvm1eFmLcVOidGmSRS0iTjoPxT5DZMnZmD1ZWHSkda8EAm+00uD7Zs/OCblo0l+AEluCdAG+qP7sZf475FA==
-  dependencies:
-    chokidar "^3.5.3"
-    commander "^9.0.0"
-    globby "^11.0.4"
-    mylas "^2.1.9"
-    normalize-path "^3.0.0"
 
 tslib@^1.0.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"

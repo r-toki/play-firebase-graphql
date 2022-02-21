@@ -62,7 +62,7 @@ export type User = {
 export type FeedForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string, tweets: Array<{ __typename?: 'Tweet', creator: { __typename?: 'User', tweets: Array<{ __typename?: 'Tweet', id: string, content: string }> } }> } }> };
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -101,14 +101,6 @@ export const FeedForIndexPageDocument = gql`
     creator {
       id
       displayName
-      tweets {
-        creator {
-          tweets {
-            id
-            content
-          }
-        }
-      }
     }
   }
 }
