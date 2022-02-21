@@ -1,7 +1,7 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
-import type { FollowingData, UserData, UserTweetData } from "interfaces/admin-schema";
-import type { UsersPath, FollowingsPath, UserTweetsPath } from "interfaces/path";
 import { Firestore } from "firebase-admin/firestore";
+import type { FollowingData, UserData, UserTweetData } from "interfaces/admin-schema";
+import type { FollowingsPath, UsersPath, UserTweetsPath } from "interfaces/path";
 
 import { createConverter, createTypedCollectionRef } from "./helper";
 

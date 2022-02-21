@@ -1,13 +1,13 @@
-import { multiQueriesWithCursor } from "./../lib/query/util/multi-queries-with-cursor";
-import { UserTweetData } from "functions/src/lib/typed-ref/types";
 import { AuthenticationError } from "apollo-server-express";
 import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
+import { UserTweetData } from "functions/src/lib/typed-ref/types";
 import { isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
+import { execMultiQueriesWithCursor } from "../lib/query/util/exec-multi-queries-with-cursor";
 import { getDoc, getDocs } from "../lib/query/util/get";
-import { tweetsRef, usersRef, userTweetsRef, followingRef } from "./../lib/typed-ref/index";
+import { followingRef, tweetsRef, usersRef, userTweetsRef } from "./../lib/typed-ref/index";
 import { DateTime } from "./DateTime";
 
 type Context = { decodedIdToken: DecodedIdToken | undefined; db: Firestore };
@@ -22,15 +22,12 @@ export const resolvers: Resolvers<Context> = {
       const followings = await getDocs(
         followingRef(db).where("followeeId", "==", decodedIdToken.uid)
       );
-
       const queries = [decodedIdToken.uid, ...followings.map((v) => v.followerId)].map((id) =>
         tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
       );
-
       const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
-        orderBy(snaps, (snap) => snap.data().createdAt.toDate(), "desc");
-
-      const res = await multiQueriesWithCursor(queries, order, {
+        orderBy(snaps, (snap) => snap.data().createdAt, "desc");
+      const res = await execMultiQueriesWithCursor(queries, order, {
         startAfter: Timestamp.now(),
         limit: 50,
       });

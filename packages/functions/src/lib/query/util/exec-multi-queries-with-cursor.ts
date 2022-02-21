@@ -3,14 +3,14 @@ import { first } from "lodash";
 
 import { getSnaps } from "./get";
 
-export const multiQueriesWithCursor = async <T, U>(
+export const execMultiQueriesWithCursor = async <T, U>(
   queries: Query<T>[],
   order: (snaps: QueryDocumentSnapshot<T>[]) => QueryDocumentSnapshot<T>[],
   { startAfter, limit }: { startAfter: U; limit: number }
 ) => {
   const res: QueryDocumentSnapshot<T>[] = [];
 
-  let candidatesSnaps = await Promise.all(
+  const candidatesSnaps = await Promise.all(
     queries.map((query) => getSnaps(query.startAfter(startAfter).limit(1)))
   );
 
