@@ -10,19 +10,20 @@ export const execMultiQueriesWithCursor = async <T, U>(
 ) => {
   const res: QueryDocumentSnapshot<T>[] = [];
 
-  const candidatesSnaps = await Promise.all(
+  const candidateSnapsList = await Promise.all(
     queries.map((query) => getSnaps(query.startAfter(startAfter).limit(1)))
   );
 
   let i = 0;
   while (i < limit) {
-    const headSnap = first(order(candidatesSnaps.flat()));
+    const headSnap = first(order(candidateSnapsList.flat()));
     if (!headSnap) return res;
     res.push(headSnap);
-    const headIndex = candidatesSnaps.findIndex((snaps) => first(snaps) === headSnap);
+    const headIndex = candidateSnapsList.findIndex((snaps) => first(snaps) === headSnap);
     const headQuery = queries[headIndex];
+    if (!headQuery) throw new Error("headQuery not found");
     const newCandidateSnaps = await getSnaps(headQuery.startAfter(headSnap).limit(1));
-    candidatesSnaps[headIndex] = newCandidateSnaps;
+    candidateSnapsList[headIndex] = newCandidateSnaps;
     i++;
   }
 
