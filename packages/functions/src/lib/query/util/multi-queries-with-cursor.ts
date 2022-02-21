@@ -1,7 +1,7 @@
 import { Query, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { getSnaps } from "./get";
 
-export const getDocsWithQueryCursor = async <T, U>(
+export const multiQueriesWithCursor = async <T, U>(
   queries: Query<T>[],
   order: (docs: QueryDocumentSnapshot<T>[]) => QueryDocumentSnapshot<T>[],
   { startAfter, limit }: { startAfter: U; limit: number }
