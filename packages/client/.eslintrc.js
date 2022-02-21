@@ -23,6 +23,6 @@ module.exports = {
     "react/prop-types": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "no-restricted-imports": ["error", "interfaces", "interfaces/admin"],
+    "no-restricted-imports": ["error", "interfaces/admin-schema"],
   },
 };

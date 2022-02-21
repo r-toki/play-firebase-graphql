@@ -1,7 +1,15 @@
 import { gql } from "@apollo/client";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
-import { addDoc, deleteDoc, getDocs, query, where } from "firebase/firestore";
-import { FollowingDoc } from "interfaces/web";
+import {
+  addDoc,
+  deleteDoc,
+  DocumentReference,
+  getDocs,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
+import { FollowingData } from "interfaces/web-schema";
 import { useEffect, useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
@@ -25,7 +33,9 @@ const useUsers = () => {
   const { data } = useUsersForIndexPageQuery();
   const users = data?.users.filter(({ id }) => id !== currentUser.id) ?? [];
 
-  const [followings, setFollowings] = useState<FollowingDoc[]>([]);
+  const [followings, setFollowings] = useState<
+    (FollowingData & { id: string; ref: DocumentReference })[]
+  >([]);
 
   const followerIds = followings.map(({ followerId }) => followerId);
 
@@ -40,7 +50,11 @@ const useUsers = () => {
     if (targetFollower) {
       return deleteDoc(targetFollower.ref);
     } else {
-      return addDoc(followingRef(db), { followerId, followeeId: currentUser.id });
+      return addDoc(followingRef(db), {
+        followerId,
+        followeeId: currentUser.id,
+        createdAt: Timestamp.now(),
+      });
     }
   };
 

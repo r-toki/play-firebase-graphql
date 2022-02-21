@@ -1,12 +1,6 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
-import type {
-  FollowingData,
-  FollowingsPath,
-  UserData,
-  UsersPath,
-  UserTweetData,
-  UserTweetsPath,
-} from "interfaces/web";
+import type { FollowingsPath, UsersPath, UserTweetsPath } from "interfaces/path";
+import type { FollowingData, UserData, UserTweetData } from "interfaces/web-schema";
 
 import { createConverter, createTypedCollectionRef } from "./helper";
 

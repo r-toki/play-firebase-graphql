@@ -1,1 +1,1 @@
-export * from "interfaces/admin";
+export * from "interfaces/admin-schema";

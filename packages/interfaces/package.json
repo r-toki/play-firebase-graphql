@@ -5,17 +5,15 @@
   "license": "MIT",
   "typesVersions": {
     "*": {
-      "admin": [
-        "./dist/admin/src/index.d.ts"
+      "path": [
+        "./types/path.d.ts"
       ],
-      "web": [
-        "./dist/web/src/index.d.ts"
+      "admin-schema": [
+        "./types/admin-schema.d.ts"
+      ],
+      "web-schema": [
+        "./types/web-schema.d.ts"
       ]
     }
-  },
-  "scripts": {
-    "build:web": "tsc --project tsconfig.web.json && yarn tsc-alias -p tsconfig.web.json",
-    "build:admin": "tsc --project tsconfig.admin.json && yarn tsc-alias -p tsconfig.admin.json",
-    "build": "yarn build:web && yarn build:admin"
   }
 }
