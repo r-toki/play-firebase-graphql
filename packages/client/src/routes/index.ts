@@ -4,7 +4,7 @@ import { Index } from "../pages";
 import { Login } from "../pages/login";
 import { Signup } from "../pages/signup";
 import { UserEdit } from "../pages/users/[user_id]/edit";
-import { AppPrivatePage, ForAuthPage, UserPrivatePage } from "./middleware";
+import { WithAuthed, WithoutAuth } from "./middleware";
 
 const INDEX = "/";
 const SIGNUP = "/signup";
@@ -16,27 +16,27 @@ export const routes = {
   [INDEX]: {
     path: pathBuilder(INDEX),
     Component: Index,
-    middleware: [AppPrivatePage],
+    middleware: [WithAuthed],
   },
   [SIGNUP]: {
     path: pathBuilder(SIGNUP),
     Component: Signup,
-    middleware: [ForAuthPage],
+    middleware: [WithoutAuth],
   },
   [LOGIN]: {
     path: pathBuilder(LOGIN),
     Component: Login,
-    middleware: [ForAuthPage],
+    middleware: [WithoutAuth],
   },
   [USERS]: {
     path: pathBuilder(USERS),
     Component: Index,
-    middleware: [AppPrivatePage],
+    middleware: [WithAuthed],
   },
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),
     Component: UserEdit,
-    middleware: [AppPrivatePage, UserPrivatePage],
+    middleware: [WithAuthed],
   },
   // TODO: 404
   // ["*"]: {
