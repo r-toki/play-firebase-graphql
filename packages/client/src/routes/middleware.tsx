@@ -30,6 +30,7 @@ export const WithAuthed: VFC<MiddlewareProps> = ({ children }) => {
 export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (!uid) return <Navigate to={routes["/login"].path()} />;
+
   const { data, called, loading } = useCurrentUserQuery({ variables: { id: uid } });
   if (!called) return null;
   if (loading) return null;
