@@ -1,11 +1,12 @@
+import { multiQueriesWithCursor } from "./../lib/query/util/multi-queries-with-cursor";
+import { UserTweetData } from "functions/src/lib/typed-ref/types";
 import { AuthenticationError } from "apollo-server-express";
-import { Firestore, Timestamp } from "firebase-admin/firestore";
+import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { isUndefined, omitBy, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { getDoc, getDocs } from "../lib/query/util/get";
-import { UserTweetData } from "../lib/typed-ref/types";
 import { tweetsRef, usersRef, userTweetsRef, followingRef } from "./../lib/typed-ref/index";
 import { DateTime } from "./DateTime";
 
@@ -16,53 +17,25 @@ export const resolvers: Resolvers<Context> = {
     user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
     users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
     feed: async (parent, args, { decodedIdToken, db }) => {
-      // TODO: 後でクエリカーソルを引数化する
-      const startAfter = Timestamp.fromDate(new Date());
-      const limit = 50;
-
       if (!decodedIdToken) throw new AuthenticationError("unauthorized");
-
-      const res: ({
-        id: string;
-        ref: FirebaseFirestore.DocumentReference<UserTweetData>;
-      } & UserTweetData)[] = [];
 
       const followings = await getDocs(
         followingRef(db).where("followeeId", "==", decodedIdToken.uid)
       );
 
-      let followerRecentTweets = (
-        await Promise.all(
-          [decodedIdToken.uid, ...followings.map((v) => v.followerId)].map((id) =>
-            getDocs(
-              tweetsRef(db)
-                .where("creatorId", "==", id)
-                .orderBy("createdAt", "desc")
-                .startAfter(startAfter)
-                .limit(1)
-            )
-          )
-        )
-      ).flat();
+      const queries = [decodedIdToken.uid, ...followings.map((v) => v.followerId)].map((id) =>
+        tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
+      );
 
-      let i = 0;
-      while (i < limit) {
-        const [head, ...rest] = orderBy(followerRecentTweets, "createdAt", "desc");
-        if (!head) return res;
-        res.push(head);
-        followerRecentTweets = rest;
-        const candidate = await getDocs(
-          tweetsRef(db)
-            .where("creatorId", "==", head.creatorId)
-            .orderBy("createdAt", "desc")
-            .startAfter(head.createdAt)
-            .limit(1)
-        );
-        followerRecentTweets.push(...candidate);
-        i++;
-      }
+      const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
+        orderBy(snaps, (snap) => snap.data().createdAt.toDate(), "desc");
 
-      return res;
+      const res = await multiQueriesWithCursor(queries, order, {
+        startAfter: Timestamp.now(),
+        limit: 50,
+      });
+
+      return res.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
     },
   },
   Mutation: {
