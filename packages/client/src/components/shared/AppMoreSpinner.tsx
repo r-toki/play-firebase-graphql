@@ -1,4 +1,4 @@
-import { Center, Spinner } from "@chakra-ui/react";
+import { Spinner } from "@chakra-ui/react";
 import { useEffect, useRef, VFC } from "react";
 import { useIntersection } from "react-use";
 
@@ -19,9 +19,5 @@ export const MoreSpinner: VFC<MoreSpinnerProps> = ({ cb }) => {
     }
   }, [intersection]);
 
-  return (
-    <Center>
-      <Spinner ref={intersectionRef} />
-    </Center>
-  );
+  return <Spinner ref={intersectionRef} />;
 };

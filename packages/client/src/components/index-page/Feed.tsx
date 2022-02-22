@@ -63,17 +63,21 @@ export const Feed: VFC = () => {
               </Box>
             </AppListItem>
           ))}
-          <AppListItem>
-            {loading ? (
+          {loading ? (
+            <AppListItem>
               <Center>
                 <Spinner />
               </Center>
-            ) : hasNext ? (
-              <MoreSpinner
-                cb={fetchMore.bind(null, { variables: { first: 10, after: endCursor } })}
-              />
-            ) : null}
-          </AppListItem>
+            </AppListItem>
+          ) : hasNext ? (
+            <AppListItem>
+              <Center>
+                <MoreSpinner
+                  cb={fetchMore.bind(null, { variables: { first: 10, after: endCursor } })}
+                />
+              </Center>
+            </AppListItem>
+          ) : null}
         </AppList>
       )}
     </Stack>
