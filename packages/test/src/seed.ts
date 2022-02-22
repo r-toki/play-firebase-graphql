@@ -1,3 +1,4 @@
+import { UserRecord } from "firebase-admin/auth";
 import { Timestamp } from "firebase-admin/firestore";
 import { addHours } from "date-fns";
 import { clearAuth, clearFirestore } from "./clear-emulator";
@@ -10,7 +11,13 @@ const main = async () => {
   // FIXME: auth の方で email の重複エラーとか起きるので暫定対応
   await wait();
 
-  const authUsers = await Promise.all(ArrayFactory.of(10).map(() => AuthUserFactory.of()));
+  const authUsers: UserRecord[] = [];
+
+  for (let i = 0; i < 10; i++) {
+    const authUser = await AuthUserFactory.of();
+    authUsers.push(authUser);
+  }
+
   await Promise.all(
     authUsers.flatMap((authUser, i) =>
       ArrayFactory.of(10).map((_, j) => {
