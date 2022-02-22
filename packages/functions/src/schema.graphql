@@ -3,7 +3,7 @@ scalar DateTime
 type Query {
   user(id: ID!): User!
   users: [User!]!
-  feed: [Tweet!]!
+  feed(cursor: DateTime, limit: Int!): [Tweet!]!
 }
 
 type User {
@@ -21,7 +21,6 @@ type Tweet {
 
 input UpdateProfileInput {
   displayName: String!
-  updatedAt: DateTime
 }
 
 type Mutation {

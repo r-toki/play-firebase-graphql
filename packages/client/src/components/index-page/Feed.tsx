@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Box, HStack, Stack } from "@chakra-ui/react";
+import { Box, Button, HStack, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { VFC } from "react";
 
@@ -7,8 +7,8 @@ import { useFeedForIndexPageQuery } from "../../graphql/generated";
 import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
-  query feedForIndexPage {
-    feed {
+  query FeedForIndexPage($cursor: DateTime, $limit: Int!) {
+    feed(cursor: $cursor, limit: $limit) {
       id
       content
       createdAt
@@ -21,14 +21,16 @@ gql`
 `;
 
 const useFeed = () => {
-  const { data } = useFeedForIndexPageQuery();
+  const { data, fetchMore } = useFeedForIndexPageQuery({
+    variables: { limit: 10 },
+  });
   const tweets = data?.feed ?? [];
 
-  return { tweets };
+  return { tweets, fetchMore };
 };
 
 export const Feed: VFC = () => {
-  const { tweets } = useFeed();
+  const { tweets, fetchMore } = useFeed();
 
   return (
     <Stack>
@@ -48,6 +50,13 @@ export const Feed: VFC = () => {
               </Box>
             </AppListItem>
           ))}
+          <Button
+            onClick={() => {
+              fetchMore({ variables: { cursor: tweets.slice(-1)[0]?.createdAt, limit: 10 } });
+            }}
+          >
+            Fetch More
+          </Button>
         </AppList>
       )}
     </Stack>

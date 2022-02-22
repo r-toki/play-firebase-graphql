@@ -35,6 +35,12 @@ export type Query = {
 };
 
 
+export type QueryFeedArgs = {
+  cursor?: InputMaybe<Scalars['DateTime']>;
+  limit: Scalars['Int'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID'];
 };
@@ -49,7 +55,6 @@ export type Tweet = {
 
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
-  updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type User = {
@@ -59,7 +64,10 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
-export type FeedForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+export type FeedForIndexPageQueryVariables = Exact<{
+  cursor?: InputMaybe<Scalars['DateTime']>;
+  limit: Scalars['Int'];
+}>;
 
 
 export type FeedForIndexPageQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
@@ -93,8 +101,8 @@ export const CurrentUserFragmentDoc = gql`
 }
     `;
 export const FeedForIndexPageDocument = gql`
-    query feedForIndexPage {
-  feed {
+    query FeedForIndexPage($cursor: DateTime, $limit: Int!) {
+  feed(cursor: $cursor, limit: $limit) {
     id
     content
     createdAt
@@ -118,10 +126,12 @@ export const FeedForIndexPageDocument = gql`
  * @example
  * const { data, loading, error } = useFeedForIndexPageQuery({
  *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useFeedForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
+export function useFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
       }

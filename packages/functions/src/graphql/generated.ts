@@ -35,6 +35,12 @@ export type Query = {
 };
 
 
+export type QueryFeedArgs = {
+  cursor?: InputMaybe<Scalars['DateTime']>;
+  limit: Scalars['Int'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID'];
 };
@@ -49,7 +55,6 @@ export type Tweet = {
 
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
-  updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
 
 export type User = {
@@ -132,6 +137,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -145,6 +151,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   DateTime: Scalars['DateTime'];
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   Mutation: {};
   Query: {};
   String: Scalars['String'];
@@ -162,7 +169,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  feed?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
+  feed?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryFeedArgs, 'limit'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;

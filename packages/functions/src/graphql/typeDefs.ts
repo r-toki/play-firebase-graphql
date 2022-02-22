@@ -8,7 +8,7 @@ type Mutation {
 }
 
 type Query {
-  feed: [Tweet!]!
+  feed(cursor: DateTime, limit: Int!): [Tweet!]!
   user(id: ID!): User!
   users: [User!]!
 }
@@ -22,7 +22,6 @@ type Tweet {
 
 input UpdateProfileInput {
   displayName: String!
-  updatedAt: DateTime
 }
 
 type User {

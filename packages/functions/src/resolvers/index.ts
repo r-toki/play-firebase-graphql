@@ -2,7 +2,7 @@ import { AuthenticationError } from "apollo-server-express";
 import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { UserTweetData } from "functions/src/lib/typed-ref/types";
-import { isUndefined, omitBy, orderBy } from "lodash";
+import { orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { execMultiQueriesWithCursor } from "../lib/query/util/exec-multi-queries-with-cursor";
@@ -19,38 +19,31 @@ export const resolvers: Resolvers<Context> = {
     feed: async (parent, args, { decodedIdToken, db }) => {
       if (!decodedIdToken) throw new AuthenticationError("unauthorized");
 
-      const followings = await getDocs(
-        followingRef(db).where("followeeId", "==", decodedIdToken.uid)
-      );
-      const queries = [decodedIdToken.uid, ...followings.map((v) => v.followerId)].map((id) =>
+      const { uid } = decodedIdToken;
+      const { cursor, limit } = args;
+
+      const followings = await getDocs(followingRef(db).where("followeeId", "==", uid));
+      const queries = [uid, ...followings.map((v) => v.followerId)].map((id) =>
         tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
       );
       const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
         orderBy(snaps, (snap) => snap.data().createdAt, "desc");
-      const res = await execMultiQueriesWithCursor(queries, order, {
-        startAfter: Timestamp.now(),
-        limit: 50,
+      const snaps = await execMultiQueriesWithCursor(queries, order, {
+        startAfter: cursor ? Timestamp.fromDate(new Date(cursor)) : Timestamp.now(),
+        limit,
       });
 
-      return res.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
+      return snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
     },
   },
   Mutation: {
     updateProfile: async (parent, args, { db }) => {
-      await usersRef(db)
-        .doc(args.id)
-        .set(
-          omitBy(
-            {
-              displayName: args.input.displayName,
-              updatedAt: args.input.updatedAt
-                ? Timestamp.fromDate(new Date(args.input.updatedAt))
-                : undefined,
-            },
-            isUndefined
-          ),
-          { merge: true }
-        );
+      await usersRef(db).doc(args.id).set(
+        {
+          displayName: args.input.displayName,
+        },
+        { merge: true }
+      );
       return getDoc(usersRef(db).doc(args.id));
     },
   },
