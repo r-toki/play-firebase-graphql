@@ -1,11 +1,5 @@
 scalar DateTime
 
-type Query {
-  user(id: ID!): User!
-  users: [User!]!
-  feed(cursor: DateTime, limit: Int!): [Tweet!]!
-}
-
 type User {
   id: String!
   displayName: String!
@@ -17,6 +11,26 @@ type Tweet {
   content: String!
   createdAt: DateTime!
   creator: User!
+}
+
+type PageInfo {
+  hasNext: Boolean!
+  endCursor: String
+}
+
+type TweetEdge {
+  node: Tweet!
+}
+
+type TweetConnection {
+  edges: [TweetEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Query {
+  user(id: ID!): User!
+  users: [User!]!
+  feed(first: Int!, after: String): TweetConnection!
 }
 
 input UpdateProfileInput {

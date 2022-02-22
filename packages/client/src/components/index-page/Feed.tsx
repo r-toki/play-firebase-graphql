@@ -1,36 +1,49 @@
 import { gql } from "@apollo/client";
-import { Box, Button, HStack, Stack } from "@chakra-ui/react";
+import { Box, Center, HStack, Spinner, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { VFC } from "react";
 
 import { useFeedForIndexPageQuery } from "../../graphql/generated";
 import { AppList, AppListItem } from "../shared/AppList";
+import { MoreSpinner } from "../shared/AppMoreSpinner";
 
 gql`
-  query FeedForIndexPage($cursor: DateTime, $limit: Int!) {
-    feed(cursor: $cursor, limit: $limit) {
-      id
-      content
-      createdAt
-      creator {
-        id
-        displayName
+  query FeedForIndexPage($first: Int!, $after: String) {
+    feed(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          content
+          createdAt
+          creator {
+            id
+            displayName
+          }
+        }
+      }
+      pageInfo {
+        hasNext
+        endCursor
       }
     }
   }
 `;
 
 const useFeed = () => {
-  const { data, fetchMore } = useFeedForIndexPageQuery({
-    variables: { limit: 10 },
+  const { data, loading, fetchMore } = useFeedForIndexPageQuery({
+    variables: { first: 20 },
+    notifyOnNetworkStatusChange: true,
   });
-  const tweets = data?.feed ?? [];
 
-  return { tweets, fetchMore };
+  const tweets = data?.feed.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.feed.pageInfo.hasNext;
+  const endCursor = data?.feed.pageInfo.endCursor;
+
+  return { tweets, hasNext, endCursor, loading, fetchMore };
 };
 
 export const Feed: VFC = () => {
-  const { tweets, fetchMore } = useFeed();
+  const { tweets, hasNext, endCursor, loading, fetchMore } = useFeed();
 
   return (
     <Stack>
@@ -50,13 +63,17 @@ export const Feed: VFC = () => {
               </Box>
             </AppListItem>
           ))}
-          <Button
-            onClick={() => {
-              fetchMore({ variables: { cursor: tweets.slice(-1)[0]?.createdAt, limit: 10 } });
-            }}
-          >
-            Fetch More
-          </Button>
+          <AppListItem>
+            {loading ? (
+              <Center>
+                <Spinner />
+              </Center>
+            ) : hasNext ? (
+              <MoreSpinner
+                cb={fetchMore.bind(null, { variables: { first: 10, after: endCursor } })}
+              />
+            ) : null}
+          </AppListItem>
         </AppList>
       )}
     </Stack>

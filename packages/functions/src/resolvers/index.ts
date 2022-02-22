@@ -2,7 +2,7 @@ import { AuthenticationError } from "apollo-server-express";
 import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import { UserTweetData } from "functions/src/lib/typed-ref/types";
-import { orderBy } from "lodash";
+import { last, orderBy } from "lodash";
 
 import { Resolvers } from "../graphql/generated";
 import { execMultiQueriesWithCursor } from "../lib/query/util/exec-multi-queries-with-cursor";
@@ -20,7 +20,7 @@ export const resolvers: Resolvers<Context> = {
       if (!decodedIdToken) throw new AuthenticationError("unauthorized");
 
       const { uid } = decodedIdToken;
-      const { cursor, limit } = args;
+      const { first, after } = args;
 
       const followings = await getDocs(followingRef(db).where("followeeId", "==", uid));
       const queries = [uid, ...followings.map((v) => v.followerId)].map((id) =>
@@ -29,11 +29,19 @@ export const resolvers: Resolvers<Context> = {
       const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
         orderBy(snaps, (snap) => snap.data().createdAt, "desc");
       const snaps = await execMultiQueriesWithCursor(queries, order, {
-        startAfter: cursor ? Timestamp.fromDate(new Date(cursor)) : Timestamp.now(),
-        limit,
+        startAfter: after ? Timestamp.fromDate(new Date(after)) : Timestamp.now(),
+        limit: first,
       });
 
-      return snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
+      const tweetDocs = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
+      const tweetEdges = tweetDocs.map((doc) => ({
+        node: doc,
+        cursor: doc.createdAt.toDate().toISOString(),
+      }));
+
+      const pageInfo = { hasNext: tweetDocs.length > 0, endCursor: last(tweetEdges)?.cursor };
+
+      return { edges: tweetEdges, pageInfo };
     },
   },
   Mutation: {

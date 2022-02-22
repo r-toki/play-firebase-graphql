@@ -27,17 +27,23 @@ export type MutationUpdateProfileArgs = {
   input: UpdateProfileInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNext: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  feed: Array<Tweet>;
+  feed: TweetConnection;
   user: User;
   users: Array<User>;
 };
 
 
 export type QueryFeedArgs = {
-  cursor?: InputMaybe<Scalars['DateTime']>;
-  limit: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 
@@ -53,6 +59,17 @@ export type Tweet = {
   id: Scalars['String'];
 };
 
+export type TweetConnection = {
+  __typename?: 'TweetConnection';
+  edges: Array<TweetEdge>;
+  pageInfo: PageInfo;
+};
+
+export type TweetEdge = {
+  __typename?: 'TweetEdge';
+  node: Tweet;
+};
+
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
 };
@@ -65,12 +82,12 @@ export type User = {
 };
 
 export type FeedForIndexPageQueryVariables = Exact<{
-  cursor?: InputMaybe<Scalars['DateTime']>;
-  limit: Scalars['Int'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> };
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -101,14 +118,22 @@ export const CurrentUserFragmentDoc = gql`
 }
     `;
 export const FeedForIndexPageDocument = gql`
-    query FeedForIndexPage($cursor: DateTime, $limit: Int!) {
-  feed(cursor: $cursor, limit: $limit) {
-    id
-    content
-    createdAt
-    creator {
-      id
-      displayName
+    query FeedForIndexPage($first: Int!, $after: String) {
+  feed(first: $first, after: $after) {
+    edges {
+      node {
+        id
+        content
+        createdAt
+        creator {
+          id
+          displayName
+        }
+      }
+    }
+    pageInfo {
+      hasNext
+      endCursor
     }
   }
 }
@@ -126,8 +151,8 @@ export const FeedForIndexPageDocument = gql`
  * @example
  * const { data, loading, error } = useFeedForIndexPageQuery({
  *   variables: {
- *      cursor: // value for 'cursor'
- *      limit: // value for 'limit'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */

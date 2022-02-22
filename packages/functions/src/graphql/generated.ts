@@ -5,6 +5,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -27,17 +28,23 @@ export type MutationUpdateProfileArgs = {
   input: UpdateProfileInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNext: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  feed: Array<Tweet>;
+  feed: TweetConnection;
   user: User;
   users: Array<User>;
 };
 
 
 export type QueryFeedArgs = {
-  cursor?: InputMaybe<Scalars['DateTime']>;
-  limit: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 
@@ -51,6 +58,17 @@ export type Tweet = {
   createdAt: Scalars['DateTime'];
   creator: User;
   id: Scalars['String'];
+};
+
+export type TweetConnection = {
+  __typename?: 'TweetConnection';
+  edges: Array<TweetEdge>;
+  pageInfo: PageInfo;
+};
+
+export type TweetEdge = {
+  __typename?: 'TweetEdge';
+  node: Tweet;
 };
 
 export type UpdateProfileInput = {
@@ -139,9 +157,12 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Tweet: ResolverTypeWrapper<UserTweetDoc>;
+  TweetConnection: ResolverTypeWrapper<Omit<TweetConnection, 'edges'> & { edges: Array<ResolversTypes['TweetEdge']> }>;
+  TweetEdge: ResolverTypeWrapper<Omit<TweetEdge, 'node'> & { node: ResolversTypes['Tweet'] }>;
   UpdateProfileInput: UpdateProfileInput;
   User: ResolverTypeWrapper<UserDoc>;
 }>;
@@ -153,9 +174,12 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
+  PageInfo: PageInfo;
   Query: {};
   String: Scalars['String'];
   Tweet: UserTweetDoc;
+  TweetConnection: Omit<TweetConnection, 'edges'> & { edges: Array<ResolversParentTypes['TweetEdge']> };
+  TweetEdge: Omit<TweetEdge, 'node'> & { node: ResolversParentTypes['Tweet'] };
   UpdateProfileInput: UpdateProfileInput;
   User: UserDoc;
 }>;
@@ -168,8 +192,14 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'id' | 'input'>>;
 }>;
 
+export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hasNext?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  feed?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType, RequireFields<QueryFeedArgs, 'limit'>>;
+  feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFeedArgs, 'first'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;
@@ -179,6 +209,17 @@ export type TweetResolvers<ContextType = any, ParentType extends ResolversParent
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type TweetConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TweetConnection'] = ResolversParentTypes['TweetConnection']> = ResolversObject<{
+  edges?: Resolver<Array<ResolversTypes['TweetEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type TweetEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TweetEdge'] = ResolversParentTypes['TweetEdge']> = ResolversObject<{
+  node?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -192,8 +233,11 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = ResolversObject<{
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Tweet?: TweetResolvers<ContextType>;
+  TweetConnection?: TweetConnectionResolvers<ContextType>;
+  TweetEdge?: TweetEdgeResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

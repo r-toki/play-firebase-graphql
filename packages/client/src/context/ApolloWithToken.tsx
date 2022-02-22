@@ -24,7 +24,33 @@ const useApolloClientWithTokenContainer = () => {
   );
 
   const client = useMemo(
-    () => new ApolloClient({ link: authLink.concat(httpLink), cache: new InMemoryCache() }),
+    () =>
+      new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache({
+          typePolicies: {
+            Query: {
+              fields: {
+                feed: {
+                  keyArgs: false,
+                  merge(existing, incoming) {
+                    if (existing) {
+                      return {
+                        ...incoming,
+                        edges: [...existing.edges, ...incoming.edges],
+                      };
+                    } else {
+                      return {
+                        ...incoming,
+                      };
+                    }
+                  },
+                },
+              },
+            },
+          },
+        }),
+      }),
     [authLink]
   );
 

@@ -7,8 +7,13 @@ type Mutation {
   updateProfile(id: ID!, input: UpdateProfileInput!): User!
 }
 
+type PageInfo {
+  endCursor: String
+  hasNext: Boolean!
+}
+
 type Query {
-  feed(cursor: DateTime, limit: Int!): [Tweet!]!
+  feed(after: String, first: Int!): TweetConnection!
   user(id: ID!): User!
   users: [User!]!
 }
@@ -18,6 +23,15 @@ type Tweet {
   createdAt: DateTime!
   creator: User!
   id: String!
+}
+
+type TweetConnection {
+  edges: [TweetEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TweetEdge {
+  node: Tweet!
 }
 
 input UpdateProfileInput {
