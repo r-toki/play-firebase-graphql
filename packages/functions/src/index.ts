@@ -12,12 +12,13 @@ const functionsAtTokyo = functions.region(TOKYO);
 exports.api = functionsAtTokyo.https.onRequest(apiApp);
 
 exports.onAuthCreate = functionsAtTokyo.auth.user().onCreate(async (user) => {
+  const createdAt = Timestamp.fromDate(new Date(user.metadata.creationTime));
   await usersRef(db)
     .doc(user.uid)
     .set({
       displayName: user.email?.split("@")[0] || "",
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+      createdAt,
+      updatedAt: createdAt,
     });
 });
 
