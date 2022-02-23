@@ -38,5 +38,13 @@ input UpdateProfileInput {
 }
 
 type Mutation {
-  updateProfile(id: ID!, input: UpdateProfileInput!): User!
+  updateProfile(input: UpdateProfileInput!): User!
+}
+
+input CreateTweetInput {
+  content: String!
+}
+
+type Mutation {
+  createTweet(input: CreateTweetInput!): Tweet!
 }

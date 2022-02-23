@@ -9,8 +9,8 @@ import { useTextInput } from "../../../hooks/useTextInput";
 import { routes } from "../../../routes";
 
 gql`
-  mutation updateProfile($id: ID!, $input: UpdateProfileInput!) {
-    updateProfile(id: $id, input: $input) {
+  mutation updateProfile($input: UpdateProfileInput!) {
+    updateProfile(input: $input) {
       id
       displayName
     }
@@ -29,7 +29,6 @@ const UserEditForm: VFC = () => {
     try {
       await updateProfile({
         variables: {
-          id: currentUser.id,
           input: { displayName: displayNameInput.value },
         },
       });

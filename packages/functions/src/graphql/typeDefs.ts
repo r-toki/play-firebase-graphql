@@ -1,10 +1,15 @@
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
+input CreateTweetInput {
+  content: String!
+}
+
 scalar DateTime
 
 type Mutation {
-  updateProfile(id: ID!, input: UpdateProfileInput!): User!
+  createTweet(input: CreateTweetInput!): Tweet!
+  updateProfile(input: UpdateProfileInput!): User!
 }
 
 type PageInfo {

@@ -16,14 +16,23 @@ export type Scalars = {
   DateTime: string;
 };
 
+export type CreateTweetInput = {
+  content: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createTweet: Tweet;
   updateProfile: User;
 };
 
 
+export type MutationCreateTweetArgs = {
+  input: CreateTweetInput;
+};
+
+
 export type MutationUpdateProfileArgs = {
-  id: Scalars['ID'];
   input: UpdateProfileInput;
 };
 
@@ -104,7 +113,6 @@ export type CurrentUserQueryVariables = Exact<{
 export type CurrentUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
 
 export type UpdateProfileMutationVariables = Exact<{
-  id: Scalars['ID'];
   input: UpdateProfileInput;
 }>;
 
@@ -238,8 +246,8 @@ export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
 export const UpdateProfileDocument = gql`
-    mutation updateProfile($id: ID!, $input: UpdateProfileInput!) {
-  updateProfile(id: $id, input: $input) {
+    mutation updateProfile($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
     id
     displayName
   }
@@ -260,7 +268,6 @@ export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutat
  * @example
  * const [updateProfileMutation, { data, loading, error }] = useUpdateProfileMutation({
  *   variables: {
- *      id: // value for 'id'
  *      input: // value for 'input'
  *   },
  * });
