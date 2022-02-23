@@ -18,7 +18,7 @@ export const Mutation: Resolvers["Mutation"] = {
       { merge: true }
     );
 
-    return getDoc(usersRef(db).doc(args.id));
+    return getDoc(usersRef(db).doc(uid));
   },
   createTweet: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
