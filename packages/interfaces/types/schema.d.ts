@@ -13,8 +13,8 @@ export type _UserTweetData<Timestamp> = {
   creatorId: UserId;
 };
 
-type FollowingId = string;
-export type _FollowingData<Timestamp> = {
+type FollowRelationshipId = string;
+export type _FollowRelationshipData<Timestamp> = {
   followerId: UserId;
   followedId: UserId;
   createdAt: Timestamp;

@@ -1,6 +1,6 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
-import type { FollowingsPath, UsersPath, UserTweetsPath } from "interfaces/path";
-import type { FollowingData, UserData, UserTweetData } from "interfaces/web-schema";
+import type { FollowRelationshipsPath, UsersPath, UserTweetsPath } from "interfaces/path";
+import type { FollowRelationshipData, UserData, UserTweetData } from "interfaces/web-schema";
 
 import { createConverter, createTypedCollectionRef } from "./helper";
 
@@ -15,6 +15,6 @@ export const userTweetsRef = createTypedCollectionRef(
 );
 
 export const followingRef = createTypedCollectionRef(
-  pathBuilder<FollowingsPath>("followings"),
-  createConverter<FollowingData>()
+  pathBuilder<FollowRelationshipsPath>("followRelationships"),
+  createConverter<FollowRelationshipData>()
 );

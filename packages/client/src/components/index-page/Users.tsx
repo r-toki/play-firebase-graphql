@@ -9,7 +9,6 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { FollowingData } from "interfaces/web-schema";
 import { useEffect, useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
