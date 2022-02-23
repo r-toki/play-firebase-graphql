@@ -19,3 +19,11 @@ export type _FollowRelationshipData<Timestamp> = {
   followedId: UserId;
   createdAt: Timestamp;
 };
+
+type TweetEventId = string;
+export type _TweetEventData<Timestamp> = {
+  type: "create" | "update" | "delete";
+  userId: UserId;
+  tweetId: UserTweetId;
+  createdAt: Timestamp;
+};
