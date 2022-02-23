@@ -73,12 +73,12 @@ const useSubscribeFeed = () => {
 
   useEffect(() => {
     if (!newOneOfFeed) return;
-    client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
-      if (!data) return data;
-      return {
-        feed: { ...data.feed, edges: [newOneOfFeed] },
-      };
-    });
+    // client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
+    //   if (!data) return data;
+    //   return {
+    //     feed: { ...data.feed, edges: [newOneOfFeed] },
+    //   };
+    // });
   }, [newOneOfFeed]);
 
   const now = useMemo(() => Timestamp.now(), []);
@@ -90,29 +90,14 @@ const useSubscribeFeed = () => {
 
       if (change.doc.data().type === "create") {
         console.log("--- tweet has been created ---");
-        await getOneOfFeed({
-          variables: { id: change.doc.data().tweetId },
-        });
       }
 
       if (change.doc.data().type === "update") {
         console.log("--- tweet has been updated ---");
-        await getOneOfFeed({
-          variables: { id: change.doc.data().tweetId },
-        });
       }
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
-        // client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
-        //   if (!data) return data;
-        //   return {
-        //     feed: {
-        //       ...data.feed,
-        //       edges: [...data.feed.edges].filter((v) => v.node.id !== change.doc.data().tweetId),
-        //     },
-        //   };
-        // });
       }
     });
   }, [tweetEvents]);
