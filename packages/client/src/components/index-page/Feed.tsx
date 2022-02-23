@@ -63,6 +63,10 @@ const useFeed = () => {
   const hasNext = data?.feed.pageInfo.hasNext;
   const endCursor = data?.feed.pageInfo.endCursor;
 
+  return { tweets, hasNext, endCursor, loading, fetchMore };
+};
+
+const useSubscribeFeed = () => {
   const client = useApolloClient();
   const [getOneOfFeed, { data: oneOfFeedData }] = useOneOfFeedForIndexPageLazyQuery();
   const oneOfFeed = oneOfFeedData?.oneOfFeed;
@@ -72,7 +76,7 @@ const useFeed = () => {
     client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
       if (!data) return data;
       return {
-        feed: { ...data.feed, edges: [...data.feed.edges, oneOfFeed] },
+        feed: { ...data.feed, edges: [oneOfFeed] },
       };
     });
   }, [oneOfFeed]);
@@ -112,15 +116,12 @@ const useFeed = () => {
       }
     });
   }, [tweetEvents]);
-
-  return { tweets, hasNext, endCursor, loading, fetchMore };
 };
 
 export const Feed: VFC = () => {
   const { tweets, hasNext, endCursor, loading, fetchMore } = useFeed();
-  useEffect(() => {
-    console.log(tweets);
-  }, [tweets]);
+  useSubscribeFeed();
+
   return (
     <Stack>
       <Box alignSelf="center" fontWeight="bold">
