@@ -86,6 +86,8 @@ export type UpdateProfileInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
+  followers: Array<User>;
+  followings: Array<User>;
   id: Scalars['String'];
   tweets: Array<Tweet>;
 };

@@ -88,6 +88,8 @@ export type UpdateProfileInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
+  followers: Array<User>;
+  followings: Array<User>;
   id: Scalars['String'];
   tweets: Array<Tweet>;
 };
@@ -238,6 +240,8 @@ export type TweetEdgeResolvers<ContextType = Context, ParentType extends Resolve
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  followers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  followings?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tweets?: Resolver<Array<ResolversTypes['Tweet']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

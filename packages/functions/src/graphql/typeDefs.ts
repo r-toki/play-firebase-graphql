@@ -45,6 +45,8 @@ input UpdateProfileInput {
 
 type User {
   displayName: String!
+  followers: [User!]!
+  followings: [User!]!
   id: String!
   tweets: [Tweet!]!
 }

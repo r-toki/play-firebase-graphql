@@ -4,6 +4,8 @@ type User {
   id: String!
   displayName: String!
   tweets: [Tweet!]!
+  followings: [User!]!
+  followers: [User!]!
 }
 
 type Tweet {

@@ -18,7 +18,7 @@ export const userTweetsRef = createTypedCollectionRef(
 export const tweetsRef = (db: Firestore) =>
   db.collectionGroup("tweets").withConverter(createConverter<UserTweetData>());
 
-export const followingRef = createTypedCollectionRef(
+export const followingsRef = createTypedCollectionRef(
   pathBuilder<FollowingsPath>("followings"),
   createConverter<FollowingData>()
 );
