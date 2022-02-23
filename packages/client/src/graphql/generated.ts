@@ -131,6 +131,20 @@ export type MeForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
+export type FollowForIndexPageMutationVariables = Exact<{
+  input: FollowInput;
+}>;
+
+
+export type FollowForIndexPageMutation = { __typename?: 'Mutation', follow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+
+export type UnFollowForIndexPageMutationVariables = Exact<{
+  input: UnFollowInput;
+}>;
+
+
+export type UnFollowForIndexPageMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+
 export type CurrentUserFragment = { __typename?: 'User', id: string, displayName: string };
 
 export type CurrentUserQueryVariables = Exact<{
@@ -276,6 +290,80 @@ export function useMeForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type MeForIndexPageQueryHookResult = ReturnType<typeof useMeForIndexPageQuery>;
 export type MeForIndexPageLazyQueryHookResult = ReturnType<typeof useMeForIndexPageLazyQuery>;
 export type MeForIndexPageQueryResult = Apollo.QueryResult<MeForIndexPageQuery, MeForIndexPageQueryVariables>;
+export const FollowForIndexPageDocument = gql`
+    mutation followForIndexPage($input: FollowInput!) {
+  follow(input: $input) {
+    id
+    followings {
+      id
+      displayName
+    }
+  }
+}
+    `;
+export type FollowForIndexPageMutationFn = Apollo.MutationFunction<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>;
+
+/**
+ * __useFollowForIndexPageMutation__
+ *
+ * To run a mutation, you first call `useFollowForIndexPageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowForIndexPageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followForIndexPageMutation, { data, loading, error }] = useFollowForIndexPageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useFollowForIndexPageMutation(baseOptions?: Apollo.MutationHookOptions<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>(FollowForIndexPageDocument, options);
+      }
+export type FollowForIndexPageMutationHookResult = ReturnType<typeof useFollowForIndexPageMutation>;
+export type FollowForIndexPageMutationResult = Apollo.MutationResult<FollowForIndexPageMutation>;
+export type FollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>;
+export const UnFollowForIndexPageDocument = gql`
+    mutation unFollowForIndexPage($input: UnFollowInput!) {
+  unFollow(input: $input) {
+    id
+    followings {
+      id
+      displayName
+    }
+  }
+}
+    `;
+export type UnFollowForIndexPageMutationFn = Apollo.MutationFunction<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
+
+/**
+ * __useUnFollowForIndexPageMutation__
+ *
+ * To run a mutation, you first call `useUnFollowForIndexPageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnFollowForIndexPageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unFollowForIndexPageMutation, { data, loading, error }] = useUnFollowForIndexPageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUnFollowForIndexPageMutation(baseOptions?: Apollo.MutationHookOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>(UnFollowForIndexPageDocument, options);
+      }
+export type UnFollowForIndexPageMutationHookResult = ReturnType<typeof useUnFollowForIndexPageMutation>;
+export type UnFollowForIndexPageMutationResult = Apollo.MutationResult<UnFollowForIndexPageMutation>;
+export type UnFollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
 export const CurrentUserDocument = gql`
     query currentUser($id: ID!) {
   user(id: $id) {
