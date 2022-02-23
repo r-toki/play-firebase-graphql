@@ -84,18 +84,20 @@ export const useSubscribeFeed = () => {
       if (change.doc.data().type === "create" || change.doc.data().type === "update") {
         console.log("--- tweet has been created/updated ---");
 
-        const newOne = await getOneOfFeed({ variables: { id: change.doc.data().tweetId } });
+        const newOneOfFeed = await getOneOfFeed({ variables: { id: change.doc.data().tweetId } });
 
         client.cache.updateQuery(
           { query: FeedForIndexPageDocument, overwrite: true },
           (data: Data): Data => {
             if (!data) return data;
-            if (!newOne.data) return data;
+            if (!newOneOfFeed.data) return data;
+
             const edges = orderBy(
-              uniqBy([...data.feed.edges, newOne.data.oneOfFeed], (v) => v.node.id),
+              uniqBy([...data.feed.edges, newOneOfFeed.data.oneOfFeed], (v) => v.node.id),
               (v) => v.cursor,
               "desc"
             );
+
             return {
               feed: { ...data.feed, edges },
             };
@@ -110,7 +112,9 @@ export const useSubscribeFeed = () => {
           { query: FeedForIndexPageDocument, overwrite: true },
           (data: Data): Data => {
             if (!data) return data;
+
             const edges = data.feed.edges.filter((v) => v.node.id !== change.doc.data().tweetId);
+
             return {
               feed: { ...data.feed, edges },
             };
