@@ -1,7 +1,8 @@
 import { Timestamp } from "firebase-admin/firestore";
-
 import { userTweetsRef } from "functions/src/lib/typed-ref";
 import { UserTweetData } from "functions/src/lib/typed-ref/types";
+import { v4 } from "uuid";
+
 import { auth, db } from "./firebase-app";
 
 export class StringFactory {
@@ -36,11 +37,15 @@ export class AuthUserFactory {
 export class UserTweetFactory {
   static n = 0;
   static of(init: Pick<UserTweetData, "creatorId"> & Partial<UserTweetData>) {
-    return userTweetsRef(db, { userId: init.creatorId }).add({
-      content: StringFactory.of(),
-      createdAt: Timestamp.fromDate(DateFactory.of()),
-      updatedAt: Timestamp.fromDate(DateFactory.of()),
-      ...init,
-    });
+    const tweetId = v4();
+    return userTweetsRef(db, { userId: init.creatorId })
+      .doc(tweetId)
+      .set({
+        content: StringFactory.of(),
+        createdAt: Timestamp.fromDate(DateFactory.of()),
+        updatedAt: Timestamp.fromDate(DateFactory.of()),
+        tweetId,
+        ...init,
+      });
   }
 }

@@ -10,6 +10,7 @@ export type _UserTweetData<Timestamp> = {
   content: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  tweetId: UserTweetId;
   creatorId: UserId;
 };
 

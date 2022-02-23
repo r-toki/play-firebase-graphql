@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { first } from "lodash";
+import { v4 } from "uuid";
 
 import { Resolvers } from "../../graphql/generated";
 import { getDoc, getDocs } from "../../lib/query/util/get";
@@ -27,14 +28,16 @@ export const Mutation: Resolvers["Mutation"] = {
 
     const { uid } = decodedIdToken;
 
-    const ref = await userTweetsRef(db, { userId: uid }).add({
+    const tweetId = v4();
+    await userTweetsRef(db, { userId: uid }).doc(tweetId).set({
       content: args.input.content,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
+      tweetId,
       creatorId: uid,
     });
 
-    return getDoc(userTweetsRef(db, { userId: uid }).doc(ref.id));
+    return getDoc(userTweetsRef(db, { userId: uid }).doc(tweetId));
   },
   follow: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");

@@ -1,5 +1,5 @@
 import { QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
-import { last, orderBy } from "lodash";
+import { first, last, orderBy } from "lodash";
 
 import { Resolvers } from "../../graphql/generated";
 import { execMultiQueriesWithCursor } from "../../lib/query/util/exec-multi-queries-with-cursor";
@@ -14,6 +14,12 @@ export const Query: Resolvers["Query"] = {
   },
   user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
   users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
+  tweet: async (parent, args, { db }) => {
+    const docs = await getDocs(tweetsRef(db).where("tweetId", "==", args.id));
+    const doc = first(docs);
+    if (!doc) throw new Error("");
+    return doc;
+  },
   feed: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
 

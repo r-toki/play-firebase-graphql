@@ -26,6 +26,7 @@ type PageInfo {
 type Query {
   feed(after: String, first: Int!): TweetConnection!
   me: User!
+  tweet(id: ID!): Tweet!
   user(id: ID!): User!
   users: [User!]!
 }

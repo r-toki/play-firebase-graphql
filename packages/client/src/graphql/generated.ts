@@ -62,6 +62,7 @@ export type Query = {
   __typename?: 'Query';
   feed: TweetConnection;
   me: User;
+  tweet: Tweet;
   user: User;
   users: Array<User>;
 };
@@ -70,6 +71,11 @@ export type Query = {
 export type QueryFeedArgs = {
   after?: InputMaybe<Scalars['String']>;
   first: Scalars['Int'];
+};
+
+
+export type QueryTweetArgs = {
+  id: Scalars['ID'];
 };
 
 

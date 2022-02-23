@@ -34,6 +34,7 @@ type Query {
   user(id: ID!): User!
   users: [User!]!
   feed(first: Int!, after: String): TweetConnection!
+  tweet(id: ID!): Tweet!
 }
 
 input UpdateProfileInput {
