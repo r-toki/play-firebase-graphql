@@ -2,12 +2,14 @@ import { gql, useApolloClient } from "@apollo/client";
 import { Box, Center, HStack, Spinner, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { query, Timestamp, where } from "firebase/firestore";
+import { last, orderBy, uniqBy } from "lodash-es";
 import { useEffect, useMemo, VFC } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../../firebase-app";
 import {
   FeedForIndexPageDocument,
+  FeedForIndexPageQuery,
   useFeedForIndexPageQuery,
   useOneOfFeedForIndexPageLazyQuery,
 } from "../../graphql/generated";
@@ -63,23 +65,16 @@ const useFeed = () => {
   const hasNext = data?.feed.pageInfo.hasNext;
   const endCursor = data?.feed.pageInfo.endCursor;
 
-  return { tweets, hasNext, endCursor, loading, fetchMore };
+  const loadMore = () => {
+    fetchMore({ variables: { first: 10, after: endCursor } });
+  };
+
+  return { tweets, hasNext, loading, loadMore };
 };
 
 const useSubscribeFeed = () => {
   const client = useApolloClient();
-  const [getOneOfFeed, { data: oneOfFeedData }] = useOneOfFeedForIndexPageLazyQuery();
-  const newOneOfFeed = oneOfFeedData?.oneOfFeed;
-
-  useEffect(() => {
-    if (!newOneOfFeed) return;
-    // client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
-    //   if (!data) return data;
-    //   return {
-    //     feed: { ...data.feed, edges: [newOneOfFeed] },
-    //   };
-    // });
-  }, [newOneOfFeed]);
+  const [getOneOfFeed] = useOneOfFeedForIndexPageLazyQuery();
 
   const now = useMemo(() => Timestamp.now(), []);
   const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
@@ -88,23 +83,51 @@ const useSubscribeFeed = () => {
     tweetEvents?.docChanges().forEach(async (change) => {
       if (change.type !== "added") return;
 
-      if (change.doc.data().type === "create") {
-        console.log("--- tweet has been created ---");
-      }
+      type Data = FeedForIndexPageQuery | null;
 
-      if (change.doc.data().type === "update") {
-        console.log("--- tweet has been updated ---");
+      if (change.doc.data().type === "create" || change.doc.data().type === "update") {
+        console.log("--- tweet has been created/updated ---");
+
+        const newOne = await getOneOfFeed({ variables: { id: change.doc.data().tweetId } });
+
+        client.cache.updateQuery(
+          { query: FeedForIndexPageDocument, overwrite: true },
+          (data: Data): Data => {
+            if (!data) return data;
+            if (!newOne.data) return data;
+            const edges = orderBy(
+              uniqBy([...data.feed.edges, newOne.data.oneOfFeed], (v) => v.node.id),
+              (v) => v.cursor,
+              "desc"
+            );
+            return {
+              feed: { ...data.feed, edges },
+            };
+          }
+        );
       }
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
+
+        client.cache.updateQuery(
+          { query: FeedForIndexPageDocument, overwrite: true },
+          (data: Data): Data => {
+            if (!data) return data;
+            const edges = data.feed.edges.filter((v) => v.node.id !== change.doc.data().tweetId);
+            const endCursor = last(edges)?.cursor;
+            return {
+              feed: { ...data.feed, edges, pageInfo: { ...data.feed.pageInfo, endCursor } },
+            };
+          }
+        );
       }
     });
   }, [tweetEvents]);
 };
 
 export const Feed: VFC = () => {
-  const { tweets, hasNext, endCursor, loading, fetchMore } = useFeed();
+  const { tweets, hasNext, loading, loadMore } = useFeed();
   useSubscribeFeed();
 
   return (
@@ -134,9 +157,7 @@ export const Feed: VFC = () => {
           ) : hasNext ? (
             <AppListItem>
               <Center>
-                <MoreSpinner
-                  cb={fetchMore.bind(null, { variables: { first: 10, after: endCursor } })}
-                />
+                <MoreSpinner cb={loadMore} />
               </Center>
             </AppListItem>
           ) : null}

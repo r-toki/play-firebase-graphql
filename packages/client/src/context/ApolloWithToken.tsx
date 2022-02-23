@@ -35,25 +35,11 @@ const useApolloClientWithTokenContainer = () => {
                 feed: {
                   keyArgs: false,
                   merge(existing, incoming) {
-                    // console.log("--- existing ---");
-                    // console.log(existing);
-                    // console.log("--- incoming ---");
-                    // console.log(incoming);
-                    // console.log("");
                     if (!existing) return incoming;
-                    const edges = orderBy(
-                      uniqBy([...existing.edges, ...incoming.edges], (v) => v.node.__ref),
-                      (v) => v.cursor,
-                      "desc"
-                    );
-                    const endCursor = last(edges).cursor;
+                    const edges = [...existing.edges, ...incoming.edges];
                     return {
                       ...incoming,
                       edges,
-                      pageInfo: {
-                        ...incoming.pageInfo,
-                        endCursor,
-                      },
                     };
                   },
                 },
