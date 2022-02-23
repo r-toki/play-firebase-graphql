@@ -69,17 +69,17 @@ const useFeed = () => {
 const useSubscribeFeed = () => {
   const client = useApolloClient();
   const [getOneOfFeed, { data: oneOfFeedData }] = useOneOfFeedForIndexPageLazyQuery();
-  const oneOfFeed = oneOfFeedData?.oneOfFeed;
+  const newOneOfFeed = oneOfFeedData?.oneOfFeed;
 
   useEffect(() => {
-    if (!oneOfFeed) return;
+    if (!newOneOfFeed) return;
     client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
       if (!data) return data;
       return {
-        feed: { ...data.feed, edges: [oneOfFeed] },
+        feed: { ...data.feed, edges: [newOneOfFeed] },
       };
     });
-  }, [oneOfFeed]);
+  }, [newOneOfFeed]);
 
   const now = useMemo(() => Timestamp.now(), []);
   const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
@@ -104,15 +104,15 @@ const useSubscribeFeed = () => {
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
-        client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
-          if (!data) return data;
-          return {
-            feed: {
-              ...data.feed,
-              edges: [...data.feed.edges].filter((v) => v.node.id !== change.doc.data().tweetId),
-            },
-          };
-        });
+        // client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
+        //   if (!data) return data;
+        //   return {
+        //     feed: {
+        //       ...data.feed,
+        //       edges: [...data.feed.edges].filter((v) => v.node.id !== change.doc.data().tweetId),
+        //     },
+        //   };
+        // });
       }
     });
   }, [tweetEvents]);
