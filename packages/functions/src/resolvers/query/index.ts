@@ -20,8 +20,8 @@ export const Query: Resolvers["Query"] = {
     const { uid } = decodedIdToken;
     const { first, after } = args;
 
-    const followings = await getDocs(followRelationshipsRef(db).where("followerId", "==", uid));
-    const queries = [uid, ...followings.map((v) => v.followedId)].map((id) =>
+    const relationships = await getDocs(followRelationshipsRef(db).where("followerId", "==", uid));
+    const queries = [uid, ...relationships.map((v) => v.followedId)].map((id) =>
       tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
     );
     const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
@@ -31,13 +31,13 @@ export const Query: Resolvers["Query"] = {
       limit: first,
     });
 
-    const tweetDocs = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
-    const tweetEdges = tweetDocs.map((doc) => ({
+    const tweets = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
+    const tweetEdges = tweets.map((doc) => ({
       node: doc,
       cursor: doc.createdAt.toDate().toISOString(),
     }));
 
-    const pageInfo = { hasNext: tweetDocs.length > 0, endCursor: last(tweetEdges)?.cursor };
+    const pageInfo = { hasNext: tweets.length > 0, endCursor: last(tweetEdges)?.cursor };
 
     return { edges: tweetEdges, pageInfo };
   },
