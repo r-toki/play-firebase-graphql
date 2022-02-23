@@ -14,22 +14,28 @@ import { useEffect, useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
 import { db } from "../../firebase-app";
-import { useUsersForIndexPageQuery } from "../../graphql/generated";
+import { useMeForIndexPageQuery, useUsersForIndexPageQuery } from "../../graphql/generated";
 import { followingRef } from "../../lib/typed-ref";
 import { AppList, AppListItem } from "../shared/AppList";
 
-// gql`
-//   query usersForIndexPage {
-//     users {
-//       id
-//       displayName
-//     }
-//   }
+gql`
+  query usersForIndexPage {
+    users {
+      id
+      displayName
+    }
+  }
 
-//   query me {
-
-//   }
-// `;
+  query meForIndexPage {
+    me {
+      id
+      followings {
+        id
+        displayName
+      }
+    }
+  }
+`;
 
 // const useUsers = () => {
 //   const { currentUser } = useAuthed();
@@ -98,5 +104,11 @@ import { AppList, AppListItem } from "../shared/AppList";
 // };
 
 export const Users: VFC = () => {
+  const { data: usersData } = useUsersForIndexPageQuery();
+  const { data: meData } = useMeForIndexPageQuery();
+  const users = usersData?.users ?? [];
+  const followings = meData?.me.followings ?? [];
+  console.log(users);
+  console.log(followings);
   return <Box>Mock</Box>;
 };

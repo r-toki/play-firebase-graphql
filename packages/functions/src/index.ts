@@ -12,7 +12,8 @@ const functionsAtTokyo = functions.region(TOKYO);
 exports.api = functionsAtTokyo.https.onRequest(apiApp);
 
 exports.onAuthCreate = functionsAtTokyo.auth.user().onCreate(async (user) => {
-  const createdAt = Timestamp.fromDate(new Date(user.metadata.creationTime));
+  console.log(user.metadata.creationTime);
+  const createdAt = Timestamp.fromMillis(Number(user.metadata.creationTime));
   await usersRef(db)
     .doc(user.uid)
     .set({

@@ -45,6 +45,7 @@ export type PageInfo = {
 export type Query = {
   __typename?: 'Query';
   feed: TweetConnection;
+  me: User;
   user: User;
   users: Array<User>;
 };
@@ -104,6 +105,11 @@ export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UsersForIndexPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string }> };
+
+export type MeForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
 export type CurrentUserFragment = { __typename?: 'User', id: string, displayName: string };
 
@@ -212,6 +218,44 @@ export function useUsersForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type UsersForIndexPageQueryHookResult = ReturnType<typeof useUsersForIndexPageQuery>;
 export type UsersForIndexPageLazyQueryHookResult = ReturnType<typeof useUsersForIndexPageLazyQuery>;
 export type UsersForIndexPageQueryResult = Apollo.QueryResult<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>;
+export const MeForIndexPageDocument = gql`
+    query meForIndexPage {
+  me {
+    id
+    followings {
+      id
+      displayName
+    }
+  }
+}
+    `;
+
+/**
+ * __useMeForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useMeForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeForIndexPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<MeForIndexPageQuery, MeForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeForIndexPageQuery, MeForIndexPageQueryVariables>(MeForIndexPageDocument, options);
+      }
+export function useMeForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeForIndexPageQuery, MeForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeForIndexPageQuery, MeForIndexPageQueryVariables>(MeForIndexPageDocument, options);
+        }
+export type MeForIndexPageQueryHookResult = ReturnType<typeof useMeForIndexPageQuery>;
+export type MeForIndexPageLazyQueryHookResult = ReturnType<typeof useMeForIndexPageLazyQuery>;
+export type MeForIndexPageQueryResult = Apollo.QueryResult<MeForIndexPageQuery, MeForIndexPageQueryVariables>;
 export const CurrentUserDocument = gql`
     query currentUser($id: ID!) {
   user(id: $id) {

@@ -30,6 +30,7 @@ type TweetConnection {
 }
 
 type Query {
+  me: User!
   user(id: ID!): User!
   users: [User!]!
   feed(first: Int!, after: String): TweetConnection!

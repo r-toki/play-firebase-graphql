@@ -8,6 +8,7 @@ import { userTweetsRef } from "./../../lib/typed-ref/index";
 export const Mutation: Resolvers["Mutation"] = {
   updateProfile: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
+
     const { uid } = decodedIdToken;
 
     await usersRef(db).doc(uid).set(
@@ -22,6 +23,7 @@ export const Mutation: Resolvers["Mutation"] = {
   },
   createTweet: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
+
     const { uid } = decodedIdToken;
 
     const ref = await userTweetsRef(db, { userId: uid }).add({

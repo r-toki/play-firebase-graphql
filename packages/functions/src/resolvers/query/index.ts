@@ -1,4 +1,3 @@
-import { AuthenticationError } from "apollo-server-express";
 import { QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { last, orderBy } from "lodash";
 
@@ -9,10 +8,14 @@ import { followingsRef, tweetsRef, usersRef } from "../../lib/typed-ref";
 import { UserTweetData } from "../../lib/typed-ref/types";
 
 export const Query: Resolvers["Query"] = {
+  me: (parent, args, { decodedIdToken, db }) => {
+    if (!decodedIdToken) throw new Error("");
+    return getDoc(usersRef(db).doc(decodedIdToken.uid));
+  },
   user: (parent, args, { db }) => getDoc(usersRef(db).doc(args.id)),
   users: (parent, args, { db }) => getDocs(usersRef(db).orderBy("createdAt", "desc")),
   feed: async (parent, args, { decodedIdToken, db }) => {
-    if (!decodedIdToken) throw new AuthenticationError("unauthorized");
+    if (!decodedIdToken) throw new Error("");
 
     const { uid } = decodedIdToken;
     const { first, after } = args;
