@@ -1,25 +1,31 @@
+import { gql } from "@apollo/client";
 import { Box, Button, Stack, Textarea } from "@chakra-ui/react";
-import { addDoc, Timestamp } from "firebase/firestore";
 import { FormEventHandler, VFC } from "react";
 
-import { useAuthed } from "../../context/Authed";
-import { db } from "../../firebase-app";
+import { useCreateTweetMutation } from "../../graphql/generated";
 import { useTextInput } from "../../hooks/useTextInput";
-import { userTweetsRef } from "../../lib/typed-ref";
+
+gql`
+  mutation createTweet($input: CreateTweetInput!) {
+    createTweet(input: $input) {
+      id
+      content
+      createdAt
+      creator {
+        id
+        displayName
+      }
+    }
+  }
+`;
 
 const useTweetForm = () => {
-  const { currentUser } = useAuthed();
-
+  const [createTweet] = useCreateTweetMutation();
   const [tweetContentInput, resetTweetContentInput] = useTextInput();
 
   const onCreateTweet: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    await addDoc(userTweetsRef(db, { userId: currentUser.id }), {
-      content: tweetContentInput.value,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-      creatorId: currentUser.id,
-    });
+    await createTweet({ variables: { input: { content: tweetContentInput.value } } });
     resetTweetContentInput();
   };
 

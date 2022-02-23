@@ -47,4 +47,10 @@ export const Query: Resolvers["Query"] = {
 
     return { edges: tweetEdges, pageInfo };
   },
+  oneOfFeed: async (parent, args, { db }) => {
+    const docs = await getDocs(tweetsRef(db).where("tweetId", "==", args.id));
+    const doc = first(docs);
+    if (!doc) throw new Error("");
+    return { node: doc, cursor: doc.createdAt.toDate().toISOString() };
+  },
 };

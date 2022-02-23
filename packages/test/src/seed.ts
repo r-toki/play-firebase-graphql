@@ -1,6 +1,7 @@
+import { addHours } from "date-fns";
 import { UserRecord } from "firebase-admin/auth";
 import { Timestamp } from "firebase-admin/firestore";
-import { addHours } from "date-fns";
+
 import { clearAuth, clearFirestore } from "./clear-emulator";
 import { ArrayFactory, AuthUserFactory, DateFactory, UserTweetFactory } from "./factory";
 import { wait } from "./util";

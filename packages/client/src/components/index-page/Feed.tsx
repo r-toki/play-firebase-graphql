@@ -1,9 +1,17 @@
-import { gql } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
 import { Box, Center, HStack, Spinner, Stack } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { VFC } from "react";
+import { query, Timestamp, where } from "firebase/firestore";
+import { useEffect, useMemo, VFC } from "react";
+import { useCollection } from "react-firebase-hooks/firestore";
 
-import { useFeedForIndexPageQuery } from "../../graphql/generated";
+import { db } from "../../firebase-app";
+import {
+  FeedForIndexPageDocument,
+  useFeedForIndexPageQuery,
+  useOneOfFeedForIndexPageLazyQuery,
+} from "../../graphql/generated";
+import { tweetEventsRef } from "../../lib/typed-ref";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
 
@@ -20,11 +28,27 @@ gql`
             displayName
           }
         }
+        cursor
       }
       pageInfo {
         hasNext
         endCursor
       }
+    }
+  }
+
+  query oneOfFeedForIndexPage($id: ID!) {
+    oneOfFeed(id: $id) {
+      node {
+        id
+        content
+        createdAt
+        creator {
+          id
+          displayName
+        }
+      }
+      cursor
     }
   }
 `;
@@ -39,12 +63,64 @@ const useFeed = () => {
   const hasNext = data?.feed.pageInfo.hasNext;
   const endCursor = data?.feed.pageInfo.endCursor;
 
+  const client = useApolloClient();
+  const [getOneOfFeed, { data: oneOfFeedData }] = useOneOfFeedForIndexPageLazyQuery();
+  const oneOfFeed = oneOfFeedData?.oneOfFeed;
+
+  useEffect(() => {
+    if (!oneOfFeed) return;
+    client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
+      if (!data) return data;
+      return {
+        feed: { ...data.feed, edges: [...data.feed.edges, oneOfFeed] },
+      };
+    });
+  }, [oneOfFeed]);
+
+  const now = useMemo(() => Timestamp.now(), []);
+  const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
+
+  useEffect(() => {
+    tweetEvents?.docChanges().forEach(async (change) => {
+      if (change.type !== "added") return;
+
+      if (change.doc.data().type === "create") {
+        console.log("--- tweet has been created ---");
+        await getOneOfFeed({
+          variables: { id: change.doc.data().tweetId },
+        });
+      }
+
+      if (change.doc.data().type === "update") {
+        console.log("--- tweet has been updated ---");
+        await getOneOfFeed({
+          variables: { id: change.doc.data().tweetId },
+        });
+      }
+
+      if (change.doc.data().type === "delete") {
+        console.log("--- tweet has been deleted ---");
+        client.cache.updateQuery({ query: FeedForIndexPageDocument }, (data) => {
+          if (!data) return data;
+          return {
+            feed: {
+              ...data.feed,
+              edges: [...data.feed.edges].filter((v) => v.node.id !== change.doc.data().tweetId),
+            },
+          };
+        });
+      }
+    });
+  }, [tweetEvents]);
+
   return { tweets, hasNext, endCursor, loading, fetchMore };
 };
 
 export const Feed: VFC = () => {
   const { tweets, hasNext, endCursor, loading, fetchMore } = useFeed();
-
+  useEffect(() => {
+    console.log(tweets);
+  }, [tweets]);
   return (
     <Stack>
       <Box alignSelf="center" fontWeight="bold">

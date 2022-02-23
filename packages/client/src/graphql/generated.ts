@@ -62,6 +62,7 @@ export type Query = {
   __typename?: 'Query';
   feed: TweetConnection;
   me: User;
+  oneOfFeed: TweetEdge;
   tweet: Tweet;
   user: User;
   users: Array<User>;
@@ -71,6 +72,11 @@ export type Query = {
 export type QueryFeedArgs = {
   after?: InputMaybe<Scalars['String']>;
   first: Scalars['Int'];
+};
+
+
+export type QueryOneOfFeedArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -99,6 +105,7 @@ export type TweetConnection = {
 
 export type TweetEdge = {
   __typename?: 'TweetEdge';
+  cursor: Scalars['String'];
   node: Tweet;
 };
 
@@ -125,7 +132,21 @@ export type FeedForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+
+export type OneOfFeedForIndexPageQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OneOfFeedForIndexPageQuery = { __typename?: 'Query', oneOfFeed: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } } };
+
+export type CreateTweetMutationVariables = Exact<{
+  input: CreateTweetInput;
+}>;
+
+
+export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -186,6 +207,7 @@ export const FeedForIndexPageDocument = gql`
           displayName
         }
       }
+      cursor
     }
     pageInfo {
       hasNext
@@ -223,6 +245,89 @@ export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
 export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
 export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
+export const OneOfFeedForIndexPageDocument = gql`
+    query oneOfFeedForIndexPage($id: ID!) {
+  oneOfFeed(id: $id) {
+    node {
+      id
+      content
+      createdAt
+      creator {
+        id
+        displayName
+      }
+    }
+    cursor
+  }
+}
+    `;
+
+/**
+ * __useOneOfFeedForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useOneOfFeedForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOneOfFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOneOfFeedForIndexPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOneOfFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
+      }
+export function useOneOfFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
+        }
+export type OneOfFeedForIndexPageQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageQuery>;
+export type OneOfFeedForIndexPageLazyQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageLazyQuery>;
+export type OneOfFeedForIndexPageQueryResult = Apollo.QueryResult<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>;
+export const CreateTweetDocument = gql`
+    mutation createTweet($input: CreateTweetInput!) {
+  createTweet(input: $input) {
+    id
+    content
+    createdAt
+    creator {
+      id
+      displayName
+    }
+  }
+}
+    `;
+export type CreateTweetMutationFn = Apollo.MutationFunction<CreateTweetMutation, CreateTweetMutationVariables>;
+
+/**
+ * __useCreateTweetMutation__
+ *
+ * To run a mutation, you first call `useCreateTweetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTweetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTweetMutation, { data, loading, error }] = useCreateTweetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTweetMutation(baseOptions?: Apollo.MutationHookOptions<CreateTweetMutation, CreateTweetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTweetMutation, CreateTweetMutationVariables>(CreateTweetDocument, options);
+      }
+export type CreateTweetMutationHookResult = ReturnType<typeof useCreateTweetMutation>;
+export type CreateTweetMutationResult = Apollo.MutationResult<CreateTweetMutation>;
+export type CreateTweetMutationOptions = Apollo.BaseMutationOptions<CreateTweetMutation, CreateTweetMutationVariables>;
 export const UsersForIndexPageDocument = gql`
     query usersForIndexPage {
   users {

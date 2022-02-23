@@ -22,6 +22,7 @@ type PageInfo {
 
 type TweetEdge {
   node: Tweet!
+  cursor: String!
 }
 
 type TweetConnection {
@@ -35,6 +36,7 @@ type Query {
   users: [User!]!
   feed(first: Int!, after: String): TweetConnection!
   tweet(id: ID!): Tweet!
+  oneOfFeed(id: ID!): TweetEdge!
 }
 
 input UpdateProfileInput {

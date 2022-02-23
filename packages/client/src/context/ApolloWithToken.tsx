@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { last, orderBy, uniqBy } from "lodash-es";
 import { ReactNode, useEffect, useMemo, VFC } from "react";
 
 import { GRAPHQL_ENDPOINT } from "../constants";
@@ -34,16 +35,21 @@ const useApolloClientWithTokenContainer = () => {
                 feed: {
                   keyArgs: false,
                   merge(existing, incoming) {
-                    if (existing) {
-                      return {
-                        ...incoming,
-                        edges: [...existing.edges, ...incoming.edges],
-                      };
-                    } else {
-                      return {
-                        ...incoming,
-                      };
-                    }
+                    if (!existing) return incoming;
+                    const edges = orderBy(
+                      uniqBy([...existing.edges, ...incoming.edges], (v) => v.node.__ref),
+                      (v) => v.cursor,
+                      "desc"
+                    );
+                    const endCursor = last(edges).cursor;
+                    return {
+                      ...incoming,
+                      edges,
+                      pageInfo: {
+                        ...incoming.pageInfo,
+                        endCursor,
+                      },
+                    };
                   },
                 },
               },

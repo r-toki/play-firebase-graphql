@@ -64,6 +64,7 @@ export type Query = {
   __typename?: 'Query';
   feed: TweetConnection;
   me: User;
+  oneOfFeed: TweetEdge;
   tweet: Tweet;
   user: User;
   users: Array<User>;
@@ -73,6 +74,11 @@ export type Query = {
 export type QueryFeedArgs = {
   after?: InputMaybe<Scalars['String']>;
   first: Scalars['Int'];
+};
+
+
+export type QueryOneOfFeedArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -101,6 +107,7 @@ export type TweetConnection = {
 
 export type TweetEdge = {
   __typename?: 'TweetEdge';
+  cursor: Scalars['String'];
   node: Tweet;
 };
 
@@ -249,6 +256,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFeedArgs, 'first'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  oneOfFeed?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<QueryOneOfFeedArgs, 'id'>>;
   tweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
@@ -269,6 +277,7 @@ export type TweetConnectionResolvers<ContextType = Context, ParentType extends R
 }>;
 
 export type TweetEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TweetEdge'] = ResolversParentTypes['TweetEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

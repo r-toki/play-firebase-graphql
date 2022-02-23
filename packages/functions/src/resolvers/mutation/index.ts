@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { first } from "lodash";
 import { v4 } from "uuid";
 
@@ -29,13 +29,15 @@ export const Mutation: Resolvers["Mutation"] = {
     const { uid } = decodedIdToken;
 
     const tweetId = v4();
-    await userTweetsRef(db, { userId: uid }).doc(tweetId).set({
-      content: args.input.content,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-      tweetId,
-      creatorId: uid,
-    });
+    await userTweetsRef(db, { userId: uid })
+      .doc(tweetId)
+      .set({
+        content: args.input.content,
+        createdAt: FieldValue.serverTimestamp() as Timestamp,
+        updatedAt: FieldValue.serverTimestamp() as Timestamp,
+        tweetId,
+        creatorId: uid,
+      });
 
     return getDoc(userTweetsRef(db, { userId: uid }).doc(tweetId));
   },

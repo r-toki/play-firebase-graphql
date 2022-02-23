@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
 
 import { apiApp } from "./api";
@@ -39,5 +39,5 @@ exports.onTweetWrite = functionsAtTokyo.firestore
 
     return tweetEventsRef(db)
       .doc(context.eventId)
-      .set({ type, userId, tweetId, createdAt: Timestamp.now() });
+      .set({ type, userId, tweetId, createdAt: FieldValue.serverTimestamp() as Timestamp });
   });

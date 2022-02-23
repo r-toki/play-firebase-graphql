@@ -26,6 +26,7 @@ type PageInfo {
 type Query {
   feed(after: String, first: Int!): TweetConnection!
   me: User!
+  oneOfFeed(id: ID!): TweetEdge!
   tweet(id: ID!): Tweet!
   user(id: ID!): User!
   users: [User!]!
@@ -44,6 +45,7 @@ type TweetConnection {
 }
 
 type TweetEdge {
+  cursor: String!
   node: Tweet!
 }
 
