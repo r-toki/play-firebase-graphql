@@ -20,15 +20,31 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
+export type FollowInput = {
+  followedId: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  follow: User;
+  unFollow: User;
   updateProfile: User;
 };
 
 
 export type MutationCreateTweetArgs = {
   input: CreateTweetInput;
+};
+
+
+export type MutationFollowArgs = {
+  input: FollowInput;
+};
+
+
+export type MutationUnFollowArgs = {
+  input?: InputMaybe<UnFollowInput>;
 };
 
 
@@ -78,6 +94,10 @@ export type TweetConnection = {
 export type TweetEdge = {
   __typename?: 'TweetEdge';
   node: Tweet;
+};
+
+export type UnFollowInput = {
+  followedId: Scalars['String'];
 };
 
 export type UpdateProfileInput = {

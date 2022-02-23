@@ -41,6 +41,7 @@ input UpdateProfileInput {
 }
 
 type Mutation {
+  # return me
   updateProfile(input: UpdateProfileInput!): User!
 }
 
@@ -50,4 +51,22 @@ input CreateTweetInput {
 
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
+}
+
+input FollowInput {
+  followedId: String!
+}
+
+type Mutation {
+  # return me
+  follow(input: FollowInput!): User!
+}
+
+input UnFollowInput {
+  followedId: String!
+}
+
+type Mutation {
+  # return me
+  unFollow(input: UnFollowInput): User!
 }

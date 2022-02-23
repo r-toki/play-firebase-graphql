@@ -22,15 +22,31 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
+export type FollowInput = {
+  followedId: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  follow: User;
+  unFollow: User;
   updateProfile: User;
 };
 
 
 export type MutationCreateTweetArgs = {
   input: CreateTweetInput;
+};
+
+
+export type MutationFollowArgs = {
+  input: FollowInput;
+};
+
+
+export type MutationUnFollowArgs = {
+  input?: InputMaybe<UnFollowInput>;
 };
 
 
@@ -80,6 +96,10 @@ export type TweetConnection = {
 export type TweetEdge = {
   __typename?: 'TweetEdge';
   node: Tweet;
+};
+
+export type UnFollowInput = {
+  followedId: Scalars['String'];
 };
 
 export type UpdateProfileInput = {
@@ -168,6 +188,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateTweetInput: CreateTweetInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  FollowInput: FollowInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -177,6 +198,7 @@ export type ResolversTypes = ResolversObject<{
   Tweet: ResolverTypeWrapper<UserTweetDoc>;
   TweetConnection: ResolverTypeWrapper<Omit<TweetConnection, 'edges'> & { edges: Array<ResolversTypes['TweetEdge']> }>;
   TweetEdge: ResolverTypeWrapper<Omit<TweetEdge, 'node'> & { node: ResolversTypes['Tweet'] }>;
+  UnFollowInput: UnFollowInput;
   UpdateProfileInput: UpdateProfileInput;
   User: ResolverTypeWrapper<UserDoc>;
 }>;
@@ -186,6 +208,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   CreateTweetInput: CreateTweetInput;
   DateTime: Scalars['DateTime'];
+  FollowInput: FollowInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
@@ -195,6 +218,7 @@ export type ResolversParentTypes = ResolversObject<{
   Tweet: UserTweetDoc;
   TweetConnection: Omit<TweetConnection, 'edges'> & { edges: Array<ResolversParentTypes['TweetEdge']> };
   TweetEdge: Omit<TweetEdge, 'node'> & { node: ResolversParentTypes['Tweet'] };
+  UnFollowInput: UnFollowInput;
   UpdateProfileInput: UpdateProfileInput;
   User: UserDoc;
 }>;
@@ -205,6 +229,8 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationCreateTweetArgs, 'input'>>;
+  follow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationFollowArgs, 'input'>>;
+  unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUnFollowArgs>>;
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'input'>>;
 }>;
 
