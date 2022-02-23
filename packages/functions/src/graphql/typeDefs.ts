@@ -14,7 +14,7 @@ input FollowInput {
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
   follow(input: FollowInput!): User!
-  unFollow(input: UnFollowInput): User!
+  unFollow(input: UnFollowInput!): User!
   updateProfile(input: UpdateProfileInput!): User!
 }
 

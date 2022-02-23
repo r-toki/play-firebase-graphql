@@ -44,7 +44,7 @@ export type MutationFollowArgs = {
 
 
 export type MutationUnFollowArgs = {
-  input?: InputMaybe<UnFollowInput>;
+  input: UnFollowInput;
 };
 
 

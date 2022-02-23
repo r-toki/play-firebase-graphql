@@ -68,5 +68,5 @@ input UnFollowInput {
 
 type Mutation {
   # return me
-  unFollow(input: UnFollowInput): User!
+  unFollow(input: UnFollowInput!): User!
 }

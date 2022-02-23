@@ -46,7 +46,7 @@ export type MutationFollowArgs = {
 
 
 export type MutationUnFollowArgs = {
-  input?: InputMaybe<UnFollowInput>;
+  input: UnFollowInput;
 };
 
 
@@ -230,7 +230,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationCreateTweetArgs, 'input'>>;
   follow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationFollowArgs, 'input'>>;
-  unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUnFollowArgs>>;
+  unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUnFollowArgs, 'input'>>;
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'input'>>;
 }>;
 
