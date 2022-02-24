@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
+import { useAuthed } from "../../context/Authed";
 import {
   useFollowForIndexPageMutation,
   useMeForIndexPageQuery,
@@ -50,9 +51,10 @@ gql`
 `;
 
 export const Users: VFC = () => {
+  const { currentUser } = useAuthed();
   const { data: usersData } = useUsersForIndexPageQuery();
   const { data: meData } = useMeForIndexPageQuery();
-  const users = usersData?.users ?? [];
+  const users = usersData?.users.filter((user) => user.id !== currentUser.id) ?? [];
   const followings = meData?.me.followings ?? [];
 
   const [follow] = useFollowForIndexPageMutation();

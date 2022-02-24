@@ -1,7 +1,7 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
 
-import { apiApp } from "./api";
+import { createApiApp } from "./api-app";
 import { db } from "./firebase-app";
 import { tweetEventsRef, usersRef } from "./lib/typed-ref/index";
 
@@ -9,6 +9,7 @@ const TOKYO = "asia-northeast1";
 
 const functionsAtTokyo = functions.region(TOKYO);
 
+const apiApp = createApiApp();
 exports.api = functionsAtTokyo.https.onRequest(apiApp);
 
 exports.onAuthCreate = functionsAtTokyo.auth.user().onCreate(async (user) => {
