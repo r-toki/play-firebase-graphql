@@ -126,21 +126,6 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
-export type FeedForIndexPageQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
-
-export type OneOfFeedForIndexPageQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type OneOfFeedForIndexPageQuery = { __typename?: 'Query', oneOfFeed: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } } };
-
 export type CreateTweetMutationVariables = Exact<{
   input: CreateTweetInput;
 }>;
@@ -181,6 +166,21 @@ export type CurrentUserQueryVariables = Exact<{
 
 export type CurrentUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
 
+export type FeedForIndexPageQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+
+export type OneOfFeedForIndexPageQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type OneOfFeedForIndexPageQuery = { __typename?: 'Query', oneOfFeed: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } } };
+
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
 }>;
@@ -194,101 +194,6 @@ export const CurrentUserFragmentDoc = gql`
   displayName
 }
     `;
-export const FeedForIndexPageDocument = gql`
-    query FeedForIndexPage($first: Int!, $after: String) {
-  feed(first: $first, after: $after) {
-    edges {
-      node {
-        id
-        content
-        createdAt
-        creator {
-          id
-          displayName
-        }
-      }
-      cursor
-    }
-    pageInfo {
-      hasNext
-      endCursor
-    }
-  }
-}
-    `;
-
-/**
- * __useFeedForIndexPageQuery__
- *
- * To run a query within a React component, call `useFeedForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFeedForIndexPageQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *   },
- * });
- */
-export function useFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
-      }
-export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
-        }
-export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
-export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
-export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
-export const OneOfFeedForIndexPageDocument = gql`
-    query oneOfFeedForIndexPage($id: ID!) {
-  oneOfFeed(id: $id) {
-    node {
-      id
-      content
-      createdAt
-      creator {
-        id
-        displayName
-      }
-    }
-    cursor
-  }
-}
-    `;
-
-/**
- * __useOneOfFeedForIndexPageQuery__
- *
- * To run a query within a React component, call `useOneOfFeedForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useOneOfFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOneOfFeedForIndexPageQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOneOfFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
-      }
-export function useOneOfFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
-        }
-export type OneOfFeedForIndexPageQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageQuery>;
-export type OneOfFeedForIndexPageLazyQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageLazyQuery>;
-export type OneOfFeedForIndexPageQueryResult = Apollo.QueryResult<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>;
 export const CreateTweetDocument = gql`
     mutation createTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {
@@ -510,6 +415,101 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const FeedForIndexPageDocument = gql`
+    query FeedForIndexPage($first: Int!, $after: String) {
+  feed(first: $first, after: $after) {
+    edges {
+      node {
+        id
+        content
+        createdAt
+        creator {
+          id
+          displayName
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNext
+      endCursor
+    }
+  }
+}
+    `;
+
+/**
+ * __useFeedForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useFeedForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFeedForIndexPageQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
+      }
+export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
+        }
+export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
+export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
+export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
+export const OneOfFeedForIndexPageDocument = gql`
+    query oneOfFeedForIndexPage($id: ID!) {
+  oneOfFeed(id: $id) {
+    node {
+      id
+      content
+      createdAt
+      creator {
+        id
+        displayName
+      }
+    }
+    cursor
+  }
+}
+    `;
+
+/**
+ * __useOneOfFeedForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useOneOfFeedForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOneOfFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOneOfFeedForIndexPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useOneOfFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
+      }
+export function useOneOfFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>(OneOfFeedForIndexPageDocument, options);
+        }
+export type OneOfFeedForIndexPageQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageQuery>;
+export type OneOfFeedForIndexPageLazyQueryHookResult = ReturnType<typeof useOneOfFeedForIndexPageLazyQuery>;
+export type OneOfFeedForIndexPageQueryResult = Apollo.QueryResult<OneOfFeedForIndexPageQuery, OneOfFeedForIndexPageQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {

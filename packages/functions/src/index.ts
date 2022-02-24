@@ -37,7 +37,7 @@ exports.onTweetWrite = functionsAtTokyo.firestore
 
     const { userId, tweetId } = context.params;
 
-    return tweetEventsRef(db)
+    await tweetEventsRef(db)
       .doc(context.eventId)
       .set({ type, userId, tweetId, createdAt: FieldValue.serverTimestamp() as Timestamp });
   });

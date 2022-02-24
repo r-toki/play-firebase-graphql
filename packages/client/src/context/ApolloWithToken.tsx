@@ -1,12 +1,31 @@
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { last, orderBy, uniqBy } from "lodash-es";
 import { ReactNode, useEffect, useMemo, VFC } from "react";
 
 import { GRAPHQL_ENDPOINT } from "../constants";
 import { useAuth } from "./Auth";
 
 const httpLink = createHttpLink({ uri: GRAPHQL_ENDPOINT });
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        feed: {
+          keyArgs: false,
+          merge(existing, incoming) {
+            if (!existing) return incoming;
+            const edges = [...existing.edges, ...incoming.edges];
+            return {
+              ...incoming,
+              edges,
+            };
+          },
+        },
+      },
+    },
+  },
+});
 
 const useApolloClientWithTokenContainer = () => {
   const { token } = useAuth();
@@ -28,25 +47,7 @@ const useApolloClientWithTokenContainer = () => {
     () =>
       new ApolloClient({
         link: authLink.concat(httpLink),
-        cache: new InMemoryCache({
-          typePolicies: {
-            Query: {
-              fields: {
-                feed: {
-                  keyArgs: false,
-                  merge(existing, incoming) {
-                    if (!existing) return incoming;
-                    const edges = [...existing.edges, ...incoming.edges];
-                    return {
-                      ...incoming,
-                      edges,
-                    };
-                  },
-                },
-              },
-            },
-          },
-        }),
+        cache,
       }),
     [authLink]
   );
