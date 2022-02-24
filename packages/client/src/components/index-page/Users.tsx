@@ -54,7 +54,7 @@ export const Users: VFC = () => {
   const { currentUser } = useAuthed();
   const { data: usersData } = useUsersForIndexPageQuery();
   const { data: meData } = useMeForIndexPageQuery();
-  const users = usersData?.users.filter((user) => user.id !== currentUser.id) ?? [];
+  const otherUsers = usersData?.users.filter((user) => user.id !== currentUser.id) ?? [];
   const followings = meData?.me.followings ?? [];
 
   const [follow] = useFollowForIndexPageMutation();
@@ -83,9 +83,9 @@ export const Users: VFC = () => {
       <Box alignSelf="center" fontWeight="bold">
         Users
       </Box>
-      {users.length && (
+      {otherUsers.length && (
         <AppList>
-          {users.map((user) => (
+          {otherUsers.map((user) => (
             <AppListItem key={user.id}>
               <Flex justifyContent="space-between">
                 <Box fontWeight="bold">{user.displayName}</Box>
