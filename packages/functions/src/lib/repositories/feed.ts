@@ -6,6 +6,7 @@ import { execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-wit
 import { getDocs } from "../query-util/get";
 import { followRelationshipsRef, tweetsRef } from "../typed-ref";
 
+// NOTE: Query
 export const getFeed = async (
   db: Firestore,
   { userId, first, after }: { userId: string; first: number; after: string | null | undefined }
