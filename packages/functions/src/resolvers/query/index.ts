@@ -9,7 +9,7 @@ import { followRelationshipsRef, tweetsRef, usersRef } from "../../lib/typed-ref
 import { UserTweetData } from "../../lib/typed-ref/types";
 
 export const Query: Resolvers["Query"] = {
-  me: (parent, args, context) => {
+  me: async (parent, args, context) => {
     isSignedIn(context);
 
     const {
@@ -17,24 +17,30 @@ export const Query: Resolvers["Query"] = {
       db,
     } = context;
 
-    return getDoc(usersRef(db).doc(uid));
+    const meDoc = await getDoc(usersRef(db).doc(uid));
+
+    return meDoc;
   },
 
-  user: (parent, args, context) => {
+  user: async (parent, args, context) => {
     isSignedIn(context);
 
     const { id } = args;
     const { db } = context;
 
-    return getDoc(usersRef(db).doc(id));
+    const userDoc = await getDoc(usersRef(db).doc(id));
+
+    return userDoc;
   },
 
-  users: (parent, args, context) => {
+  users: async (parent, args, context) => {
     isSignedIn(context);
 
     const { db } = context;
 
-    return getDocs(usersRef(db).orderBy("createdAt", "desc"));
+    const userDocs = await getDocs(usersRef(db).orderBy("createdAt", "desc"));
+
+    return userDocs;
   },
 
   tweet: async (parent, args, context) => {
