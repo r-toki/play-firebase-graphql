@@ -8,23 +8,7 @@ import { useAuth } from "./Auth";
 const httpLink = createHttpLink({ uri: GRAPHQL_ENDPOINT });
 
 const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        feed: {
-          keyArgs: false,
-          merge(existing, incoming) {
-            if (!existing) return incoming;
-            const edges = [...existing.edges, ...incoming.edges];
-            return {
-              ...incoming,
-              edges,
-            };
-          },
-        },
-      },
-    },
-  },
+  typePolicies: {},
 });
 
 const useApolloClientWithTokenContainer = () => {
