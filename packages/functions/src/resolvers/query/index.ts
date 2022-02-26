@@ -4,6 +4,7 @@ import { getDoc, getDocs } from "../../lib/query-util/get";
 import { getFeed } from "../../lib/repositories/feed";
 import { getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
+import { getFavoriteTweets } from "./../../lib/repositories/like";
 import { getTweetEdge } from "./../../lib/repositories/tweet";
 
 export const Query: Resolvers["Query"] = {
@@ -51,5 +52,16 @@ export const Query: Resolvers["Query"] = {
 
     const tweetEdge = await getTweetEdge(context.db, { id: args.id });
     return tweetEdge;
+  },
+
+  favoriteTweets: async (parent, args, context) => {
+    isSignedIn(context);
+
+    const tweetConnection = await getFavoriteTweets(context.db, {
+      userId: context.uid,
+      first: args.first,
+      after: args.after,
+    });
+    return tweetConnection;
   },
 };

@@ -81,12 +81,19 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  favoriteTweets: TweetConnection;
   feed: TweetConnection;
   me: User;
   tweet: Tweet;
   tweetEdge: TweetEdge;
   user: User;
   users: Array<User>;
+};
+
+
+export type QueryFavoriteTweetsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 

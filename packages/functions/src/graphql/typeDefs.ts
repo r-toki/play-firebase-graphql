@@ -24,6 +24,7 @@ type PageInfo {
 }
 
 type Query {
+  favoriteTweets(after: String, first: Int!): TweetConnection!
   feed(after: String, first: Int!): TweetConnection!
   me: User!
   tweet(id: ID!): Tweet!

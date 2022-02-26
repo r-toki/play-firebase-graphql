@@ -83,12 +83,19 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  favoriteTweets: TweetConnection;
   feed: TweetConnection;
   me: User;
   tweet: Tweet;
   tweetEdge: TweetEdge;
   user: User;
   users: Array<User>;
+};
+
+
+export type QueryFavoriteTweetsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 
@@ -278,6 +285,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  favoriteTweets?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFavoriteTweetsArgs, 'first'>>;
   feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFeedArgs, 'first'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   tweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;

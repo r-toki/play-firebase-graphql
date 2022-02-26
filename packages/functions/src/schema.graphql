@@ -38,6 +38,7 @@ type Query {
   feed(first: Int!, after: String): TweetConnection!
   tweetEdge(id: ID!): TweetEdge!
   tweet(id: ID!): Tweet!
+  favoriteTweets(first: Int!, after: String): TweetConnection!
 }
 
 input UpdateProfileInput {
