@@ -21,9 +21,9 @@ export const getFavoriteTweets = async (
     likeDocs.map((v) => getDocs(tweetsRef(db).where("tweetId", "==", v.tweetId)))
   );
 
-  const tweetEdges = tweetDocsList.flat().map((doc) => ({
+  const tweetEdges = tweetDocsList.flat().map((doc, idx) => ({
     node: doc,
-    cursor: doc.createdAt.toDate().toISOString(),
+    cursor: likeDocs[idx].createdAt.toDate().toISOString(),
   }));
   const pageInfo = { hasNext: tweetEdges.length === first, endCursor: last(tweetEdges)?.cursor };
 
