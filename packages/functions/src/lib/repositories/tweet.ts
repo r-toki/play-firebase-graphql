@@ -1,7 +1,7 @@
 import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { first } from "lodash";
 
-import { getDocs } from "../query/util/get";
+import { getDocs } from "../query-util/get";
 import { tweetsRef, userTweetsRef } from "../typed-ref";
 
 // NOTE: Query

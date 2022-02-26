@@ -1,6 +1,6 @@
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
-import { getDoc, getDocs } from "../../lib/query/util/get";
+import { getDoc, getDocs } from "../../lib/query-util/get";
 import { getFeed } from "../../lib/repositories/feed";
 import { getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";

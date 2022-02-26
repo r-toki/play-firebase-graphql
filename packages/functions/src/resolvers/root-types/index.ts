@@ -1,5 +1,5 @@
 import { Resolvers } from "../../graphql/generated";
-import { getDoc, getDocs } from "../../lib/query/util/get";
+import { getDoc, getDocs } from "../../lib/query-util/get";
 import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
 import { usersRef, userTweetsRef } from "../../lib/typed-ref";
 

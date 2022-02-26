@@ -2,7 +2,7 @@ import { v4 } from "uuid";
 
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
-import { getDoc } from "../../lib/query/util/get";
+import { getDoc } from "../../lib/query-util/get";
 import { createTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
 import { follow, unFollow } from "./../../lib/repositories/follow-relationship";

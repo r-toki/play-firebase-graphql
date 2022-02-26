@@ -2,8 +2,8 @@ import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/fire
 import { UserTweetData } from "interfaces/admin-schema";
 import { last, orderBy } from "lodash";
 
-import { execMultiQueriesWithCursor } from "../query/util/exec-multi-queries-with-cursor";
-import { getDocs } from "../query/util/get";
+import { execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-with-cursor";
+import { getDocs } from "../query-util/get";
 import { followRelationshipsRef, tweetsRef } from "../typed-ref";
 
 export const getFeed = async (
