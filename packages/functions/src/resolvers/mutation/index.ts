@@ -14,11 +14,11 @@ export const Mutation: Resolvers["Mutation"] = {
     isSignedIn(context);
 
     await updateUser(context.db, {
-      userId: context.decodedIdToken.uid,
+      userId: context.uid,
       displayName: args.input.displayName,
     });
 
-    return getDoc(usersRef(context.db).doc(context.decodedIdToken.uid));
+    return getDoc(usersRef(context.db).doc(context.uid));
   },
 
   createTweet: async (parent, args, context) => {
@@ -27,12 +27,10 @@ export const Mutation: Resolvers["Mutation"] = {
     const tweetId = v4();
     await createTweet(context.db, {
       tweetId,
-      creatorId: context.decodedIdToken.uid,
+      creatorId: context.uid,
       content: args.input.content,
     });
-    const tweetDoc = await getDoc(
-      userTweetsRef(context.db, { userId: context.decodedIdToken.uid }).doc(tweetId)
-    );
+    const tweetDoc = await getDoc(userTweetsRef(context.db, { userId: context.uid }).doc(tweetId));
 
     return tweetDoc;
   },
@@ -41,10 +39,10 @@ export const Mutation: Resolvers["Mutation"] = {
     isSignedIn(context);
 
     await follow(context.db, {
-      followerId: context.decodedIdToken.uid,
+      followerId: context.uid,
       followedId: args.input.followedId,
     });
-    const meDoc = getDoc(usersRef(context.db).doc(context.decodedIdToken.uid));
+    const meDoc = getDoc(usersRef(context.db).doc(context.uid));
 
     return meDoc;
   },
@@ -53,10 +51,10 @@ export const Mutation: Resolvers["Mutation"] = {
     isSignedIn(context);
 
     await unFollow(context.db, {
-      followerId: context.decodedIdToken.uid,
+      followerId: context.uid,
       followedId: args.input.followedId,
     });
-    const meDoc = getDoc(usersRef(context.db).doc(context.decodedIdToken.uid));
+    const meDoc = getDoc(usersRef(context.db).doc(context.uid));
 
     return meDoc;
   },

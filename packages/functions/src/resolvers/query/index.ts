@@ -9,7 +9,7 @@ export const Query: Resolvers["Query"] = {
   me: async (parent, args, context) => {
     isSignedIn(context);
 
-    const meDoc = await getDoc(usersRef(context.db).doc(context.decodedIdToken.uid));
+    const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
 
     return meDoc;
   },
@@ -42,7 +42,7 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const tweetConnection = await getFeed(context.db, {
-      userId: context.decodedIdToken.uid,
+      userId: context.uid,
       first: args.first,
       after: args.after,
     });
