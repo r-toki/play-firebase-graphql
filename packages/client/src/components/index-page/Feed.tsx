@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useApolloClient } from "@apollo/client";
 import { DeleteIcon, EditIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -93,6 +93,8 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
   const [like] = useLikeMutation();
   const [unLike] = useUnLikeMutation();
 
+  const client = useApolloClient();
+
   return (
     <Stack>
       <Flex justifyContent="space-between">
@@ -157,6 +159,7 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
             size="xs"
             onClick={() => {
               like({ variables: { tweetId: tweet.id } });
+              console.log(client.cache);
             }}
           >
             <StarIcon color="gray.400" />

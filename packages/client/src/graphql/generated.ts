@@ -212,6 +212,8 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
+export type FeedEdgeForIndexPageFragment = { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
+
 export type FeedForIndexPageQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['String']>;
@@ -242,6 +244,12 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
+export const CurrentUserFragmentDoc = gql`
+    fragment currentUser on User {
+  id
+  displayName
+}
+    `;
 export const FeedItemFragmentDoc = gql`
     fragment feedItem on Tweet {
   id
@@ -254,12 +262,15 @@ export const FeedItemFragmentDoc = gql`
   favorite
 }
     `;
-export const CurrentUserFragmentDoc = gql`
-    fragment currentUser on User {
-  id
-  displayName
+export const FeedEdgeForIndexPageFragmentDoc = gql`
+    fragment feedEdgeForIndexPage on TweetEdge {
+  node {
+    id
+    ...feedItem
+  }
+  cursor
 }
-    `;
+    ${FeedItemFragmentDoc}`;
 export const DeleteTweetDocument = gql`
     mutation deleteTweet($id: ID!) {
   deleteTweet(id: $id) {

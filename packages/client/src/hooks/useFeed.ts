@@ -126,7 +126,16 @@ export const useSubscribeTweets = () => {
               if (!existing) return existing;
               const pageInfo = existing.pageInfo;
               if (pageInfo.endCursor > tweetEdge.cursor) return existing;
-              const edges = [tweetEdge, ...existing.edges];
+
+              // const newTweetEdgeRef = client.cache.writeFragment({
+              //   data: tweetEdge.node,
+              //   fragment: FeedItemFragmentDoc,
+              //   fragmentName: "feedItem",
+              // });
+              // const edges = [newTweetEdgeRef, ...existing.edges];
+              // console.log(client.cache);
+              // console.log(newTweetEdgeRef);
+              const edges = [...existing.edges];
               return { ...existing, edges };
             },
           },
