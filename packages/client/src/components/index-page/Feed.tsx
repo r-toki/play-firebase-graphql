@@ -198,7 +198,7 @@ const Tweets: VFC = () => {
   );
 };
 
-const FavoriteTweets: VFC = () => {
+const Likes: VFC = () => {
   const { tweets, hasNext, loading, fetch, loadMore } = useFavoriteTweets();
   useEffect(() => {
     fetch();
@@ -240,10 +240,10 @@ export const Feed: VFC = () => {
   return (
     <Tabs onChange={setTabIndex}>
       <TabList>
-        <Tab fontWeight="bold">Tweet</Tab>
-        <Tab fontWeight="bold">Favorite</Tab>
+        <Tab fontWeight="bold">Tweets</Tab>
+        <Tab fontWeight="bold">Likes</Tab>
       </TabList>
-      {tabIndex === 0 ? <Tweets /> : tabIndex === 1 ? <FavoriteTweets /> : null}
+      {tabIndex === 0 ? <Tweets /> : tabIndex === 1 ? <Likes /> : null}
     </Tabs>
   );
 };
