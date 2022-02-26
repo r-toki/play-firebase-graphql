@@ -20,10 +20,6 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
-export type FollowInput = {
-  followedId: Scalars['ID'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
@@ -39,12 +35,12 @@ export type MutationCreateTweetArgs = {
 
 
 export type MutationFollowArgs = {
-  input: FollowInput;
+  userId: Scalars['ID'];
 };
 
 
 export type MutationUnFollowArgs = {
-  input: UnFollowInput;
+  userId: Scalars['ID'];
 };
 
 
@@ -109,10 +105,6 @@ export type TweetEdge = {
   node: Tweet;
 };
 
-export type UnFollowInput = {
-  followedId: Scalars['ID'];
-};
-
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
 };
@@ -144,14 +136,14 @@ export type MeForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 export type MeForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
 export type FollowForIndexPageMutationVariables = Exact<{
-  input: FollowInput;
+  userId: Scalars['ID'];
 }>;
 
 
 export type FollowForIndexPageMutation = { __typename?: 'Mutation', follow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
 export type UnFollowForIndexPageMutationVariables = Exact<{
-  input: UnFollowInput;
+  userId: Scalars['ID'];
 }>;
 
 
@@ -307,8 +299,8 @@ export type MeForIndexPageQueryHookResult = ReturnType<typeof useMeForIndexPageQ
 export type MeForIndexPageLazyQueryHookResult = ReturnType<typeof useMeForIndexPageLazyQuery>;
 export type MeForIndexPageQueryResult = Apollo.QueryResult<MeForIndexPageQuery, MeForIndexPageQueryVariables>;
 export const FollowForIndexPageDocument = gql`
-    mutation followForIndexPage($input: FollowInput!) {
-  follow(input: $input) {
+    mutation followForIndexPage($userId: ID!) {
+  follow(userId: $userId) {
     id
     followings {
       id
@@ -332,7 +324,7 @@ export type FollowForIndexPageMutationFn = Apollo.MutationFunction<FollowForInde
  * @example
  * const [followForIndexPageMutation, { data, loading, error }] = useFollowForIndexPageMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -344,8 +336,8 @@ export type FollowForIndexPageMutationHookResult = ReturnType<typeof useFollowFo
 export type FollowForIndexPageMutationResult = Apollo.MutationResult<FollowForIndexPageMutation>;
 export type FollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>;
 export const UnFollowForIndexPageDocument = gql`
-    mutation unFollowForIndexPage($input: UnFollowInput!) {
-  unFollow(input: $input) {
+    mutation unFollowForIndexPage($userId: ID!) {
+  unFollow(userId: $userId) {
     id
     followings {
       id
@@ -369,7 +361,7 @@ export type UnFollowForIndexPageMutationFn = Apollo.MutationFunction<UnFollowFor
  * @example
  * const [unFollowForIndexPageMutation, { data, loading, error }] = useUnFollowForIndexPageMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      userId: // value for 'userId'
  *   },
  * });
  */

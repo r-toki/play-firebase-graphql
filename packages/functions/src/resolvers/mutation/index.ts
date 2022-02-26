@@ -39,7 +39,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     await follow(context.db, {
       followerId: context.uid,
-      followedId: args.input.followedId,
+      followedId: args.userId,
     });
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
     return meDoc;
@@ -50,7 +50,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     await unFollow(context.db, {
       followerId: context.uid,
-      followedId: args.input.followedId,
+      followedId: args.userId,
     });
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
     return meDoc;

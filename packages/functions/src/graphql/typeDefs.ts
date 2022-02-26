@@ -7,14 +7,10 @@ input CreateTweetInput {
 
 scalar DateTime
 
-input FollowInput {
-  followedId: ID!
-}
-
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
-  follow(input: FollowInput!): User!
-  unFollow(input: UnFollowInput!): User!
+  follow(userId: ID!): User!
+  unFollow(userId: ID!): User!
   updateProfile(input: UpdateProfileInput!): User!
 }
 
@@ -47,10 +43,6 @@ type TweetConnection {
 type TweetEdge {
   cursor: String!
   node: Tweet!
-}
-
-input UnFollowInput {
-  followedId: ID!
 }
 
 input UpdateProfileInput {

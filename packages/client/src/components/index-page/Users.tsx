@@ -29,8 +29,8 @@ gql`
     }
   }
 
-  mutation followForIndexPage($input: FollowInput!) {
-    follow(input: $input) {
+  mutation followForIndexPage($userId: ID!) {
+    follow(userId: $userId) {
       id
       followings {
         id
@@ -39,8 +39,8 @@ gql`
     }
   }
 
-  mutation unFollowForIndexPage($input: UnFollowInput!) {
-    unFollow(input: $input) {
+  mutation unFollowForIndexPage($userId: ID!) {
+    unFollow(userId: $userId) {
       id
       followings {
         id
@@ -62,11 +62,11 @@ export const Users: VFC = () => {
 
   const ToggleFollowButton: VFC<{ userId: string }> = ({ userId }) => {
     return followings.find((following) => following.id === userId) ? (
-      <Button size="xs" onClick={() => unFollow({ variables: { input: { followedId: userId } } })}>
+      <Button size="xs" onClick={() => unFollow({ variables: { userId } })}>
         unfollow
       </Button>
     ) : (
-      <Button size="xs" onClick={() => follow({ variables: { input: { followedId: userId } } })}>
+      <Button size="xs" onClick={() => follow({ variables: { userId } })}>
         follow
       </Button>
     );

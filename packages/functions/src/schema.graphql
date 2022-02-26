@@ -56,20 +56,12 @@ type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
 }
 
-input FollowInput {
-  followedId: ID!
+type Mutation {
+  # return me
+  follow(userId: ID!): User!
 }
 
 type Mutation {
   # return me
-  follow(input: FollowInput!): User!
-}
-
-input UnFollowInput {
-  followedId: ID!
-}
-
-type Mutation {
-  # return me
-  unFollow(input: UnFollowInput!): User!
+  unFollow(userId: ID!): User!
 }
