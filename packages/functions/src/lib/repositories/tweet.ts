@@ -12,6 +12,12 @@ export const getTweet = async (db: Firestore, { tweetId }: { tweetId: string }) 
   return tweetDoc;
 };
 
+export const getTweetEdge = async (db: Firestore, { tweetId }: { tweetId: string }) => {
+  const tweetDoc = await getTweet(db, { tweetId });
+  const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
+  return tweetEdge;
+};
+
 // NOTE: Mutation
 export const createTweet = async (
   db: Firestore,

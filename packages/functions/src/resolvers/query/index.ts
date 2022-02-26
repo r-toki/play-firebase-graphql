@@ -4,6 +4,7 @@ import { getDoc, getDocs } from "../../lib/query-util/get";
 import { getFeed } from "../../lib/repositories/feed";
 import { getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
+import { getTweetEdge } from "./../../lib/repositories/tweet";
 
 export const Query: Resolvers["Query"] = {
   me: async (parent, args, context) => {
@@ -48,8 +49,7 @@ export const Query: Resolvers["Query"] = {
   tweetEdge: async (parent, args, context) => {
     isSignedIn(context);
 
-    const tweetDoc = await getTweet(context.db, { tweetId: args.id });
-    const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
+    const tweetEdge = await getTweetEdge(context.db, { tweetId: args.id });
     return tweetEdge;
   },
 };
