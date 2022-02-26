@@ -218,7 +218,7 @@ export type FeedForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FeedForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
   first: Scalars['Int'];
@@ -226,7 +226,7 @@ export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type TweetEdgeForIndexPageQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -624,6 +624,7 @@ export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, Curren
 export const FeedForIndexPageDocument = gql`
     query feedForIndexPage($first: Int!, $after: String) {
   me {
+    id
     feed(first: $first, after: $after) {
       edges {
         node {
@@ -672,6 +673,7 @@ export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQue
 export const FavoriteTweetsForIndexPageDocument = gql`
     query favoriteTweetsForIndexPage($first: Int!, $after: String) {
   me {
+    id
     favoriteTweets(first: $first, after: $after) {
       edges {
         node {

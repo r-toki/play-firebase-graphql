@@ -5,7 +5,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
 import {
-  useFavoriteTweetsForIndexPageLazyQuery,
+  useFavoriteTweetsForIndexPageQuery,
   useFeedForIndexPageQuery,
   useTweetEdgeForIndexPageLazyQuery,
 } from "../graphql/generated";
@@ -14,6 +14,7 @@ import { tweetEventsRef } from "../lib/typed-ref";
 gql`
   query feedForIndexPage($first: Int!, $after: String) {
     me {
+      id
       feed(first: $first, after: $after) {
         edges {
           node {
@@ -32,6 +33,7 @@ gql`
 
   query favoriteTweetsForIndexPage($first: Int!, $after: String) {
     me {
+      id
       favoriteTweets(first: $first, after: $after) {
         edges {
           node {
@@ -77,20 +79,21 @@ export const useFeed = () => {
 };
 
 export const useFavoriteTweets = () => {
-  const [fetch, { data, loading, fetchMore }] = useFavoriteTweetsForIndexPageLazyQuery({
+  const { data, loading, fetchMore } = useFavoriteTweetsForIndexPageQuery({
     variables: { first: 20 },
     notifyOnNetworkStatusChange: true,
   });
 
-  const tweets = data?.me.favoriteTweets.edges.map(({ node }) => node) ?? [];
-  const hasNext = data?.me.favoriteTweets.pageInfo.hasNext;
-  const endCursor = data?.me.favoriteTweets.pageInfo.endCursor;
+  const favoriteTweets = data?.me.favoriteTweets;
+  const tweets = favoriteTweets?.edges.map(({ node }) => node) ?? [];
+  const hasNext = favoriteTweets?.pageInfo.hasNext;
+  const endCursor = favoriteTweets?.pageInfo.endCursor;
 
   const loadMore = () => {
     fetchMore({ variables: { first: 10, after: endCursor } });
   };
 
-  return { tweets, hasNext, loading, fetch, loadMore };
+  return { tweets, hasNext, loading, loadMore };
 };
 
 export const useSubscribeTweets = () => {
