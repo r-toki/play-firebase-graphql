@@ -10,8 +10,6 @@ import {
   Stack,
   Tab,
   TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
   Textarea,
   VStack,
@@ -201,11 +199,10 @@ const Tweets: VFC = () => {
 };
 
 const FavoriteTweets: VFC = () => {
-  const { tweets, hasNext, loading, loadMore } = useFavoriteTweets();
-
+  const { tweets, hasNext, loading, fetch, loadMore } = useFavoriteTweets();
   useEffect(() => {
-    console.log(hasNext);
-  }, [hasNext]);
+    fetch();
+  }, []);
 
   return (
     <Stack>
@@ -238,20 +235,15 @@ const FavoriteTweets: VFC = () => {
 export const Feed: VFC = () => {
   useSubscribeTweets();
 
+  const [tabIndex, setTabIndex] = useState(0);
+
   return (
-    <Tabs>
+    <Tabs onChange={setTabIndex}>
       <TabList>
         <Tab fontWeight="bold">Tweet</Tab>
         <Tab fontWeight="bold">Favorite</Tab>
       </TabList>
-      <TabPanels>
-        <TabPanel px="0">
-          <Tweets />
-        </TabPanel>
-        <TabPanel px="0">
-          <FavoriteTweets />
-        </TabPanel>
-      </TabPanels>
+      {tabIndex === 0 ? <Tweets /> : tabIndex === 1 ? <FavoriteTweets /> : null}
     </Tabs>
   );
 };

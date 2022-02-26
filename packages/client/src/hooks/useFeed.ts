@@ -8,7 +8,7 @@ import { db } from "../firebase-app";
 import {
   FeedForIndexPageDocument,
   FeedForIndexPageQuery,
-  useFavoriteTweetsForIndexPageQuery,
+  useFavoriteTweetsForIndexPageLazyQuery,
   useFeedForIndexPageQuery,
   useTweetEdgeForIndexPageLazyQuery,
 } from "../graphql/generated";
@@ -76,7 +76,7 @@ export const useFeed = () => {
 };
 
 export const useFavoriteTweets = () => {
-  const { data, loading, fetchMore } = useFavoriteTweetsForIndexPageQuery({
+  const [fetch, { data, loading, fetchMore }] = useFavoriteTweetsForIndexPageLazyQuery({
     variables: { first: 20 },
     notifyOnNetworkStatusChange: true,
   });
@@ -89,7 +89,7 @@ export const useFavoriteTweets = () => {
     fetchMore({ variables: { first: 10, after: endCursor } });
   };
 
-  return { tweets, hasNext, loading, loadMore };
+  return { tweets, hasNext, loading, fetch, loadMore };
 };
 
 export const useSubscribeTweets = () => {
@@ -108,10 +108,10 @@ export const useSubscribeTweets = () => {
       if (change.doc.data().type === "create" || change.doc.data().type === "update") {
         console.log("--- tweet has been created/updated ---");
 
-        const oneOfFeedResult = await getTweetEdge({
+        const tweetEdgeResult = await getTweetEdge({
           variables: { id: change.doc.data().tweetId },
         });
-        const tweetEdge = oneOfFeedResult.data?.tweetEdge;
+        const tweetEdge = tweetEdgeResult.data?.tweetEdge;
 
         client.cache.updateQuery(
           { query: FeedForIndexPageDocument, overwrite: true },
