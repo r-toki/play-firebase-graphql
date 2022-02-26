@@ -4,30 +4,45 @@ import { usersRef, userTweetsRef } from "../../lib/typed-ref";
 import { followRelationshipsRef } from "./../../lib/typed-ref/index";
 
 export const User: Resolvers["User"] = {
-  tweets: (parent, args, context) =>
-    getDocs(userTweetsRef(context.db, { userId: parent.id }).orderBy("createdAt", "desc")),
+  tweets: async (parent, args, context) => {
+    const tweetDocs = await getDocs(
+      userTweetsRef(context.db, { userId: parent.id }).orderBy("createdAt", "desc")
+    );
+
+    return tweetDocs;
+  },
 
   followings: async (parent, args, context) => {
-    const relationships = await getDocs(
+    const relationshipDocs = await getDocs(
       followRelationshipsRef(context.db)
         .where("followerId", "==", parent.id)
         .orderBy("createdAt", "desc")
     );
-    const followingsIds = relationships.map((v) => v.followedId);
-    return Promise.all(followingsIds.map((id) => getDoc(usersRef(context.db).doc(id))));
+    const followingsIds = relationshipDocs.map((v) => v.followedId);
+    const followingDocs = Promise.all(
+      followingsIds.map((id) => getDoc(usersRef(context.db).doc(id)))
+    );
+
+    return followingDocs;
   },
 
   followers: async (parent, args, context) => {
-    const relationships = await getDocs(
+    const relationshipDocs = await getDocs(
       followRelationshipsRef(context.db)
         .where("followedId", "==", parent.id)
         .orderBy("createdAt", "desc")
     );
-    const followerIds = relationships.map((v) => v.followedId);
-    return Promise.all(followerIds.map((id) => getDoc(usersRef(context.db).doc(id))));
+    const followerIds = relationshipDocs.map((v) => v.followedId);
+    const followerDocs = Promise.all(followerIds.map((id) => getDoc(usersRef(context.db).doc(id))));
+
+    return followerDocs;
   },
 };
 
 export const Tweet: Resolvers["Tweet"] = {
-  creator: (parent, args, context) => getDoc(usersRef(context.db).doc(parent.creatorId)),
+  creator: async (parent, args, context) => {
+    const creator = await getDoc(usersRef(context.db).doc(parent.creatorId));
+
+    return creator;
+  },
 };

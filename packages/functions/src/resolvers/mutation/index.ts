@@ -48,9 +48,9 @@ export const Mutation: Resolvers["Mutation"] = {
         tweetId,
         creatorId: uid,
       });
-    const tweet = getDoc(userTweetsRef(db, { userId: uid }).doc(tweetId));
+    const tweetDoc = getDoc(userTweetsRef(db, { userId: uid }).doc(tweetId));
 
-    return tweet;
+    return tweetDoc;
   },
 
   follow: async (parent, args, context) => {
@@ -70,13 +70,13 @@ export const Mutation: Resolvers["Mutation"] = {
     const relationshipDoc = first(relationshipDocs);
     if (relationshipDoc) return getDoc(usersRef(db).doc(uid));
     await followRelationshipsRef(db).add({
-      followedId: input.followedId,
       followerId: uid,
+      followedId: input.followedId,
       createdAt: Timestamp.now(),
     });
-    const me = getDoc(usersRef(db).doc(uid));
+    const meDoc = getDoc(usersRef(db).doc(uid));
 
-    return me;
+    return meDoc;
   },
 
   unFollow: async (parent, args, context) => {
@@ -96,6 +96,8 @@ export const Mutation: Resolvers["Mutation"] = {
     const relationshipDoc = first(relationshipDocs);
     if (!relationshipDoc) return getDoc(usersRef(db).doc(uid));
     await relationshipDoc.ref.delete();
-    return getDoc(usersRef(db).doc(uid));
+    const meDoc = getDoc(usersRef(db).doc(uid));
+
+    return meDoc;
   },
 };

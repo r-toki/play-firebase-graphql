@@ -43,11 +43,11 @@ export const Query: Resolvers["Query"] = {
     const { id } = args;
     const { db } = context;
 
-    const tweets = await getDocs(tweetsRef(db).where("tweetId", "==", id));
-    const tweet = first(tweets);
-    if (!tweet) throw new Error("at tweet");
+    const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", id));
+    const tweetDoc = first(tweetDocs);
+    if (!tweetDoc) throw new Error("at tweet");
 
-    return tweet;
+    return tweetDoc;
   },
 
   feed: async (parent, args, context) => {
@@ -59,8 +59,10 @@ export const Query: Resolvers["Query"] = {
       db,
     } = context;
 
-    const relationships = await getDocs(followRelationshipsRef(db).where("followerId", "==", uid));
-    const queries = [uid, ...relationships.map((v) => v.followedId)].map((id) =>
+    const relationshipDocs = await getDocs(
+      followRelationshipsRef(db).where("followerId", "==", uid)
+    );
+    const queries = [uid, ...relationshipDocs.map((v) => v.followedId)].map((id) =>
       tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
     );
     const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
@@ -69,12 +71,12 @@ export const Query: Resolvers["Query"] = {
       startAfter: after ? Timestamp.fromDate(new Date(after)) : Timestamp.now(),
       limit: first,
     });
-    const tweets = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
-    const tweetEdges = tweets.map((doc) => ({
+    const tweetDocs = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
+    const tweetEdges = tweetDocs.map((doc) => ({
       node: doc,
       cursor: doc.createdAt.toDate().toISOString(),
     }));
-    const pageInfo = { hasNext: tweets.length > 0, endCursor: last(tweetEdges)?.cursor };
+    const pageInfo = { hasNext: tweetDocs.length > 0, endCursor: last(tweetEdges)?.cursor };
 
     return { edges: tweetEdges, pageInfo };
   },
@@ -84,10 +86,10 @@ export const Query: Resolvers["Query"] = {
 
     const { id } = args;
 
-    const tweets = await getDocs(tweetsRef(context.db).where("tweetId", "==", id));
-    const tweet = first(tweets);
-    if (!tweet) throw new Error("at tweetEdge");
+    const tweetDocs = await getDocs(tweetsRef(context.db).where("tweetId", "==", id));
+    const tweetDoc = first(tweetDocs);
+    if (!tweetDoc) throw new Error("at tweetEdge");
 
-    return { node: tweet, cursor: tweet.createdAt.toDate().toISOString() };
+    return { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
   },
 };
