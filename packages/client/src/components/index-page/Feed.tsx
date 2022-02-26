@@ -54,7 +54,9 @@ gql`
   }
 `;
 
-export const FeedItem: VFC<{ tweet: FeedItemFragment }> = ({ tweet }) => {
+type FeedItemProps = { tweet: FeedItemFragment };
+
+export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
   const { currentUser } = useAuthed();
 
   const [deleteTweet] = useDeleteTweetMutation();
