@@ -31,3 +31,17 @@ export const createTweet = async (
     creatorId,
   });
 };
+
+export const updateTweet = async (
+  db: Firestore,
+  { tweetId, creatorId, content }: { tweetId: string; creatorId: string; content: string }
+) => {
+  await userTweetsRef(db, { userId: creatorId }).doc(tweetId).set({ content }, { merge: true });
+};
+
+export const deleteTweet = async (
+  db: Firestore,
+  { tweetId, creatorId }: { tweetId: string; creatorId: string }
+) => {
+  await userTweetsRef(db, { userId: creatorId }).doc(tweetId).delete();
+};
