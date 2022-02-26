@@ -1,9 +1,7 @@
-import { first } from "lodash";
-
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
 import { getDoc, getDocs } from "../../lib/query/util/get";
-import { tweetsRef, usersRef } from "../../lib/typed-ref";
+import { usersRef } from "../../lib/typed-ref";
 import { getFeed } from "./../../lib/query/getFeed";
 import { getTweet } from "./../../lib/query/getTweet";
 
