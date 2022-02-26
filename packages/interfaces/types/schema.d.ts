@@ -28,3 +28,10 @@ export type _TweetEventData<Timestamp> = {
   tweetId: UserTweetId;
   createdAt: Timestamp;
 };
+
+type LikeId = string;
+export type _LikeData<Timestamp> = {
+  userId: UserId;
+  tweetId: UserTweetId;
+  createdAt: Timestamp;
+};

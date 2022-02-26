@@ -2,12 +2,14 @@ import { pathBuilder } from "@rei-sogawa/path-builder";
 import { Firestore } from "firebase-admin/firestore";
 import type {
   FollowRelationshipData,
+  LikeData,
   TweetEventData,
   UserData,
   UserTweetData,
 } from "interfaces/admin-schema";
 import type {
   FollowRelationshipsPath,
+  LikesPath,
   TweetEventsPath,
   UsersPath,
   UserTweetsPath,
@@ -36,4 +38,9 @@ export const followRelationshipsRef = createTypedCollectionRef(
 export const tweetEventsRef = createTypedCollectionRef(
   pathBuilder<TweetEventsPath>("tweetEvents"),
   createConverter<TweetEventData>()
+);
+
+export const likesRef = createTypedCollectionRef(
+  pathBuilder<LikesPath>("likes"),
+  createConverter<LikeData>()
 );
