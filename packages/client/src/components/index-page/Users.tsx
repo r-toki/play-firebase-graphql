@@ -60,19 +60,13 @@ export const Users: VFC = () => {
   const [follow] = useFollowForIndexPageMutation();
   const [unFollow] = useUnFollowForIndexPageMutation();
 
-  const toggleFollowButton = (userId: string) => {
+  const ToggleFollowButton: VFC<{ userId: string }> = ({ userId }) => {
     return followings.find((following) => following.id === userId) ? (
-      <Button
-        size="xs"
-        onClick={unFollow.bind(null, { variables: { input: { followedId: userId } } })}
-      >
+      <Button size="xs" onClick={() => unFollow({ variables: { input: { followedId: userId } } })}>
         unfollow
       </Button>
     ) : (
-      <Button
-        size="xs"
-        onClick={follow.bind(null, { variables: { input: { followedId: userId } } })}
-      >
+      <Button size="xs" onClick={() => follow({ variables: { input: { followedId: userId } } })}>
         follow
       </Button>
     );
@@ -89,7 +83,7 @@ export const Users: VFC = () => {
             <AppListItem key={user.id}>
               <Flex justifyContent="space-between">
                 <Box fontWeight="bold">{user.displayName}</Box>
-                {toggleFollowButton(user.id)}
+                <ToggleFollowButton userId={user.id} />
               </Flex>
             </AppListItem>
           ))}
