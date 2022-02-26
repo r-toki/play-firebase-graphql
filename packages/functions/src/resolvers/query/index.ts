@@ -1,20 +1,15 @@
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
 import { getDoc, getDocs } from "../../lib/query/util/get";
+import { getFeed } from "../../lib/repositories/feed";
+import { getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
-import { getFeed } from "./../../lib/query/getFeed";
-import { getTweet } from "./../../lib/query/getTweet";
 
 export const Query: Resolvers["Query"] = {
   me: async (parent, args, context) => {
     isSignedIn(context);
 
-    const {
-      decodedIdToken: { uid },
-      db,
-    } = context;
-
-    const meDoc = await getDoc(usersRef(db).doc(uid));
+    const meDoc = await getDoc(usersRef(context.db).doc(context.decodedIdToken.uid));
 
     return meDoc;
   },
@@ -22,10 +17,7 @@ export const Query: Resolvers["Query"] = {
   user: async (parent, args, context) => {
     isSignedIn(context);
 
-    const { id } = args;
-    const { db } = context;
-
-    const userDoc = await getDoc(usersRef(db).doc(id));
+    const userDoc = await getDoc(usersRef(context.db).doc(args.id));
 
     return userDoc;
   },
@@ -33,9 +25,7 @@ export const Query: Resolvers["Query"] = {
   users: async (parent, args, context) => {
     isSignedIn(context);
 
-    const { db } = context;
-
-    const userDocs = await getDocs(usersRef(db).orderBy("createdAt", "desc"));
+    const userDocs = await getDocs(usersRef(context.db).orderBy("createdAt", "desc"));
 
     return userDocs;
   },
@@ -43,10 +33,7 @@ export const Query: Resolvers["Query"] = {
   tweet: async (parent, args, context) => {
     isSignedIn(context);
 
-    const { id } = args;
-    const { db } = context;
-
-    const tweetDoc = await getTweet(db, { tweetId: id });
+    const tweetDoc = await getTweet(context.db, { tweetId: args.id });
 
     return tweetDoc;
   },
@@ -54,16 +41,10 @@ export const Query: Resolvers["Query"] = {
   feed: async (parent, args, context) => {
     isSignedIn(context);
 
-    const { first, after } = args;
-    const {
-      decodedIdToken: { uid },
-      db,
-    } = context;
-
-    const tweetConnection = await getFeed(db, {
-      userId: uid,
-      first,
-      after,
+    const tweetConnection = await getFeed(context.db, {
+      userId: context.decodedIdToken.uid,
+      first: args.first,
+      after: args.after,
     });
 
     return tweetConnection;
@@ -72,10 +53,7 @@ export const Query: Resolvers["Query"] = {
   tweetEdge: async (parent, args, context) => {
     isSignedIn(context);
 
-    const { id } = args;
-    const { db } = context;
-
-    const tweetDoc = await getTweet(db, { tweetId: id });
+    const tweetDoc = await getTweet(context.db, { tweetId: args.id });
     const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
 
     return tweetEdge;
