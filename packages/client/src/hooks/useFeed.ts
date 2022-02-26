@@ -7,6 +7,7 @@ import { db } from "../firebase-app";
 import { useFavoriteTweetsQuery, useFeedQuery, useTweetEdgeLazyQuery } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 import { useAuthed } from "./../context/Authed";
+import { FeedDocument } from "./../graphql/generated";
 
 gql`
   query feed($input: FeedInput!) {
@@ -112,6 +113,11 @@ export const useSubscribeTweets = () => {
         });
         const tweetEdge = tweetEdgeResult.data?.tweetEdge;
         if (!tweetEdge) return;
+
+        client.cache.updateQuery({ query: FeedDocument, overwrite: true }, (data) => {
+          if (!data) return data;
+          return { ...data, feed: { ...data.feed, edges: [tweetEdge, ...data.feed.edges] } };
+        });
       }
 
       if (change.doc.data().type === "update") {
