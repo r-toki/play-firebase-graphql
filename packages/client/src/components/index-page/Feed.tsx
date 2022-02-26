@@ -15,10 +15,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { useEffect, useState, VFC } from "react";
+import { orderBy } from "lodash-es";
+import { useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
 import {
+  FavoriteTweetsDocument,
   FeedItemFragment,
   useDeleteTweetMutation,
   useLikeMutation,
@@ -90,10 +92,44 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
     setIsEditing(false);
   };
 
-  const [like] = useLikeMutation();
-  const [unLike] = useUnLikeMutation();
+  const [like] = useLikeMutation({
+    update(cache, result) {
+      cache.updateQuery({ query: FavoriteTweetsDocument, overwrite: true }, (data) => {
+        if (!data) return data;
+        if (!result.data) return data;
+        return {
+          ...data,
+          favoriteTweets: {
+            ...data.favoriteTweets,
+            edges: orderBy(
+              [...data.favoriteTweets.edges, result.data.like],
+              (v) => v.cursor,
+              "desc"
+            ),
+          },
+        };
+      });
+    },
+  });
 
-  const client = useApolloClient();
+  const [unLike] = useUnLikeMutation({
+    update(cache, result) {
+      cache.updateQuery({ query: FavoriteTweetsDocument, overwrite: true }, (data) => {
+        if (!data) return data;
+        if (!result.data) return data;
+        return {
+          ...data,
+          favoriteTweets: {
+            ...data.favoriteTweets,
+            edges: [...data.favoriteTweets.edges].filter(
+              // FIXME: なぜか partial になる
+              (v) => v.node.id !== result.data!.unLike.id
+            ),
+          },
+        };
+      });
+    },
+  });
 
   return (
     <Stack>
@@ -159,7 +195,6 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
             size="xs"
             onClick={() => {
               like({ variables: { tweetId: tweet.id } });
-              console.log(client.cache);
             }}
           >
             <StarIcon color="gray.400" />
