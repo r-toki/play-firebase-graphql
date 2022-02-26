@@ -8,7 +8,7 @@ generates:
       - "typescript-resolvers"
     config:
       useIndexSignature: true
-      contextType: ../resolvers/context#Context
+      contextType: ../context#Context
       mappers:
         User: ../lib/typed-ref/types#UserDoc
         Tweet: ../lib/typed-ref/types#UserTweetDoc

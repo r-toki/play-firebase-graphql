@@ -1,6 +1,6 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { UserDoc, UserTweetDoc } from '../lib/typed-ref/types';
-import { Context } from '../resolvers/context';
+import { Context } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -23,7 +23,7 @@ export type CreateTweetInput = {
 };
 
 export type FollowInput = {
-  followedId: Scalars['String'];
+  followedId: Scalars['ID'];
 };
 
 export type Mutation = {
@@ -64,8 +64,8 @@ export type Query = {
   __typename?: 'Query';
   feed: TweetConnection;
   me: User;
-  oneOfFeed: TweetEdge;
   tweet: Tweet;
+  tweetEdge: TweetEdge;
   user: User;
   users: Array<User>;
 };
@@ -77,12 +77,12 @@ export type QueryFeedArgs = {
 };
 
 
-export type QueryOneOfFeedArgs = {
+export type QueryTweetArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QueryTweetArgs = {
+export type QueryTweetEdgeArgs = {
   id: Scalars['ID'];
 };
 
@@ -112,7 +112,7 @@ export type TweetEdge = {
 };
 
 export type UnFollowInput = {
-  followedId: Scalars['String'];
+  followedId: Scalars['ID'];
 };
 
 export type UpdateProfileInput = {
@@ -256,8 +256,8 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFeedArgs, 'first'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  oneOfFeed?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<QueryOneOfFeedArgs, 'id'>>;
   tweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<QueryTweetArgs, 'id'>>;
+  tweetEdge?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<QueryTweetEdgeArgs, 'id'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 }>;

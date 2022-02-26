@@ -9,7 +9,7 @@ import {
   FeedForIndexPageDocument,
   FeedForIndexPageQuery,
   useFeedForIndexPageQuery,
-  useOneOfFeedForIndexPageLazyQuery,
+  useTweetEdgeForIndexPageLazyQuery,
 } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 
@@ -35,8 +35,8 @@ gql`
     }
   }
 
-  query oneOfFeedForIndexPage($id: ID!) {
-    oneOfFeed(id: $id) {
+  query tweetEdgeForIndexPage($id: ID!) {
+    tweetEdge(id: $id) {
       node {
         id
         content
@@ -70,7 +70,7 @@ export const useFeed = () => {
 
 export const useSubscribeFeed = () => {
   const client = useApolloClient();
-  const [getOneOfFeed] = useOneOfFeedForIndexPageLazyQuery();
+  const [getTweetEdge] = useTweetEdgeForIndexPageLazyQuery();
 
   const now = useMemo(() => Timestamp.now(), []);
   const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
@@ -84,22 +84,22 @@ export const useSubscribeFeed = () => {
       if (change.doc.data().type === "create" || change.doc.data().type === "update") {
         console.log("--- tweet has been created/updated ---");
 
-        const oneOfFeedResult = await getOneOfFeed({
+        const oneOfFeedResult = await getTweetEdge({
           variables: { id: change.doc.data().tweetId },
         });
-        const newOneOfFeed = oneOfFeedResult.data?.oneOfFeed;
+        const tweetEdge = oneOfFeedResult.data?.tweetEdge;
 
         client.cache.updateQuery(
           { query: FeedForIndexPageDocument, overwrite: true },
           (data: Data): Data => {
             if (!data) return data;
-            if (!newOneOfFeed) return data;
+            if (!tweetEdge) return data;
             if (data.feed.pageInfo.endCursor) {
-              if (data.feed.pageInfo.endCursor > newOneOfFeed.cursor) return data;
+              if (data.feed.pageInfo.endCursor > tweetEdge.cursor) return data;
             }
 
             const edges = orderBy(
-              uniqBy([...data.feed.edges, newOneOfFeed], (v) => v.node.id),
+              uniqBy([...data.feed.edges, tweetEdge], (v) => v.node.id),
               (v) => v.cursor,
               "desc"
             );

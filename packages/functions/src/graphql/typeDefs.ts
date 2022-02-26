@@ -8,7 +8,7 @@ input CreateTweetInput {
 scalar DateTime
 
 input FollowInput {
-  followedId: String!
+  followedId: ID!
 }
 
 type Mutation {
@@ -26,8 +26,8 @@ type PageInfo {
 type Query {
   feed(after: String, first: Int!): TweetConnection!
   me: User!
-  oneOfFeed(id: ID!): TweetEdge!
   tweet(id: ID!): Tweet!
+  tweetEdge(id: ID!): TweetEdge!
   user(id: ID!): User!
   users: [User!]!
 }
@@ -50,7 +50,7 @@ type TweetEdge {
 }
 
 input UnFollowInput {
-  followedId: String!
+  followedId: ID!
 }
 
 input UpdateProfileInput {
