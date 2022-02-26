@@ -24,12 +24,8 @@ type PageInfo {
 }
 
 type Query {
-  favoriteTweets(after: String, first: Int!): TweetConnection!
-  feed(after: String, first: Int!): TweetConnection!
   me: User!
-  tweet(id: ID!): Tweet!
   tweetEdge(id: ID!): TweetEdge!
-  user(id: ID!): User!
   users: [User!]!
 }
 
@@ -61,6 +57,8 @@ input UpdateTweetInput {
 
 type User {
   displayName: String!
+  favoriteTweets(after: String, first: Int!): TweetConnection!
+  feed(after: String, first: Int!): TweetConnection!
   followers: [User!]!
   followings: [User!]!
   id: String!

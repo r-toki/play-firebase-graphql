@@ -1,13 +1,10 @@
 import { gql, useApolloClient } from "@apollo/client";
 import { query, Timestamp, where } from "firebase/firestore";
-import { orderBy, uniqBy } from "lodash-es";
 import { useEffect, useMemo } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
 import {
-  FeedForIndexPageDocument,
-  FeedForIndexPageQuery,
   useFavoriteTweetsForIndexPageLazyQuery,
   useFeedForIndexPageQuery,
   useTweetEdgeForIndexPageLazyQuery,
@@ -16,33 +13,37 @@ import { tweetEventsRef } from "../lib/typed-ref";
 
 gql`
   query feedForIndexPage($first: Int!, $after: String) {
-    feed(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          ...feedItem
+    me {
+      feed(first: $first, after: $after) {
+        edges {
+          node {
+            id
+            ...feedItem
+          }
+          cursor
         }
-        cursor
-      }
-      pageInfo {
-        hasNext
-        endCursor
+        pageInfo {
+          hasNext
+          endCursor
+        }
       }
     }
   }
 
   query favoriteTweetsForIndexPage($first: Int!, $after: String) {
-    favoriteTweets(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          ...feedItem
+    me {
+      favoriteTweets(first: $first, after: $after) {
+        edges {
+          node {
+            id
+            ...feedItem
+          }
+          cursor
         }
-        cursor
-      }
-      pageInfo {
-        hasNext
-        endCursor
+        pageInfo {
+          hasNext
+          endCursor
+        }
       }
     }
   }
@@ -64,9 +65,9 @@ export const useFeed = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const tweets = data?.feed.edges.map(({ node }) => node) ?? [];
-  const hasNext = data?.feed.pageInfo.hasNext;
-  const endCursor = data?.feed.pageInfo.endCursor;
+  const tweets = data?.me.feed.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.me.feed.pageInfo.hasNext;
+  const endCursor = data?.me.feed.pageInfo.endCursor;
 
   const loadMore = () => {
     fetchMore({ variables: { first: 10, after: endCursor } });
@@ -81,9 +82,9 @@ export const useFavoriteTweets = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const tweets = data?.favoriteTweets.edges.map(({ node }) => node) ?? [];
-  const hasNext = data?.favoriteTweets.pageInfo.hasNext;
-  const endCursor = data?.favoriteTweets.pageInfo.endCursor;
+  const tweets = data?.me.favoriteTweets.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.me.favoriteTweets.pageInfo.hasNext;
+  const endCursor = data?.me.favoriteTweets.pageInfo.endCursor;
 
   const loadMore = () => {
     fetchMore({ variables: { first: 10, after: endCursor } });
@@ -103,53 +104,12 @@ export const useSubscribeTweets = () => {
     tweetEvents?.docChanges().forEach(async (change) => {
       if (change.type !== "added") return;
 
-      type Data = FeedForIndexPageQuery | null;
-
       if (change.doc.data().type === "create" || change.doc.data().type === "update") {
         console.log("--- tweet has been created/updated ---");
-
-        const tweetEdgeResult = await getTweetEdge({
-          variables: { id: change.doc.data().tweetId },
-        });
-        const tweetEdge = tweetEdgeResult.data?.tweetEdge;
-
-        client.cache.updateQuery(
-          { query: FeedForIndexPageDocument, overwrite: true },
-          (data: Data): Data => {
-            if (!data) return data;
-            if (!tweetEdge) return data;
-            if (data.feed.pageInfo.endCursor) {
-              if (data.feed.pageInfo.endCursor > tweetEdge.cursor) return data;
-            }
-
-            const edges = orderBy(
-              uniqBy([...data.feed.edges, tweetEdge], (v) => v.node.id),
-              (v) => v.cursor,
-              "desc"
-            );
-
-            return {
-              feed: { ...data.feed, edges },
-            };
-          }
-        );
       }
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
-
-        client.cache.updateQuery(
-          { query: FeedForIndexPageDocument, overwrite: true },
-          (data: Data): Data => {
-            if (!data) return data;
-
-            const edges = data.feed.edges.filter((v) => v.node.id !== change.doc.data().tweetId);
-
-            return {
-              feed: { ...data.feed, edges },
-            };
-          }
-        );
       }
     });
   }, [tweetEvents]);

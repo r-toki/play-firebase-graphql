@@ -13,8 +13,9 @@ gql`
     displayName
   }
 
-  query currentUser($id: ID!) {
-    user(id: $id) {
+  query currentUser {
+    me {
+      id
       ...currentUser
     }
   }

@@ -6,6 +6,8 @@ type User {
   tweets: [Tweet!]!
   followings: [User!]!
   followers: [User!]!
+  feed(first: Int!, after: String): TweetConnection!
+  favoriteTweets(first: Int!, after: String): TweetConnection!
 }
 
 type Tweet {
@@ -33,12 +35,8 @@ type TweetConnection {
 
 type Query {
   me: User!
-  user(id: ID!): User!
   users: [User!]!
-  feed(first: Int!, after: String): TweetConnection!
   tweetEdge(id: ID!): TweetEdge!
-  tweet(id: ID!): Tweet!
-  favoriteTweets(first: Int!, after: String): TweetConnection!
 }
 
 input UpdateProfileInput {

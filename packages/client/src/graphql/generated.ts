@@ -81,39 +81,13 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  favoriteTweets: TweetConnection;
-  feed: TweetConnection;
   me: User;
-  tweet: Tweet;
   tweetEdge: TweetEdge;
-  user: User;
   users: Array<User>;
 };
 
 
-export type QueryFavoriteTweetsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-};
-
-
-export type QueryFeedArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-};
-
-
-export type QueryTweetArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type QueryTweetEdgeArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
@@ -149,10 +123,24 @@ export type UpdateTweetInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
+  favoriteTweets: TweetConnection;
+  feed: TweetConnection;
   followers: Array<User>;
   followings: Array<User>;
   id: Scalars['String'];
   tweets: Array<Tweet>;
+};
+
+
+export type UserFavoriteTweetsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
+
+export type UserFeedArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
 export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
@@ -219,12 +207,10 @@ export type UnFollowForIndexPageMutation = { __typename?: 'Mutation', unFollow: 
 
 export type CurrentUserFragment = { __typename?: 'User', id: string, displayName: string };
 
-export type CurrentUserQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
+export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
 export type FeedForIndexPageQueryVariables = Exact<{
   first: Scalars['Int'];
@@ -232,7 +218,7 @@ export type FeedForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+export type FeedForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
   first: Scalars['Int'];
@@ -240,7 +226,7 @@ export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type TweetEdgeForIndexPageQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -601,8 +587,9 @@ export type UnFollowForIndexPageMutationHookResult = ReturnType<typeof useUnFoll
 export type UnFollowForIndexPageMutationResult = Apollo.MutationResult<UnFollowForIndexPageMutation>;
 export type UnFollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
 export const CurrentUserDocument = gql`
-    query currentUser($id: ID!) {
-  user(id: $id) {
+    query currentUser {
+  me {
+    id
     ...currentUser
   }
 }
@@ -620,11 +607,10 @@ export const CurrentUserDocument = gql`
  * @example
  * const { data, loading, error } = useCurrentUserQuery({
  *   variables: {
- *      id: // value for 'id'
  *   },
  * });
  */
-export function useCurrentUserQuery(baseOptions: Apollo.QueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
+export function useCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, options);
       }
@@ -637,17 +623,19 @@ export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLaz
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
 export const FeedForIndexPageDocument = gql`
     query feedForIndexPage($first: Int!, $after: String) {
-  feed(first: $first, after: $after) {
-    edges {
-      node {
-        id
-        ...feedItem
+  me {
+    feed(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          ...feedItem
+        }
+        cursor
       }
-      cursor
-    }
-    pageInfo {
-      hasNext
-      endCursor
+      pageInfo {
+        hasNext
+        endCursor
+      }
     }
   }
 }
@@ -683,17 +671,19 @@ export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIn
 export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
 export const FavoriteTweetsForIndexPageDocument = gql`
     query favoriteTweetsForIndexPage($first: Int!, $after: String) {
-  favoriteTweets(first: $first, after: $after) {
-    edges {
-      node {
-        id
-        ...feedItem
+  me {
+    favoriteTweets(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          ...feedItem
+        }
+        cursor
       }
-      cursor
-    }
-    pageInfo {
-      hasNext
-      endCursor
+      pageInfo {
+        hasNext
+        endCursor
+      }
     }
   }
 }

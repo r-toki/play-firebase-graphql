@@ -1,8 +1,9 @@
 import { Resolvers } from "../../graphql/generated";
 import { getDoc, getDocs } from "../../lib/query-util/get";
+import { getFeed } from "../../lib/repositories/feed";
 import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
 import { usersRef, userTweetsRef } from "../../lib/typed-ref";
-import { getFavorite } from "./../../lib/repositories/like";
+import { getFavorite, getFavoriteTweets } from "./../../lib/repositories/like";
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {
@@ -20,6 +21,24 @@ export const User: Resolvers["User"] = {
   followers: async (parent, args, context) => {
     const followerDocs = await getFollowers(context.db, { userId: parent.id });
     return followerDocs;
+  },
+
+  feed: async (parent, args, context) => {
+    const tweetConnection = await getFeed(context.db, {
+      userId: parent.id,
+      first: args.first,
+      after: args.after,
+    });
+    return tweetConnection;
+  },
+
+  favoriteTweets: async (parent, args, context) => {
+    const tweetConnection = await getFavoriteTweets(context.db, {
+      userId: parent.id,
+      first: args.first,
+      after: args.after,
+    });
+    return tweetConnection;
   },
 };
 
