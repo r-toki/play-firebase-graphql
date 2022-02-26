@@ -155,14 +155,14 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
-export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } };
+export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
 
 export type DeleteTweetMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteTweetMutation = { __typename?: 'Mutation', deleteTweet: { __typename?: 'User', id: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> } };
+export type DeleteTweetMutation = { __typename?: 'Mutation', deleteTweet: { __typename?: 'User', id: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } }> } };
 
 export type UpdateTweetMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -170,7 +170,21 @@ export type UpdateTweetMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTweetMutation = { __typename?: 'Mutation', updateTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
+export type UpdateTweetMutation = { __typename?: 'Mutation', updateTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
+
+export type LikeMutationVariables = Exact<{
+  tweetId: Scalars['ID'];
+}>;
+
+
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
+
+export type UnLikeMutationVariables = Exact<{
+  tweetId: Scalars['ID'];
+}>;
+
+
+export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type CreateTweetMutationVariables = Exact<{
   input: CreateTweetInput;
@@ -218,14 +232,22 @@ export type FeedForIndexPageQueryVariables = Exact<{
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+export type FeedForIndexPageQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
+
+export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
 
 export type TweetEdgeForIndexPageQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type TweetEdgeForIndexPageQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } } };
+export type TweetEdgeForIndexPageQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -243,6 +265,7 @@ export const FeedItemFragmentDoc = gql`
     id
     displayName
   }
+  favorite
 }
     `;
 export const CurrentUserFragmentDoc = gql`
@@ -323,6 +346,74 @@ export function useUpdateTweetMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateTweetMutationHookResult = ReturnType<typeof useUpdateTweetMutation>;
 export type UpdateTweetMutationResult = Apollo.MutationResult<UpdateTweetMutation>;
 export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetMutation, UpdateTweetMutationVariables>;
+export const LikeDocument = gql`
+    mutation like($tweetId: ID!) {
+  like(tweetId: $tweetId) {
+    id
+    ...feedItem
+  }
+}
+    ${FeedItemFragmentDoc}`;
+export type LikeMutationFn = Apollo.MutationFunction<LikeMutation, LikeMutationVariables>;
+
+/**
+ * __useLikeMutation__
+ *
+ * To run a mutation, you first call `useLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeMutation, { data, loading, error }] = useLikeMutation({
+ *   variables: {
+ *      tweetId: // value for 'tweetId'
+ *   },
+ * });
+ */
+export function useLikeMutation(baseOptions?: Apollo.MutationHookOptions<LikeMutation, LikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeMutation, LikeMutationVariables>(LikeDocument, options);
+      }
+export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
+export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
+export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
+export const UnLikeDocument = gql`
+    mutation unLike($tweetId: ID!) {
+  unLike(tweetId: $tweetId) {
+    id
+    ...feedItem
+  }
+}
+    ${FeedItemFragmentDoc}`;
+export type UnLikeMutationFn = Apollo.MutationFunction<UnLikeMutation, UnLikeMutationVariables>;
+
+/**
+ * __useUnLikeMutation__
+ *
+ * To run a mutation, you first call `useUnLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unLikeMutation, { data, loading, error }] = useUnLikeMutation({
+ *   variables: {
+ *      tweetId: // value for 'tweetId'
+ *   },
+ * });
+ */
+export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeMutation, UnLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnLikeMutation, UnLikeMutationVariables>(UnLikeDocument, options);
+      }
+export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
+export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
+export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
 export const CreateTweetDocument = gql`
     mutation createTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {
@@ -545,17 +636,12 @@ export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
 export const FeedForIndexPageDocument = gql`
-    query FeedForIndexPage($first: Int!, $after: String) {
+    query feedForIndexPage($first: Int!, $after: String) {
   feed(first: $first, after: $after) {
     edges {
       node {
         id
-        content
-        createdAt
-        creator {
-          id
-          displayName
-        }
+        ...feedItem
       }
       cursor
     }
@@ -565,7 +651,7 @@ export const FeedForIndexPageDocument = gql`
     }
   }
 }
-    `;
+    ${FeedItemFragmentDoc}`;
 
 /**
  * __useFeedForIndexPageQuery__
@@ -595,22 +681,63 @@ export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
 export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
 export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
+export const FavoriteTweetsForIndexPageDocument = gql`
+    query favoriteTweetsForIndexPage($first: Int!, $after: String) {
+  favoriteTweets(first: $first, after: $after) {
+    edges {
+      node {
+        id
+        ...feedItem
+      }
+      cursor
+    }
+    pageInfo {
+      hasNext
+      endCursor
+    }
+  }
+}
+    ${FeedItemFragmentDoc}`;
+
+/**
+ * __useFavoriteTweetsForIndexPageQuery__
+ *
+ * To run a query within a React component, call `useFavoriteTweetsForIndexPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFavoriteTweetsForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFavoriteTweetsForIndexPageQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useFavoriteTweetsForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>(FavoriteTweetsForIndexPageDocument, options);
+      }
+export function useFavoriteTweetsForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>(FavoriteTweetsForIndexPageDocument, options);
+        }
+export type FavoriteTweetsForIndexPageQueryHookResult = ReturnType<typeof useFavoriteTweetsForIndexPageQuery>;
+export type FavoriteTweetsForIndexPageLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsForIndexPageLazyQuery>;
+export type FavoriteTweetsForIndexPageQueryResult = Apollo.QueryResult<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>;
 export const TweetEdgeForIndexPageDocument = gql`
     query tweetEdgeForIndexPage($id: ID!) {
   tweetEdge(id: $id) {
     node {
       id
-      content
-      createdAt
-      creator {
-        id
-        displayName
-      }
+      ...feedItem
     }
     cursor
   }
 }
-    `;
+    ${FeedItemFragmentDoc}`;
 
 /**
  * __useTweetEdgeForIndexPageQuery__

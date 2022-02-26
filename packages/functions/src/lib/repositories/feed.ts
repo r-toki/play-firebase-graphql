@@ -20,7 +20,6 @@ export const getFeed = async (
   );
   const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
     orderBy(snaps, (snap) => snap.data().createdAt, "desc");
-
   const snaps = await execMultiQueriesWithCursor(queries, order, {
     startAfter: after ? Timestamp.fromDate(new Date(after)) : Timestamp.now(),
     limit: first,
@@ -31,7 +30,7 @@ export const getFeed = async (
     node: doc,
     cursor: doc.createdAt.toDate().toISOString(),
   }));
-  const pageInfo = { hasNext: tweetDocs.length > 0, endCursor: last(tweetEdges)?.cursor };
+  const pageInfo = { hasNext: tweetEdges.length === first, endCursor: last(tweetEdges)?.cursor };
 
   return { edges: tweetEdges, pageInfo };
 };

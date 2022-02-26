@@ -8,19 +8,26 @@ import {
   HStack,
   Spinner,
   Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
-import { useState, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
 import {
   FeedItemFragment,
   useDeleteTweetMutation,
+  useLikeMutation,
+  useUnLikeMutation,
   useUpdateTweetMutation,
 } from "../../graphql/generated";
-import { useFeed, useSubscribeFeed } from "../../hooks/useFeed";
+import { useFavoriteTweets, useFeed, useSubscribeTweets } from "../../hooks/useFeed";
 import { useTextInput } from "../../hooks/useTextInput";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
@@ -34,6 +41,7 @@ gql`
       id
       displayName
     }
+    favorite
   }
 
   mutation deleteTweet($id: ID!) {
@@ -48,6 +56,20 @@ gql`
 
   mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
     updateTweet(id: $id, input: $input) {
+      id
+      ...feedItem
+    }
+  }
+
+  mutation like($tweetId: ID!) {
+    like(tweetId: $tweetId) {
+      id
+      ...feedItem
+    }
+  }
+
+  mutation unLike($tweetId: ID!) {
+    unLike(tweetId: $tweetId) {
       id
       ...feedItem
     }
@@ -70,14 +92,17 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
     setIsEditing(false);
   };
 
+  const [like] = useLikeMutation();
+  const [unLike] = useUnLikeMutation();
+
   return (
-    <Box>
+    <Stack>
       <Flex justifyContent="space-between">
         <HStack>
           <Box fontWeight="bold">{tweet.creator.displayName}</Box>
           <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
         </HStack>
-        {tweet.creator.id === currentUser.id ? (
+        {tweet.creator.id === currentUser.id && (
           <HStack>
             <Button
               size="xs"
@@ -95,15 +120,6 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
               }}
             >
               <DeleteIcon />
-            </Button>
-          </HStack>
-        ) : (
-          <HStack>
-            <Button variant="outline" size="xs">
-              <StarIcon color="yellow.400" />
-            </Button>
-            <Button variant="outline" size="xs">
-              <StarIcon color="gray.400" />
             </Button>
           </HStack>
         )}
@@ -125,19 +141,39 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
       ) : (
         <Box>{tweet.content}</Box>
       )}
-    </Box>
+
+      <Box>
+        {tweet.favorite ? (
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              unLike({ variables: { tweetId: tweet.id } });
+            }}
+          >
+            <StarIcon color="yellow.400" />
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              like({ variables: { tweetId: tweet.id } });
+            }}
+          >
+            <StarIcon color="gray.400" />
+          </Button>
+        )}
+      </Box>
+    </Stack>
   );
 };
 
-export const Feed: VFC = () => {
+const Tweets: VFC = () => {
   const { tweets, hasNext, loading, loadMore } = useFeed();
-  useSubscribeFeed();
 
   return (
     <Stack>
-      <Box alignSelf="center" fontWeight="bold">
-        Tweets
-      </Box>
       {tweets.length && (
         <AppList>
           {tweets.map((tweet) => (
@@ -161,5 +197,61 @@ export const Feed: VFC = () => {
         </AppList>
       )}
     </Stack>
+  );
+};
+
+const FavoriteTweets: VFC = () => {
+  const { tweets, hasNext, loading, loadMore } = useFavoriteTweets();
+
+  useEffect(() => {
+    console.log(hasNext);
+  }, [hasNext]);
+
+  return (
+    <Stack>
+      {tweets.length && (
+        <AppList>
+          {tweets.map((tweet) => (
+            <AppListItem key={tweet.id}>
+              <FeedItem tweet={tweet} />
+            </AppListItem>
+          ))}
+          {loading ? (
+            <AppListItem>
+              <Center>
+                <Spinner />
+              </Center>
+            </AppListItem>
+          ) : hasNext ? (
+            <AppListItem>
+              <Center>
+                <MoreSpinner cb={loadMore} />
+              </Center>
+            </AppListItem>
+          ) : null}
+        </AppList>
+      )}
+    </Stack>
+  );
+};
+
+export const Feed: VFC = () => {
+  useSubscribeTweets();
+
+  return (
+    <Tabs>
+      <TabList>
+        <Tab fontWeight="bold">Tweet</Tab>
+        <Tab fontWeight="bold">Favorite</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel px="0">
+          <Tweets />
+        </TabPanel>
+        <TabPanel px="0">
+          <FavoriteTweets />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };

@@ -8,23 +8,35 @@ import { db } from "../firebase-app";
 import {
   FeedForIndexPageDocument,
   FeedForIndexPageQuery,
+  useFavoriteTweetsForIndexPageQuery,
   useFeedForIndexPageQuery,
   useTweetEdgeForIndexPageLazyQuery,
 } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 
 gql`
-  query FeedForIndexPage($first: Int!, $after: String) {
+  query feedForIndexPage($first: Int!, $after: String) {
     feed(first: $first, after: $after) {
       edges {
         node {
           id
-          content
-          createdAt
-          creator {
-            id
-            displayName
-          }
+          ...feedItem
+        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
+      }
+    }
+  }
+
+  query favoriteTweetsForIndexPage($first: Int!, $after: String) {
+    favoriteTweets(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          ...feedItem
         }
         cursor
       }
@@ -39,12 +51,7 @@ gql`
     tweetEdge(id: $id) {
       node {
         id
-        content
-        createdAt
-        creator {
-          id
-          displayName
-        }
+        ...feedItem
       }
       cursor
     }
@@ -68,7 +75,24 @@ export const useFeed = () => {
   return { tweets, hasNext, loading, loadMore };
 };
 
-export const useSubscribeFeed = () => {
+export const useFavoriteTweets = () => {
+  const { data, loading, fetchMore } = useFavoriteTweetsForIndexPageQuery({
+    variables: { first: 20 },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const tweets = data?.favoriteTweets.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.favoriteTweets.pageInfo.hasNext;
+  const endCursor = data?.favoriteTweets.pageInfo.endCursor;
+
+  const loadMore = () => {
+    fetchMore({ variables: { first: 10, after: endCursor } });
+  };
+
+  return { tweets, hasNext, loading, loadMore };
+};
+
+export const useSubscribeTweets = () => {
   const client = useApolloClient();
   const [getTweetEdge] = useTweetEdgeForIndexPageLazyQuery();
 

@@ -1,8 +1,6 @@
-import { Firestore, QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
-import { UserTweetData } from "interfaces/admin-schema";
-import { first, last, orderBy } from "lodash";
+import { Firestore, Timestamp } from "firebase-admin/firestore";
+import { first, last } from "lodash";
 
-import { execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-with-cursor";
 import { getDocs } from "../query-util/get";
 import { likesRef, tweetsRef } from "./../typed-ref/index";
 
@@ -11,24 +9,23 @@ export const getFavoriteTweets = async (
   db: Firestore,
   { userId, first, after }: { userId: string; first: number; after: string | null | undefined }
 ) => {
-  const likeDocs = await getDocs(likesRef(db).where("userId", "==", userId));
-
-  const queries = likeDocs.map((v) =>
-    tweetsRef(db).where("tweetId", "==", v.tweetId).orderBy("createdAt", "desc")
+  const likeDocs = await getDocs(
+    likesRef(db)
+      .where("userId", "==", userId)
+      .orderBy("createdAt", "desc")
+      .startAfter(after ? Timestamp.fromDate(new Date(after)) : Timestamp.now())
+      .limit(first)
   );
-  const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
-    orderBy(snaps, (snap) => snap.data().createdAt, "desc");
-  const snaps = await execMultiQueriesWithCursor(queries, order, {
-    startAfter: after ? Timestamp.fromDate(new Date(after)) : Timestamp.now(),
-    limit: first,
-  });
 
-  const tweetDocs = snaps.map((snap) => ({ id: snap.id, ref: snap.ref, ...snap.data() }));
-  const tweetEdges = tweetDocs.map((doc) => ({
+  const tweetDocsList = await Promise.all(
+    likeDocs.map((v) => getDocs(tweetsRef(db).where("tweetId", "==", v.tweetId)))
+  );
+
+  const tweetEdges = tweetDocsList.flat().map((doc) => ({
     node: doc,
     cursor: doc.createdAt.toDate().toISOString(),
   }));
-  const pageInfo = { hasNext: tweetDocs.length > 0, endCursor: last(tweetEdges)?.cursor };
+  const pageInfo = { hasNext: tweetEdges.length === first, endCursor: last(tweetEdges)?.cursor };
 
   return { edges: tweetEdges, pageInfo };
 };
