@@ -10,7 +10,6 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
-
     return meDoc;
   },
 
@@ -18,7 +17,6 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const userDoc = await getDoc(usersRef(context.db).doc(args.id));
-
     return userDoc;
   },
 
@@ -26,7 +24,6 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const userDocs = await getDocs(usersRef(context.db).orderBy("createdAt", "desc"));
-
     return userDocs;
   },
 
@@ -34,7 +31,6 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const tweetDoc = await getTweet(context.db, { tweetId: args.id });
-
     return tweetDoc;
   },
 
@@ -46,7 +42,6 @@ export const Query: Resolvers["Query"] = {
       first: args.first,
       after: args.after,
     });
-
     return tweetConnection;
   },
 
@@ -55,7 +50,6 @@ export const Query: Resolvers["Query"] = {
 
     const tweetDoc = await getTweet(context.db, { tweetId: args.id });
     const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
-
     return tweetEdge;
   },
 };

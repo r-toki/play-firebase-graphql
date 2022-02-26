@@ -17,7 +17,6 @@ export const Mutation: Resolvers["Mutation"] = {
       userId: context.uid,
       displayName: args.input.displayName,
     });
-
     return getDoc(usersRef(context.db).doc(context.uid));
   },
 
@@ -31,7 +30,6 @@ export const Mutation: Resolvers["Mutation"] = {
       content: args.input.content,
     });
     const tweetDoc = await getDoc(userTweetsRef(context.db, { userId: context.uid }).doc(tweetId));
-
     return tweetDoc;
   },
 
@@ -43,7 +41,6 @@ export const Mutation: Resolvers["Mutation"] = {
       followedId: args.input.followedId,
     });
     const meDoc = getDoc(usersRef(context.db).doc(context.uid));
-
     return meDoc;
   },
 
@@ -55,7 +52,6 @@ export const Mutation: Resolvers["Mutation"] = {
       followedId: args.input.followedId,
     });
     const meDoc = getDoc(usersRef(context.db).doc(context.uid));
-
     return meDoc;
   },
 };
