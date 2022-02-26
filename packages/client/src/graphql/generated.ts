@@ -135,6 +135,23 @@ export type User = {
   tweets: Array<Tweet>;
 };
 
+export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } };
+
+export type DeleteTweetMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteTweetMutation = { __typename?: 'Mutation', deleteTweet: { __typename?: 'User', id: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } }> } };
+
+export type UpdateTweetMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateTweetInput;
+}>;
+
+
+export type UpdateTweetMutation = { __typename?: 'Mutation', updateTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
+
 export type CreateTweetMutationVariables = Exact<{
   input: CreateTweetInput;
 }>;
@@ -197,12 +214,95 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
+export const FeedItemFragmentDoc = gql`
+    fragment feedItem on Tweet {
+  id
+  content
+  createdAt
+  creator {
+    id
+    displayName
+  }
+}
+    `;
 export const CurrentUserFragmentDoc = gql`
     fragment currentUser on User {
   id
   displayName
 }
     `;
+export const DeleteTweetDocument = gql`
+    mutation deleteTweet($id: ID!) {
+  deleteTweet(id: $id) {
+    id
+    tweets {
+      id
+      ...feedItem
+    }
+  }
+}
+    ${FeedItemFragmentDoc}`;
+export type DeleteTweetMutationFn = Apollo.MutationFunction<DeleteTweetMutation, DeleteTweetMutationVariables>;
+
+/**
+ * __useDeleteTweetMutation__
+ *
+ * To run a mutation, you first call `useDeleteTweetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTweetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTweetMutation, { data, loading, error }] = useDeleteTweetMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTweetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTweetMutation, DeleteTweetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTweetMutation, DeleteTweetMutationVariables>(DeleteTweetDocument, options);
+      }
+export type DeleteTweetMutationHookResult = ReturnType<typeof useDeleteTweetMutation>;
+export type DeleteTweetMutationResult = Apollo.MutationResult<DeleteTweetMutation>;
+export type DeleteTweetMutationOptions = Apollo.BaseMutationOptions<DeleteTweetMutation, DeleteTweetMutationVariables>;
+export const UpdateTweetDocument = gql`
+    mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
+  updateTweet(id: $id, input: $input) {
+    id
+    ...feedItem
+  }
+}
+    ${FeedItemFragmentDoc}`;
+export type UpdateTweetMutationFn = Apollo.MutationFunction<UpdateTweetMutation, UpdateTweetMutationVariables>;
+
+/**
+ * __useUpdateTweetMutation__
+ *
+ * To run a mutation, you first call `useUpdateTweetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTweetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTweetMutation, { data, loading, error }] = useUpdateTweetMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTweetMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTweetMutation, UpdateTweetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTweetMutation, UpdateTweetMutationVariables>(UpdateTweetDocument, options);
+      }
+export type UpdateTweetMutationHookResult = ReturnType<typeof useUpdateTweetMutation>;
+export type UpdateTweetMutationResult = Apollo.MutationResult<UpdateTweetMutation>;
+export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetMutation, UpdateTweetMutationVariables>;
 export const CreateTweetDocument = gql`
     mutation createTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {

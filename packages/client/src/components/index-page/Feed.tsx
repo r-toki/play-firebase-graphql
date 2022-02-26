@@ -1,10 +1,121 @@
-import { Box, Center, HStack, Spinner, Stack } from "@chakra-ui/react";
+import { gql } from "@apollo/client";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  HStack,
+  Spinner,
+  Stack,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 import { format } from "date-fns";
-import { VFC } from "react";
+import { useState, VFC } from "react";
 
+import { useAuthed } from "../../context/Authed";
+import {
+  FeedItemFragment,
+  useDeleteTweetMutation,
+  useUpdateTweetMutation,
+} from "../../graphql/generated";
 import { useFeed, useSubscribeFeed } from "../../hooks/useFeed";
+import { useTextInput } from "../../hooks/useTextInput";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
+
+gql`
+  fragment feedItem on Tweet {
+    id
+    content
+    createdAt
+    creator {
+      id
+      displayName
+    }
+  }
+
+  mutation deleteTweet($id: ID!) {
+    deleteTweet(id: $id) {
+      id
+      tweets {
+        id
+        ...feedItem
+      }
+    }
+  }
+
+  mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
+    updateTweet(id: $id, input: $input) {
+      id
+      ...feedItem
+    }
+  }
+`;
+
+export const FeedItem: VFC<{ tweet: FeedItemFragment }> = ({ tweet }) => {
+  const { currentUser } = useAuthed();
+
+  const [deleteTweet] = useDeleteTweetMutation();
+  const [updateTweet] = useUpdateTweetMutation();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [contentInput] = useTextInput(tweet.content);
+
+  const onUpdate = async () => {
+    await updateTweet({ variables: { id: tweet.id, input: { content: contentInput.value } } });
+    setIsEditing(false);
+  };
+
+  return (
+    <Box>
+      <Flex justifyContent="space-between">
+        <HStack>
+          <Box fontWeight="bold">{tweet.creator.displayName}</Box>
+          <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
+        </HStack>
+        {tweet.creator.id === currentUser.id && (
+          <HStack>
+            <Button
+              size="xs"
+              onClick={() => {
+                setIsEditing((prev) => !prev);
+              }}
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              size="xs"
+              onClick={() => {
+                deleteTweet({ variables: { id: tweet.id } });
+              }}
+            >
+              <DeleteIcon />
+            </Button>
+          </HStack>
+        )}
+      </Flex>
+
+      {isEditing ? (
+        <VStack my="2">
+          <Textarea {...contentInput} rows={5} />
+          <Button
+            alignSelf="end"
+            size="xs"
+            onClick={() => {
+              onUpdate();
+            }}
+          >
+            update
+          </Button>
+        </VStack>
+      ) : (
+        <Box>{tweet.content}</Box>
+      )}
+    </Box>
+  );
+};
 
 export const Feed: VFC = () => {
   const { tweets, hasNext, loading, loadMore } = useFeed();
@@ -19,13 +130,7 @@ export const Feed: VFC = () => {
         <AppList>
           {tweets.map((tweet) => (
             <AppListItem key={tweet.id}>
-              <Box>
-                <HStack>
-                  <Box fontWeight="bold">{tweet.creator.displayName}</Box>
-                  <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
-                </HStack>
-                <Box>{tweet.content}</Box>
-              </Box>
+              <FeedItem tweet={tweet} />
             </AppListItem>
           ))}
           {loading ? (
