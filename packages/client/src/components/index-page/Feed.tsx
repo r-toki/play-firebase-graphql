@@ -199,7 +199,10 @@ const Tweets: VFC = () => {
 };
 
 const Likes: VFC = () => {
-  const { tweets, hasNext, loading, loadMore } = useFavoriteTweets();
+  const { tweets, hasNext, loading, fetch, loadMore } = useFavoriteTweets();
+  useEffect(() => {
+    fetch();
+  }, []);
 
   return (
     <Stack>
