@@ -7,6 +7,18 @@ input CreateTweetInput {
 
 scalar DateTime
 
+input FavoriteTweetsInput {
+  after: String
+  first: Int!
+  userId: ID!
+}
+
+input FeedInput {
+  after: String
+  first: Int!
+  userId: ID!
+}
+
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
   deleteTweet(id: ID!): User!
@@ -24,6 +36,8 @@ type PageInfo {
 }
 
 type Query {
+  favoriteTweets(input: FavoriteTweetsInput!): TweetConnection!
+  feed(input: FeedInput!): TweetConnection!
   me: User!
   tweetEdge(id: ID!): TweetEdge!
   users: [User!]!
@@ -57,8 +71,6 @@ input UpdateTweetInput {
 
 type User {
   displayName: String!
-  favoriteTweets(after: String, first: Int!): TweetConnection!
-  feed(after: String, first: Int!): TweetConnection!
   followers: [User!]!
   followings: [User!]!
   id: String!

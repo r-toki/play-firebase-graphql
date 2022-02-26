@@ -22,6 +22,18 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
+export type FavoriteTweetsInput = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+  userId: Scalars['ID'];
+};
+
+export type FeedInput = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+  userId: Scalars['ID'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
@@ -83,9 +95,21 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  favoriteTweets: TweetConnection;
+  feed: TweetConnection;
   me: User;
   tweetEdge: TweetEdge;
   users: Array<User>;
+};
+
+
+export type QueryFavoriteTweetsArgs = {
+  input: FavoriteTweetsInput;
+};
+
+
+export type QueryFeedArgs = {
+  input: FeedInput;
 };
 
 
@@ -125,24 +149,10 @@ export type UpdateTweetInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
-  favoriteTweets: TweetConnection;
-  feed: TweetConnection;
   followers: Array<User>;
   followings: Array<User>;
   id: Scalars['String'];
   tweets: Array<Tweet>;
-};
-
-
-export type UserFavoriteTweetsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-};
-
-
-export type UserFeedArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -218,6 +228,8 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateTweetInput: CreateTweetInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  FavoriteTweetsInput: FavoriteTweetsInput;
+  FeedInput: FeedInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -237,6 +249,8 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   CreateTweetInput: CreateTweetInput;
   DateTime: Scalars['DateTime'];
+  FavoriteTweetsInput: FavoriteTweetsInput;
+  FeedInput: FeedInput;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
@@ -273,6 +287,8 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  favoriteTweets?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFavoriteTweetsArgs, 'input'>>;
+  feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<QueryFeedArgs, 'input'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   tweetEdge?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<QueryTweetEdgeArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
@@ -301,8 +317,6 @@ export type TweetEdgeResolvers<ContextType = Context, ParentType extends Resolve
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  favoriteTweets?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<UserFavoriteTweetsArgs, 'first'>>;
-  feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<UserFeedArgs, 'first'>>;
   followers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   followings?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

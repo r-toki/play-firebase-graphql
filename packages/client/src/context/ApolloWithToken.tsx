@@ -9,7 +9,7 @@ const httpLink = createHttpLink({ uri: GRAPHQL_ENDPOINT });
 
 const cache = new InMemoryCache({
   typePolicies: {
-    User: {
+    Query: {
       fields: {
         feed: {
           keyArgs: false,

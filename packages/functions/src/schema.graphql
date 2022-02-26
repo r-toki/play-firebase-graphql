@@ -6,8 +6,6 @@ type User {
   tweets: [Tweet!]!
   followings: [User!]!
   followers: [User!]!
-  feed(first: Int!, after: String): TweetConnection!
-  favoriteTweets(first: Int!, after: String): TweetConnection!
 }
 
 type Tweet {
@@ -16,6 +14,18 @@ type Tweet {
   createdAt: DateTime!
   creator: User!
   favorite: Boolean!
+}
+
+input FeedInput {
+  userId: ID!
+  first: Int!
+  after: String
+}
+
+input FavoriteTweetsInput {
+  userId: ID!
+  first: Int!
+  after: String
 }
 
 type PageInfo {
@@ -37,6 +47,8 @@ type Query {
   me: User!
   users: [User!]!
   tweetEdge(id: ID!): TweetEdge!
+  feed(input: FeedInput!): TweetConnection!
+  favoriteTweets(input: FavoriteTweetsInput!): TweetConnection!
 }
 
 input UpdateProfileInput {

@@ -4,54 +4,44 @@ import { useEffect, useMemo } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
-import {
-  useFavoriteTweetsForIndexPageLazyQuery,
-  useFeedForIndexPageQuery,
-  useTweetEdgeForIndexPageLazyQuery,
-} from "../graphql/generated";
+import { useFavoriteTweetsQuery, useFeedQuery, useTweetEdgeLazyQuery } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 import { useAuthed } from "./../context/Authed";
 
 gql`
-  query feedForIndexPage($first: Int!, $after: String) {
-    me {
-      id
-      feed(first: $first, after: $after) {
-        edges {
-          node {
-            id
-            ...feedItem
-          }
-          cursor
+  query feed($input: FeedInput!) {
+    feed(input: $input) {
+      edges {
+        node {
+          id
+          ...feedItem
         }
-        pageInfo {
-          hasNext
-          endCursor
-        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
       }
     }
   }
 
-  query favoriteTweetsForIndexPage($first: Int!, $after: String) {
-    me {
-      id
-      favoriteTweets(first: $first, after: $after) {
-        edges {
-          node {
-            id
-            ...feedItem
-          }
-          cursor
+  query favoriteTweets($input: FavoriteTweetsInput!) {
+    favoriteTweets(input: $input) {
+      edges {
+        node {
+          id
+          ...feedItem
         }
-        pageInfo {
-          hasNext
-          endCursor
-        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
       }
     }
   }
 
-  query tweetEdgeForIndexPage($id: ID!) {
+  query tweetEdge($id: ID!) {
     tweetEdge(id: $id) {
       node {
         id
@@ -63,45 +53,49 @@ gql`
 `;
 
 export const useFeed = () => {
-  const { data, loading, fetchMore } = useFeedForIndexPageQuery({
-    variables: { first: 20 },
+  const { currentUser } = useAuthed();
+
+  const { data, loading, fetchMore } = useFeedQuery({
+    variables: { input: { userId: currentUser.id, first: 10 } },
     notifyOnNetworkStatusChange: true,
   });
 
-  const tweets = data?.me.feed.edges.map(({ node }) => node) ?? [];
-  const hasNext = data?.me.feed.pageInfo.hasNext;
-  const endCursor = data?.me.feed.pageInfo.endCursor;
+  const tweets = data?.feed.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.feed.pageInfo.hasNext;
+  const endCursor = data?.feed.pageInfo.endCursor;
 
   const loadMore = () => {
-    fetchMore({ variables: { first: 10, after: endCursor } });
+    fetchMore({ variables: { input: { userId: currentUser.id, first: 10, after: endCursor } } });
   };
 
   return { tweets, hasNext, loading, loadMore };
 };
 
 export const useFavoriteTweets = () => {
-  const [fetch, { data, loading, fetchMore }] = useFavoriteTweetsForIndexPageLazyQuery({
-    variables: { first: 20 },
+  const { currentUser } = useAuthed();
+
+  const { data, loading, fetchMore } = useFavoriteTweetsQuery({
+    variables: { input: { userId: currentUser.id, first: 20 } },
     notifyOnNetworkStatusChange: true,
   });
 
-  const favoriteTweets = data?.me.favoriteTweets;
+  const favoriteTweets = data?.favoriteTweets;
   const tweets = favoriteTweets?.edges.map(({ node }) => node) ?? [];
   const hasNext = favoriteTweets?.pageInfo.hasNext;
   const endCursor = favoriteTweets?.pageInfo.endCursor;
 
   const loadMore = () => {
-    fetchMore({ variables: { first: 10, after: endCursor } });
+    fetchMore({ variables: { input: { userId: currentUser.id, first: 10, after: endCursor } } });
   };
 
-  return { tweets, hasNext, loading, fetch, loadMore };
+  return { tweets, hasNext, loading, loadMore };
 };
 
 export const useSubscribeTweets = () => {
   const client = useApolloClient();
 
-  const { currentUser } = useAuthed();
-  const [getTweetEdge] = useTweetEdgeForIndexPageLazyQuery();
+  // const { currentUser } = useAuthed();
+  const [getTweetEdge] = useTweetEdgeLazyQuery();
 
   const now = useMemo(() => Timestamp.now(), []);
   const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
@@ -118,28 +112,6 @@ export const useSubscribeTweets = () => {
         });
         const tweetEdge = tweetEdgeResult.data?.tweetEdge;
         if (!tweetEdge) return;
-
-        client.cache.modify({
-          id: client.cache.identify({ __typename: "User", id: currentUser.id }),
-          fields: {
-            feed(existing) {
-              if (!existing) return existing;
-              const pageInfo = existing.pageInfo;
-              if (pageInfo.endCursor > tweetEdge.cursor) return existing;
-
-              // const newTweetEdgeRef = client.cache.writeFragment({
-              //   data: tweetEdge.node,
-              //   fragment: FeedItemFragmentDoc,
-              //   fragmentName: "feedItem",
-              // });
-              // const edges = [newTweetEdgeRef, ...existing.edges];
-              // console.log(client.cache);
-              // console.log(newTweetEdgeRef);
-              const edges = [...existing.edges];
-              return { ...existing, edges };
-            },
-          },
-        });
       }
 
       if (change.doc.data().type === "update") {
@@ -151,24 +123,6 @@ export const useSubscribeTweets = () => {
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
-
-        client.cache.modify({
-          id: client.cache.identify({ __typename: "User", id: currentUser.id }),
-          fields: {
-            feed(existing) {
-              const edges = existing.edges.filter(
-                (v: any) => v.node.__ref !== `Tweet:${change.doc.data().tweetId}`
-              );
-              return { ...existing, edges };
-            },
-            favoriteTweets(existing) {
-              const edges = existing.edges.filter(
-                (v: any) => v.node.__ref !== `Tweet:${change.doc.data().tweetId}`
-              );
-              return { ...existing, edges };
-            },
-          },
-        });
       }
     });
   }, [tweetEvents]);

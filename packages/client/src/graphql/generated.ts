@@ -20,6 +20,18 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
+export type FavoriteTweetsInput = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+  userId: Scalars['ID'];
+};
+
+export type FeedInput = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+  userId: Scalars['ID'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
@@ -81,9 +93,21 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  favoriteTweets: TweetConnection;
+  feed: TweetConnection;
   me: User;
   tweetEdge: TweetEdge;
   users: Array<User>;
+};
+
+
+export type QueryFavoriteTweetsArgs = {
+  input: FavoriteTweetsInput;
+};
+
+
+export type QueryFeedArgs = {
+  input: FeedInput;
 };
 
 
@@ -123,24 +147,10 @@ export type UpdateTweetInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
-  favoriteTweets: TweetConnection;
-  feed: TweetConnection;
   followers: Array<User>;
   followings: Array<User>;
   id: Scalars['String'];
   tweets: Array<Tweet>;
-};
-
-
-export type UserFavoriteTweetsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-};
-
-
-export type UserFeedArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
 };
 
 export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
@@ -212,30 +222,26 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
-export type FeedEdgeForIndexPageFragment = { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
-
-export type FeedForIndexPageQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+export type FeedQueryVariables = Exact<{
+  input: FeedInput;
 }>;
 
 
-export type FeedForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
 
-export type FavoriteTweetsForIndexPageQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+export type FavoriteTweetsQueryVariables = Exact<{
+  input: FavoriteTweetsInput;
 }>;
 
 
-export type FavoriteTweetsForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FavoriteTweetsQuery = { __typename?: 'Query', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
 
-export type TweetEdgeForIndexPageQueryVariables = Exact<{
+export type TweetEdgeQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type TweetEdgeForIndexPageQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
+export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -244,12 +250,6 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
-export const CurrentUserFragmentDoc = gql`
-    fragment currentUser on User {
-  id
-  displayName
-}
-    `;
 export const FeedItemFragmentDoc = gql`
     fragment feedItem on Tweet {
   id
@@ -262,15 +262,12 @@ export const FeedItemFragmentDoc = gql`
   favorite
 }
     `;
-export const FeedEdgeForIndexPageFragmentDoc = gql`
-    fragment feedEdgeForIndexPage on TweetEdge {
-  node {
-    id
-    ...feedItem
-  }
-  cursor
+export const CurrentUserFragmentDoc = gql`
+    fragment currentUser on User {
+  id
+  displayName
 }
-    ${FeedItemFragmentDoc}`;
+    `;
 export const DeleteTweetDocument = gql`
     mutation deleteTweet($id: ID!) {
   deleteTweet(id: $id) {
@@ -632,106 +629,98 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
-export const FeedForIndexPageDocument = gql`
-    query feedForIndexPage($first: Int!, $after: String) {
-  me {
-    id
-    feed(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          ...feedItem
-        }
-        cursor
+export const FeedDocument = gql`
+    query feed($input: FeedInput!) {
+  feed(input: $input) {
+    edges {
+      node {
+        id
+        ...feedItem
       }
-      pageInfo {
-        hasNext
-        endCursor
-      }
+      cursor
+    }
+    pageInfo {
+      hasNext
+      endCursor
     }
   }
 }
     ${FeedItemFragmentDoc}`;
 
 /**
- * __useFeedForIndexPageQuery__
+ * __useFeedQuery__
  *
- * To run a query within a React component, call `useFeedForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useFeedForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFeedForIndexPageQuery({
+ * const { data, loading, error } = useFeedQuery({
  *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useFeedForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
+export function useFeedQuery(baseOptions: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
+        return Apollo.useQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
       }
-export function useFeedForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>) {
+export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQuery, FeedQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>(FeedForIndexPageDocument, options);
+          return Apollo.useLazyQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
         }
-export type FeedForIndexPageQueryHookResult = ReturnType<typeof useFeedForIndexPageQuery>;
-export type FeedForIndexPageLazyQueryHookResult = ReturnType<typeof useFeedForIndexPageLazyQuery>;
-export type FeedForIndexPageQueryResult = Apollo.QueryResult<FeedForIndexPageQuery, FeedForIndexPageQueryVariables>;
-export const FavoriteTweetsForIndexPageDocument = gql`
-    query favoriteTweetsForIndexPage($first: Int!, $after: String) {
-  me {
-    id
-    favoriteTweets(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          ...feedItem
-        }
-        cursor
+export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
+export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
+export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
+export const FavoriteTweetsDocument = gql`
+    query favoriteTweets($input: FavoriteTweetsInput!) {
+  favoriteTweets(input: $input) {
+    edges {
+      node {
+        id
+        ...feedItem
       }
-      pageInfo {
-        hasNext
-        endCursor
-      }
+      cursor
+    }
+    pageInfo {
+      hasNext
+      endCursor
     }
   }
 }
     ${FeedItemFragmentDoc}`;
 
 /**
- * __useFavoriteTweetsForIndexPageQuery__
+ * __useFavoriteTweetsQuery__
  *
- * To run a query within a React component, call `useFavoriteTweetsForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useFavoriteTweetsForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFavoriteTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFavoriteTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFavoriteTweetsForIndexPageQuery({
+ * const { data, loading, error } = useFavoriteTweetsQuery({
  *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useFavoriteTweetsForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>) {
+export function useFavoriteTweetsQuery(baseOptions: Apollo.QueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>(FavoriteTweetsForIndexPageDocument, options);
+        return Apollo.useQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
       }
-export function useFavoriteTweetsForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>) {
+export function useFavoriteTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>(FavoriteTweetsForIndexPageDocument, options);
+          return Apollo.useLazyQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
         }
-export type FavoriteTweetsForIndexPageQueryHookResult = ReturnType<typeof useFavoriteTweetsForIndexPageQuery>;
-export type FavoriteTweetsForIndexPageLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsForIndexPageLazyQuery>;
-export type FavoriteTweetsForIndexPageQueryResult = Apollo.QueryResult<FavoriteTweetsForIndexPageQuery, FavoriteTweetsForIndexPageQueryVariables>;
-export const TweetEdgeForIndexPageDocument = gql`
-    query tweetEdgeForIndexPage($id: ID!) {
+export type FavoriteTweetsQueryHookResult = ReturnType<typeof useFavoriteTweetsQuery>;
+export type FavoriteTweetsLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsLazyQuery>;
+export type FavoriteTweetsQueryResult = Apollo.QueryResult<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>;
+export const TweetEdgeDocument = gql`
+    query tweetEdge($id: ID!) {
   tweetEdge(id: $id) {
     node {
       id
@@ -743,32 +732,32 @@ export const TweetEdgeForIndexPageDocument = gql`
     ${FeedItemFragmentDoc}`;
 
 /**
- * __useTweetEdgeForIndexPageQuery__
+ * __useTweetEdgeQuery__
  *
- * To run a query within a React component, call `useTweetEdgeForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useTweetEdgeForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTweetEdgeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTweetEdgeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTweetEdgeForIndexPageQuery({
+ * const { data, loading, error } = useTweetEdgeQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useTweetEdgeForIndexPageQuery(baseOptions: Apollo.QueryHookOptions<TweetEdgeForIndexPageQuery, TweetEdgeForIndexPageQueryVariables>) {
+export function useTweetEdgeQuery(baseOptions: Apollo.QueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TweetEdgeForIndexPageQuery, TweetEdgeForIndexPageQueryVariables>(TweetEdgeForIndexPageDocument, options);
+        return Apollo.useQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
       }
-export function useTweetEdgeForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetEdgeForIndexPageQuery, TweetEdgeForIndexPageQueryVariables>) {
+export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TweetEdgeForIndexPageQuery, TweetEdgeForIndexPageQueryVariables>(TweetEdgeForIndexPageDocument, options);
+          return Apollo.useLazyQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
         }
-export type TweetEdgeForIndexPageQueryHookResult = ReturnType<typeof useTweetEdgeForIndexPageQuery>;
-export type TweetEdgeForIndexPageLazyQueryHookResult = ReturnType<typeof useTweetEdgeForIndexPageLazyQuery>;
-export type TweetEdgeForIndexPageQueryResult = Apollo.QueryResult<TweetEdgeForIndexPageQuery, TweetEdgeForIndexPageQueryVariables>;
+export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
+export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
+export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {
