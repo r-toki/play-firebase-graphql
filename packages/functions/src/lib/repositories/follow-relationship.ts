@@ -10,7 +10,7 @@ export const getFollowings = async (db: Firestore, { userId }: { userId: string 
     followRelationshipsRef(db).where("followerId", "==", userId).orderBy("createdAt", "desc")
   );
   const followingsIds = relationshipDocs.map((v) => v.followedId);
-  const followingDocs = Promise.all(followingsIds.map((id) => getDoc(usersRef(db).doc(id))));
+  const followingDocs = await Promise.all(followingsIds.map((id) => getDoc(usersRef(db).doc(id))));
   return followingDocs;
 };
 
@@ -19,7 +19,7 @@ export const getFollowers = async (db: Firestore, { userId }: { userId: string }
     followRelationshipsRef(db).where("followedId", "==", userId).orderBy("createdAt", "desc")
   );
   const followerIds = relationshipDocs.map((v) => v.followerId);
-  const followerDocs = Promise.all(followerIds.map((id) => getDoc(usersRef(db).doc(id))));
+  const followerDocs = await Promise.all(followerIds.map((id) => getDoc(usersRef(db).doc(id))));
   return followerDocs;
 };
 
