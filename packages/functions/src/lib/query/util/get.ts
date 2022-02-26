@@ -2,7 +2,7 @@ import { CollectionReference, DocumentReference, Query } from "firebase-admin/fi
 
 export const getDoc = async <T>(docRef: DocumentReference<T>) => {
   const doc = await docRef.get();
-  if (!doc.exists) throw new Error("");
+  if (!doc.exists) throw new Error("doc not found at getDoc");
   return { id: doc.id, ref: doc.ref, ...(doc.data() as T) };
 };
 

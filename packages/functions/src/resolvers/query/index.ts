@@ -5,6 +5,7 @@ import { isSignedIn } from "../../lib/authorization";
 import { getDoc, getDocs } from "../../lib/query/util/get";
 import { tweetsRef, usersRef } from "../../lib/typed-ref";
 import { getFeed } from "./../../lib/query/getFeed";
+import { getTweet } from "./../../lib/query/getTweet";
 
 export const Query: Resolvers["Query"] = {
   me: async (parent, args, context) => {
@@ -47,9 +48,7 @@ export const Query: Resolvers["Query"] = {
     const { id } = args;
     const { db } = context;
 
-    const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", id));
-    const tweetDoc = first(tweetDocs);
-    if (!tweetDoc) throw new Error("at tweet");
+    const tweetDoc = await getTweet(db, { tweetId: id });
 
     return tweetDoc;
   },
@@ -76,11 +75,9 @@ export const Query: Resolvers["Query"] = {
     isSignedIn(context);
 
     const { id } = args;
+    const { db } = context;
 
-    const tweetDocs = await getDocs(tweetsRef(context.db).where("tweetId", "==", id));
-    const tweetDoc = first(tweetDocs);
-    if (!tweetDoc) throw new Error("at tweetEdge");
-
+    const tweetDoc = await getTweet(db, { tweetId: id });
     const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
 
     return tweetEdge;
