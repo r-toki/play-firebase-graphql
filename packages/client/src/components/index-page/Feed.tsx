@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -77,7 +77,7 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
           <Box fontWeight="bold">{tweet.creator.displayName}</Box>
           <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
         </HStack>
-        {tweet.creator.id === currentUser.id && (
+        {tweet.creator.id === currentUser.id ? (
           <HStack>
             <Button
               size="xs"
@@ -87,6 +87,7 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
             >
               <EditIcon />
             </Button>
+
             <Button
               size="xs"
               onClick={() => {
@@ -94,6 +95,15 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
               }}
             >
               <DeleteIcon />
+            </Button>
+          </HStack>
+        ) : (
+          <HStack>
+            <Button variant="outline" size="xs">
+              <StarIcon color="yellow.400" />
+            </Button>
+            <Button variant="outline" size="xs">
+              <StarIcon color="gray.400" />
             </Button>
           </HStack>
         )}
