@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import express from "express";
 
-import { auth, db, verifyIdToken } from "./firebase-app";
+import { context } from "./context";
 import { typeDefs } from "./graphql/typeDefs";
 import { resolvers } from "./resolvers";
 
@@ -14,14 +14,7 @@ export const createApiApp = () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }) => {
-      const idToken = req.header("authorization")?.split("Bearer ")[1];
-      if (idToken) {
-        const decodedIdToken = await verifyIdToken(idToken);
-        return { decodedIdToken, auth, db };
-      }
-      return { decodedIdToken: undefined, auth, db };
-    },
+    context,
   });
 
   server.start().then(() => {
