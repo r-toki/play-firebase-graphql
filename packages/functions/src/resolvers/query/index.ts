@@ -57,7 +57,17 @@ export const Query: Resolvers["Query"] = {
   feed: async (parent, args, context) => {
     isSignedIn(context);
 
-    const tweetConnection = await getFeed(args, context);
+    const { first, after } = args;
+    const {
+      decodedIdToken: { uid },
+      db,
+    } = context;
+
+    const tweetConnection = await getFeed(db, {
+      userId: uid,
+      first,
+      after,
+    });
 
     return tweetConnection;
   },

@@ -1,23 +1,21 @@
+import { Firestore } from "firebase-admin/firestore";
 import { QueryDocumentSnapshot, Timestamp } from "firebase-admin/firestore";
 import { last, orderBy } from "lodash";
 
 import { followRelationshipsRef, tweetsRef } from "../typed-ref";
 import { UserTweetData } from "../typed-ref/types";
-import { QueryFeedArgs } from "./../../../../client/src/graphql/generated";
-import { AuthedContext } from "./../../context";
 import { execMultiQueriesWithCursor } from "./util/exec-multi-queries-with-cursor";
 import { getDocs } from "./util/get";
 
-export const getFeed = async (args: QueryFeedArgs, context: AuthedContext) => {
-  const { first, after } = args;
-  const {
-    decodedIdToken: { uid },
-    db,
-  } = context;
+export const getFeed = async (
+  db: Firestore,
+  { userId, first, after }: { userId: string; first: number; after: string | null | undefined }
+) => {
+  const relationshipDocs = await getDocs(
+    followRelationshipsRef(db).where("followerId", "==", userId)
+  );
 
-  const relationshipDocs = await getDocs(followRelationshipsRef(db).where("followerId", "==", uid));
-
-  const queries = [uid, ...relationshipDocs.map((v) => v.followedId)].map((id) =>
+  const queries = [userId, ...relationshipDocs.map((v) => v.followedId)].map((id) =>
     tweetsRef(db).where("creatorId", "==", id).orderBy("createdAt", "desc")
   );
   const order = (snaps: QueryDocumentSnapshot<UserTweetData>[]) =>
