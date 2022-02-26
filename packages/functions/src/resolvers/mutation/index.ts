@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
 import { getDoc } from "../../lib/query-util/get";
+import { like, unLike } from "../../lib/repositories/like";
 import { createTweet, deleteTweet, getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
 import { follow, unFollow } from "./../../lib/repositories/follow-relationship";
@@ -75,5 +76,21 @@ export const Mutation: Resolvers["Mutation"] = {
     });
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
     return meDoc;
+  },
+
+  like: async (parent, args, context) => {
+    isSignedIn(context);
+
+    await like(context.db, { userId: context.uid, tweetId: args.tweetId });
+    const tweetDoc = await getTweet(context.db, { id: args.tweetId });
+    return tweetDoc;
+  },
+
+  unLike: async (parent, args, context) => {
+    isSignedIn(context);
+
+    await unLike(context.db, { userId: context.uid, tweetId: args.tweetId });
+    const tweetDoc = await getTweet(context.db, { id: args.tweetId });
+    return tweetDoc;
   },
 };
