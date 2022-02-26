@@ -14,9 +14,9 @@ export const Query: Resolvers["Query"] = {
       db,
     } = context;
 
-    const userDoc = await getDoc(usersRef(db).doc(uid));
+    const meDoc = await getDoc(usersRef(db).doc(uid));
 
-    return userDoc;
+    return meDoc;
   },
 
   user: async (parent, args, context) => {
