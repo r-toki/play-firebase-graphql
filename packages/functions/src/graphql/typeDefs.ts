@@ -11,7 +11,9 @@ type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
   deleteTweet(id: ID!): User!
   follow(userId: ID!): User!
+  like(tweetId: ID!): Tweet!
   unFollow(userId: ID!): User!
+  unLike(tweetId: ID!): Tweet!
   updateProfile(input: UpdateProfileInput!): User!
   updateTweet(id: ID!, input: UpdateTweetInput!): Tweet!
 }
@@ -34,6 +36,7 @@ type Tweet {
   content: String!
   createdAt: DateTime!
   creator: User!
+  favorite: Boolean!
   id: String!
 }
 

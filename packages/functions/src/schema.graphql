@@ -13,6 +13,7 @@ type Tweet {
   content: String!
   createdAt: DateTime!
   creator: User!
+  favorite: Boolean!
 }
 
 type PageInfo {
@@ -77,4 +78,12 @@ type Mutation {
 type Mutation {
   # return me
   unFollow(userId: ID!): User!
+}
+
+type Mutation {
+  like(tweetId: ID!): Tweet!
+}
+
+type Mutation {
+  unLike(tweetId: ID!): Tweet!
 }

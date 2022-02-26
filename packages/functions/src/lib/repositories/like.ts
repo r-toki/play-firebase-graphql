@@ -33,6 +33,17 @@ export const getFavoriteTweets = async (
   return { edges: tweetEdges, pageInfo };
 };
 
+export const getFavorite = async (
+  db: Firestore,
+  { userId, tweetId }: { userId: string; tweetId: string }
+) => {
+  const likeDocs = await getDocs(
+    likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId)
+  );
+  const likeDoc = first(likeDocs);
+  return likeDoc ? true : false;
+};
+
 // NOTE: Mutation
 export const like = async (
   db: Firestore,

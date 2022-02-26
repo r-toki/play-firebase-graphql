@@ -25,7 +25,9 @@ export type Mutation = {
   createTweet: Tweet;
   deleteTweet: User;
   follow: User;
+  like: Tweet;
   unFollow: User;
+  unLike: Tweet;
   updateProfile: User;
   updateTweet: Tweet;
 };
@@ -46,8 +48,18 @@ export type MutationFollowArgs = {
 };
 
 
+export type MutationLikeArgs = {
+  tweetId: Scalars['ID'];
+};
+
+
 export type MutationUnFollowArgs = {
   userId: Scalars['ID'];
+};
+
+
+export type MutationUnLikeArgs = {
+  tweetId: Scalars['ID'];
 };
 
 
@@ -103,6 +115,7 @@ export type Tweet = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
+  favorite: Scalars['Boolean'];
   id: Scalars['String'];
 };
 

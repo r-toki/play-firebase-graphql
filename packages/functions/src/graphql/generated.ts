@@ -27,7 +27,9 @@ export type Mutation = {
   createTweet: Tweet;
   deleteTweet: User;
   follow: User;
+  like: Tweet;
   unFollow: User;
+  unLike: Tweet;
   updateProfile: User;
   updateTweet: Tweet;
 };
@@ -48,8 +50,18 @@ export type MutationFollowArgs = {
 };
 
 
+export type MutationLikeArgs = {
+  tweetId: Scalars['ID'];
+};
+
+
 export type MutationUnFollowArgs = {
   userId: Scalars['ID'];
+};
+
+
+export type MutationUnLikeArgs = {
+  tweetId: Scalars['ID'];
 };
 
 
@@ -105,6 +117,7 @@ export type Tweet = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   creator: User;
+  favorite: Scalars['Boolean'];
   id: Scalars['String'];
 };
 
@@ -251,7 +264,9 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationCreateTweetArgs, 'input'>>;
   deleteTweet?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   follow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationFollowArgs, 'userId'>>;
+  like?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationLikeArgs, 'tweetId'>>;
   unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUnFollowArgs, 'userId'>>;
+  unLike?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationUnLikeArgs, 'tweetId'>>;
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'input'>>;
   updateTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationUpdateTweetArgs, 'id' | 'input'>>;
 }>;
@@ -275,6 +290,7 @@ export type TweetResolvers<ContextType = Context, ParentType extends ResolversPa
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  favorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
