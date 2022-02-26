@@ -23,6 +23,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     return getDoc(usersRef(db).doc(uid));
   },
+
   createTweet: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
 
@@ -41,6 +42,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     return getDoc(userTweetsRef(db, { userId: uid }).doc(tweetId));
   },
+
   follow: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
 
@@ -65,6 +67,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     return getDoc(usersRef(db).doc(uid));
   },
+
   unFollow: async (parent, args, { decodedIdToken, db }) => {
     if (!decodedIdToken) throw new Error("");
 

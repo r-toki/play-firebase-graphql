@@ -19,6 +19,7 @@ export const Query: Resolvers["Query"] = {
 
     return getDoc(usersRef(db).doc(uid));
   },
+
   user: (parent, args, context) => {
     isSignedIn(context);
 
@@ -27,6 +28,7 @@ export const Query: Resolvers["Query"] = {
 
     return getDoc(usersRef(db).doc(id));
   },
+
   users: (parent, args, context) => {
     isSignedIn(context);
 
@@ -34,6 +36,7 @@ export const Query: Resolvers["Query"] = {
 
     return getDocs(usersRef(db).orderBy("createdAt", "desc"));
   },
+
   tweet: async (parent, args, context) => {
     isSignedIn(context);
 
@@ -46,6 +49,7 @@ export const Query: Resolvers["Query"] = {
 
     return tweet;
   },
+
   feed: async (parent, args, context) => {
     isSignedIn(context);
 
@@ -74,6 +78,7 @@ export const Query: Resolvers["Query"] = {
 
     return { edges: tweetEdges, pageInfo };
   },
+
   tweetEdge: async (parent, args, context) => {
     isSignedIn(context);
 

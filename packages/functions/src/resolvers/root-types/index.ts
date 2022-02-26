@@ -6,6 +6,7 @@ import { followRelationshipsRef } from "./../../lib/typed-ref/index";
 export const User: Resolvers["User"] = {
   tweets: (parent, args, context) =>
     getDocs(userTweetsRef(context.db, { userId: parent.id }).orderBy("createdAt", "desc")),
+
   followings: async (parent, args, context) => {
     const relationships = await getDocs(
       followRelationshipsRef(context.db)
@@ -15,6 +16,7 @@ export const User: Resolvers["User"] = {
     const followingsIds = relationships.map((v) => v.followedId);
     return Promise.all(followingsIds.map((id) => getDoc(usersRef(context.db).doc(id))));
   },
+
   followers: async (parent, args, context) => {
     const relationships = await getDocs(
       followRelationshipsRef(context.db)
