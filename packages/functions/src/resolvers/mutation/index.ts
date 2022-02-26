@@ -3,9 +3,10 @@ import { v4 } from "uuid";
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
 import { getDoc } from "../../lib/query-util/get";
-import { createTweet } from "../../lib/repositories/tweet";
+import { createTweet, deleteTweet, getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
 import { follow, unFollow } from "./../../lib/repositories/follow-relationship";
+import { updateTweet } from "./../../lib/repositories/tweet";
 import { updateUser } from "./../../lib/repositories/user";
 import { userTweetsRef } from "./../../lib/typed-ref/index";
 
@@ -32,6 +33,26 @@ export const Mutation: Resolvers["Mutation"] = {
     });
     const tweetDoc = await getDoc(userTweetsRef(context.db, { userId: context.uid }).doc(tweetId));
     return tweetDoc;
+  },
+
+  updateTweet: async (parent, args, context) => {
+    isSignedIn(context);
+
+    await updateTweet(context.db, {
+      tweetId: args.id,
+      creatorId: context.uid,
+      content: args.input.content,
+    });
+    const tweetDoc = await getTweet(context.db, { id: args.id });
+    return tweetDoc;
+  },
+
+  deleteTweet: async (parent, args, context) => {
+    isSignedIn(context);
+
+    await deleteTweet(context.db, { tweetId: args.id, creatorId: context.uid });
+    const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
+    return meDoc;
   },
 
   follow: async (parent, args, context) => {

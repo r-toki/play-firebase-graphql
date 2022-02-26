@@ -23,14 +23,21 @@ export type CreateTweetInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  deleteTweet: User;
   follow: User;
   unFollow: User;
   updateProfile: User;
+  updateTweet: Tweet;
 };
 
 
 export type MutationCreateTweetArgs = {
   input: CreateTweetInput;
+};
+
+
+export type MutationDeleteTweetArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -46,6 +53,12 @@ export type MutationUnFollowArgs = {
 
 export type MutationUpdateProfileArgs = {
   input: UpdateProfileInput;
+};
+
+
+export type MutationUpdateTweetArgs = {
+  id: Scalars['ID'];
+  input: UpdateTweetInput;
 };
 
 export type PageInfo = {
@@ -107,6 +120,10 @@ export type TweetEdge = {
 
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
+};
+
+export type UpdateTweetInput = {
+  content: Scalars['String'];
 };
 
 export type User = {

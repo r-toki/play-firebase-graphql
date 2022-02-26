@@ -5,15 +5,15 @@ import { getDocs } from "../query-util/get";
 import { tweetsRef, userTweetsRef } from "../typed-ref";
 
 // NOTE: Query
-export const getTweet = async (db: Firestore, { tweetId }: { tweetId: string }) => {
-  const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", tweetId));
+export const getTweet = async (db: Firestore, { id }: { id: string }) => {
+  const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", id));
   const tweetDoc = first(tweetDocs);
   if (!tweetDoc) throw new Error("tweetDoc not found at getTweet");
   return tweetDoc;
 };
 
-export const getTweetEdge = async (db: Firestore, { tweetId }: { tweetId: string }) => {
-  const tweetDoc = await getTweet(db, { tweetId });
+export const getTweetEdge = async (db: Firestore, { id }: { id: string }) => {
+  const tweetDoc = await getTweet(db, { id });
   const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
   return tweetEdge;
 };

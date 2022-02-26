@@ -31,7 +31,7 @@ export const Query: Resolvers["Query"] = {
   tweet: async (parent, args, context) => {
     isSignedIn(context);
 
-    const tweetDoc = await getTweet(context.db, { tweetId: args.id });
+    const tweetDoc = await getTweet(context.db, { id: args.id });
     return tweetDoc;
   },
 
@@ -49,7 +49,7 @@ export const Query: Resolvers["Query"] = {
   tweetEdge: async (parent, args, context) => {
     isSignedIn(context);
 
-    const tweetEdge = await getTweetEdge(context.db, { tweetId: args.id });
+    const tweetEdge = await getTweetEdge(context.db, { id: args.id });
     return tweetEdge;
   },
 };

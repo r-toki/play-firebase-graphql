@@ -25,14 +25,21 @@ export type CreateTweetInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
+  deleteTweet: User;
   follow: User;
   unFollow: User;
   updateProfile: User;
+  updateTweet: Tweet;
 };
 
 
 export type MutationCreateTweetArgs = {
   input: CreateTweetInput;
+};
+
+
+export type MutationDeleteTweetArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -48,6 +55,12 @@ export type MutationUnFollowArgs = {
 
 export type MutationUpdateProfileArgs = {
   input: UpdateProfileInput;
+};
+
+
+export type MutationUpdateTweetArgs = {
+  id: Scalars['ID'];
+  input: UpdateTweetInput;
 };
 
 export type PageInfo = {
@@ -109,6 +122,10 @@ export type TweetEdge = {
 
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
+};
+
+export type UpdateTweetInput = {
+  content: Scalars['String'];
 };
 
 export type User = {
@@ -203,6 +220,7 @@ export type ResolversTypes = ResolversObject<{
   TweetConnection: ResolverTypeWrapper<Omit<TweetConnection, 'edges'> & { edges: Array<ResolversTypes['TweetEdge']> }>;
   TweetEdge: ResolverTypeWrapper<Omit<TweetEdge, 'node'> & { node: ResolversTypes['Tweet'] }>;
   UpdateProfileInput: UpdateProfileInput;
+  UpdateTweetInput: UpdateTweetInput;
   User: ResolverTypeWrapper<UserDoc>;
 }>;
 
@@ -221,6 +239,7 @@ export type ResolversParentTypes = ResolversObject<{
   TweetConnection: Omit<TweetConnection, 'edges'> & { edges: Array<ResolversParentTypes['TweetEdge']> };
   TweetEdge: Omit<TweetEdge, 'node'> & { node: ResolversParentTypes['Tweet'] };
   UpdateProfileInput: UpdateProfileInput;
+  UpdateTweetInput: UpdateTweetInput;
   User: UserDoc;
 }>;
 
@@ -230,9 +249,11 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationCreateTweetArgs, 'input'>>;
+  deleteTweet?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   follow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationFollowArgs, 'userId'>>;
   unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUnFollowArgs, 'userId'>>;
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'input'>>;
+  updateTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationUpdateTweetArgs, 'id' | 'input'>>;
 }>;
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{

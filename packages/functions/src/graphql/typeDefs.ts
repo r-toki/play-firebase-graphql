@@ -9,9 +9,11 @@ scalar DateTime
 
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
+  deleteTweet(id: ID!): User!
   follow(userId: ID!): User!
   unFollow(userId: ID!): User!
   updateProfile(input: UpdateProfileInput!): User!
+  updateTweet(id: ID!, input: UpdateTweetInput!): Tweet!
 }
 
 type PageInfo {
@@ -47,6 +49,10 @@ type TweetEdge {
 
 input UpdateProfileInput {
   displayName: String!
+}
+
+input UpdateTweetInput {
+  content: String!
 }
 
 type User {

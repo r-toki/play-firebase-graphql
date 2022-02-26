@@ -56,6 +56,19 @@ type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
 }
 
+input UpdateTweetInput {
+  content: String!
+}
+
+type Mutation {
+  updateTweet(id: ID!, input: UpdateTweetInput!): Tweet!
+}
+
+type Mutation {
+  # return me
+  deleteTweet(id: ID!): User!
+}
+
 type Mutation {
   # return me
   follow(userId: ID!): User!
