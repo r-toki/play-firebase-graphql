@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { cloneDeep, mergeWith } from "lodash-es";
 import { ReactNode, useEffect, useMemo, VFC } from "react";
 
 import { GRAPHQL_ENDPOINT } from "../constants";
@@ -9,22 +10,17 @@ const httpLink = createHttpLink({ uri: GRAPHQL_ENDPOINT });
 
 const cache = new InMemoryCache({
   typePolicies: {
-    Query: {
+    User: {
       fields: {
         feed: {
           keyArgs: false,
           merge(existing, incoming) {
             if (!existing) return incoming;
-            const edges = [...existing.edges, ...incoming.edges];
-            return { ...incoming, edges };
-          },
-        },
-        favoriteTweets: {
-          keyArgs: false,
-          merge(existing, incoming) {
-            if (!existing) return incoming;
-            const edges = [...existing.edges, ...incoming.edges];
-            return { ...incoming, edges };
+            const merged = mergeWith(cloneDeep(existing), incoming, (a, b, key) => {
+              if (key === "edges") return [...a, ...b];
+              return b;
+            });
+            return merged;
           },
         },
       },

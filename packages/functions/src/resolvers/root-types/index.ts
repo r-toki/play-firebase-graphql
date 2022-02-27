@@ -1,15 +1,37 @@
 import { Resolvers } from "../../graphql/generated";
-import { getDoc, getDocs } from "../../lib/query-util/get";
+import { getDoc } from "../../lib/query-util/get";
+import { getFeed } from "../../lib/repositories/feed";
 import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
-import { usersRef, userTweetsRef } from "../../lib/typed-ref";
-import { getFavorite } from "./../../lib/repositories/like";
+import { getTweets } from "../../lib/repositories/tweet";
+import { usersRef } from "../../lib/typed-ref";
+import { getFavorite, getFavoriteTweets } from "./../../lib/repositories/like";
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {
-    const tweetDocs = await getDocs(
-      userTweetsRef(context.db, { userId: parent.id }).orderBy("createdAt", "desc")
-    );
-    return tweetDocs;
+    const tweetConnection = await getTweets(context.db, {
+      userId: parent.id,
+      first: args.input.first,
+      after: args.input.after,
+    });
+    return tweetConnection;
+  },
+
+  feed: async (parent, args, context) => {
+    const tweetConnection = await getFeed(context.db, {
+      userId: parent.id,
+      first: args.input.first,
+      after: args.input.after,
+    });
+    return tweetConnection;
+  },
+
+  favoriteTweets: async (parent, args, context) => {
+    const tweetConnection = await getFavoriteTweets(context.db, {
+      userId: parent.id,
+      first: args.input.first,
+      after: args.input.after,
+    });
+    return tweetConnection;
   },
 
   followings: async (parent, args, context) => {

@@ -1,5 +1,5 @@
 import { Firestore, Timestamp } from "firebase-admin/firestore";
-import { first } from "lodash";
+import { first, last } from "lodash";
 
 import { getDocs } from "../query-util/get";
 import { tweetsRef, userTweetsRef } from "../typed-ref";
@@ -16,6 +16,27 @@ export const getTweetEdge = async (db: Firestore, { id }: { id: string }) => {
   const tweetDoc = await getTweet(db, { id });
   const tweetEdge = { node: tweetDoc, cursor: tweetDoc.createdAt.toDate().toISOString() };
   return tweetEdge;
+};
+
+export const getTweets = async (
+  db: Firestore,
+  { userId, first, after }: { userId: string; first: number; after: string | null | undefined }
+) => {
+  const tweetDocs = await getDocs(
+    tweetsRef(db)
+      .where("userId", "==", userId)
+      .orderBy("createdAt", "desc")
+      .startAfter(after ? Timestamp.fromDate(new Date(after)) : Timestamp.now())
+      .limit(first)
+  );
+
+  const tweetEdges = tweetDocs.map((doc) => ({
+    node: doc,
+    cursor: doc.createdAt.toDate().toISOString(),
+  }));
+  const pageInfo = { hasNext: tweetEdges.length === first, endCursor: last(tweetEdges)?.cursor };
+
+  return { edges: tweetEdges, pageInfo };
 };
 
 // NOTE: Mutation

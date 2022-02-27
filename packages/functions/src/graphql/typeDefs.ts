@@ -7,18 +7,6 @@ input CreateTweetInput {
 
 scalar DateTime
 
-input FavoriteTweetsInput {
-  after: String
-  first: Int!
-  userId: ID!
-}
-
-input FeedInput {
-  after: String
-  first: Int!
-  userId: ID!
-}
-
 type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
   deleteTweet(id: ID!): User!
@@ -36,10 +24,9 @@ type PageInfo {
 }
 
 type Query {
-  favoriteTweets(input: FavoriteTweetsInput!): TweetConnection!
-  feed(input: FeedInput!): TweetConnection!
   me: User!
   tweetEdge(id: ID!): TweetEdge!
+  user(id: ID!): User!
   users: [User!]!
 }
 
@@ -61,6 +48,11 @@ type TweetEdge {
   node: Tweet!
 }
 
+input TweetsInput {
+  after: String
+  first: Int!
+}
+
 input UpdateProfileInput {
   displayName: String!
 }
@@ -71,9 +63,11 @@ input UpdateTweetInput {
 
 type User {
   displayName: String!
+  favoriteTweets(input: TweetsInput!): TweetConnection!
+  feed(input: TweetsInput!): TweetConnection!
   followers: [User!]!
   followings: [User!]!
   id: String!
-  tweets: [Tweet!]!
+  tweets(input: TweetsInput!): TweetConnection!
 }
 `;

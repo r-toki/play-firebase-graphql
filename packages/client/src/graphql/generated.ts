@@ -20,18 +20,6 @@ export type CreateTweetInput = {
   content: Scalars['String'];
 };
 
-export type FavoriteTweetsInput = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-  userId: Scalars['ID'];
-};
-
-export type FeedInput = {
-  after?: InputMaybe<Scalars['String']>;
-  first: Scalars['Int'];
-  userId: Scalars['ID'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createTweet: Tweet;
@@ -93,25 +81,19 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  favoriteTweets: TweetConnection;
-  feed: TweetConnection;
   me: User;
   tweetEdge: TweetEdge;
+  user: User;
   users: Array<User>;
 };
 
 
-export type QueryFavoriteTweetsArgs = {
-  input: FavoriteTweetsInput;
-};
-
-
-export type QueryFeedArgs = {
-  input: FeedInput;
-};
-
-
 export type QueryTweetEdgeArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
@@ -136,6 +118,11 @@ export type TweetEdge = {
   node: Tweet;
 };
 
+export type TweetsInput = {
+  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
 export type UpdateProfileInput = {
   displayName: Scalars['String'];
 };
@@ -147,20 +134,42 @@ export type UpdateTweetInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
+  favoriteTweets: TweetConnection;
+  feed: TweetConnection;
   followers: Array<User>;
   followings: Array<User>;
   id: Scalars['String'];
-  tweets: Array<Tweet>;
+  tweets: TweetConnection;
 };
 
-export type FeedItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
+
+export type UserFavoriteTweetsArgs = {
+  input: TweetsInput;
+};
+
+
+export type UserFeedArgs = {
+  input: TweetsInput;
+};
+
+
+export type UserTweetsArgs = {
+  input: TweetsInput;
+};
+
+export type CreateTweetMutationVariables = Exact<{
+  input: CreateTweetInput;
+}>;
+
+
+export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type DeleteTweetMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteTweetMutation = { __typename?: 'Mutation', deleteTweet: { __typename?: 'User', id: string, tweets: Array<{ __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } }> } };
+export type DeleteTweetMutation = { __typename?: 'Mutation', deleteTweet: { __typename?: 'User', id: string } };
 
 export type UpdateTweetMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -183,13 +192,6 @@ export type UnLikeMutationVariables = Exact<{
 
 
 export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
-
-export type CreateTweetMutationVariables = Exact<{
-  input: CreateTweetInput;
-}>;
-
-
-export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -222,26 +224,22 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
-export type FeedQueryVariables = Exact<{
-  input: FeedInput;
-}>;
-
-
-export type FeedQuery = { __typename?: 'Query', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
-
-export type FavoriteTweetsQueryVariables = Exact<{
-  input: FavoriteTweetsInput;
-}>;
-
-
-export type FavoriteTweetsQuery = { __typename?: 'Query', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } };
-
 export type TweetEdgeQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
 export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
+
+export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
+
+export type FeedQueryVariables = Exact<{
+  userId: Scalars['ID'];
+  input: TweetsInput;
+}>;
+
+
+export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -250,8 +248,14 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
-export const FeedItemFragmentDoc = gql`
-    fragment feedItem on Tweet {
+export const CurrentUserFragmentDoc = gql`
+    fragment currentUser on User {
+  id
+  displayName
+}
+    `;
+export const TweetItemFragmentDoc = gql`
+    fragment tweetItem on Tweet {
   id
   content
   createdAt
@@ -262,158 +266,6 @@ export const FeedItemFragmentDoc = gql`
   favorite
 }
     `;
-export const CurrentUserFragmentDoc = gql`
-    fragment currentUser on User {
-  id
-  displayName
-}
-    `;
-export const DeleteTweetDocument = gql`
-    mutation deleteTweet($id: ID!) {
-  deleteTweet(id: $id) {
-    id
-    tweets {
-      id
-      ...feedItem
-    }
-  }
-}
-    ${FeedItemFragmentDoc}`;
-export type DeleteTweetMutationFn = Apollo.MutationFunction<DeleteTweetMutation, DeleteTweetMutationVariables>;
-
-/**
- * __useDeleteTweetMutation__
- *
- * To run a mutation, you first call `useDeleteTweetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteTweetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteTweetMutation, { data, loading, error }] = useDeleteTweetMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteTweetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTweetMutation, DeleteTweetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteTweetMutation, DeleteTweetMutationVariables>(DeleteTweetDocument, options);
-      }
-export type DeleteTweetMutationHookResult = ReturnType<typeof useDeleteTweetMutation>;
-export type DeleteTweetMutationResult = Apollo.MutationResult<DeleteTweetMutation>;
-export type DeleteTweetMutationOptions = Apollo.BaseMutationOptions<DeleteTweetMutation, DeleteTweetMutationVariables>;
-export const UpdateTweetDocument = gql`
-    mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
-  updateTweet(id: $id, input: $input) {
-    id
-    ...feedItem
-  }
-}
-    ${FeedItemFragmentDoc}`;
-export type UpdateTweetMutationFn = Apollo.MutationFunction<UpdateTweetMutation, UpdateTweetMutationVariables>;
-
-/**
- * __useUpdateTweetMutation__
- *
- * To run a mutation, you first call `useUpdateTweetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTweetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTweetMutation, { data, loading, error }] = useUpdateTweetMutation({
- *   variables: {
- *      id: // value for 'id'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateTweetMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTweetMutation, UpdateTweetMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTweetMutation, UpdateTweetMutationVariables>(UpdateTweetDocument, options);
-      }
-export type UpdateTweetMutationHookResult = ReturnType<typeof useUpdateTweetMutation>;
-export type UpdateTweetMutationResult = Apollo.MutationResult<UpdateTweetMutation>;
-export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetMutation, UpdateTweetMutationVariables>;
-export const LikeDocument = gql`
-    mutation like($tweetId: ID!) {
-  like(tweetId: $tweetId) {
-    node {
-      id
-      ...feedItem
-    }
-    cursor
-  }
-}
-    ${FeedItemFragmentDoc}`;
-export type LikeMutationFn = Apollo.MutationFunction<LikeMutation, LikeMutationVariables>;
-
-/**
- * __useLikeMutation__
- *
- * To run a mutation, you first call `useLikeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLikeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [likeMutation, { data, loading, error }] = useLikeMutation({
- *   variables: {
- *      tweetId: // value for 'tweetId'
- *   },
- * });
- */
-export function useLikeMutation(baseOptions?: Apollo.MutationHookOptions<LikeMutation, LikeMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LikeMutation, LikeMutationVariables>(LikeDocument, options);
-      }
-export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
-export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
-export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
-export const UnLikeDocument = gql`
-    mutation unLike($tweetId: ID!) {
-  unLike(tweetId: $tweetId) {
-    node {
-      id
-      ...feedItem
-    }
-    cursor
-  }
-}
-    ${FeedItemFragmentDoc}`;
-export type UnLikeMutationFn = Apollo.MutationFunction<UnLikeMutation, UnLikeMutationVariables>;
-
-/**
- * __useUnLikeMutation__
- *
- * To run a mutation, you first call `useUnLikeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUnLikeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [unLikeMutation, { data, loading, error }] = useUnLikeMutation({
- *   variables: {
- *      tweetId: // value for 'tweetId'
- *   },
- * });
- */
-export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeMutation, UnLikeMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UnLikeMutation, UnLikeMutationVariables>(UnLikeDocument, options);
-      }
-export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
-export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
-export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
 export const CreateTweetDocument = gql`
     mutation createTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {
@@ -453,6 +305,148 @@ export function useCreateTweetMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateTweetMutationHookResult = ReturnType<typeof useCreateTweetMutation>;
 export type CreateTweetMutationResult = Apollo.MutationResult<CreateTweetMutation>;
 export type CreateTweetMutationOptions = Apollo.BaseMutationOptions<CreateTweetMutation, CreateTweetMutationVariables>;
+export const DeleteTweetDocument = gql`
+    mutation deleteTweet($id: ID!) {
+  deleteTweet(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteTweetMutationFn = Apollo.MutationFunction<DeleteTweetMutation, DeleteTweetMutationVariables>;
+
+/**
+ * __useDeleteTweetMutation__
+ *
+ * To run a mutation, you first call `useDeleteTweetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTweetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTweetMutation, { data, loading, error }] = useDeleteTweetMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTweetMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTweetMutation, DeleteTweetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteTweetMutation, DeleteTweetMutationVariables>(DeleteTweetDocument, options);
+      }
+export type DeleteTweetMutationHookResult = ReturnType<typeof useDeleteTweetMutation>;
+export type DeleteTweetMutationResult = Apollo.MutationResult<DeleteTweetMutation>;
+export type DeleteTweetMutationOptions = Apollo.BaseMutationOptions<DeleteTweetMutation, DeleteTweetMutationVariables>;
+export const UpdateTweetDocument = gql`
+    mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
+  updateTweet(id: $id, input: $input) {
+    id
+    ...tweetItem
+  }
+}
+    ${TweetItemFragmentDoc}`;
+export type UpdateTweetMutationFn = Apollo.MutationFunction<UpdateTweetMutation, UpdateTweetMutationVariables>;
+
+/**
+ * __useUpdateTweetMutation__
+ *
+ * To run a mutation, you first call `useUpdateTweetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTweetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTweetMutation, { data, loading, error }] = useUpdateTweetMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTweetMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTweetMutation, UpdateTweetMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTweetMutation, UpdateTweetMutationVariables>(UpdateTweetDocument, options);
+      }
+export type UpdateTweetMutationHookResult = ReturnType<typeof useUpdateTweetMutation>;
+export type UpdateTweetMutationResult = Apollo.MutationResult<UpdateTweetMutation>;
+export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetMutation, UpdateTweetMutationVariables>;
+export const LikeDocument = gql`
+    mutation like($tweetId: ID!) {
+  like(tweetId: $tweetId) {
+    node {
+      id
+      ...tweetItem
+    }
+    cursor
+  }
+}
+    ${TweetItemFragmentDoc}`;
+export type LikeMutationFn = Apollo.MutationFunction<LikeMutation, LikeMutationVariables>;
+
+/**
+ * __useLikeMutation__
+ *
+ * To run a mutation, you first call `useLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeMutation, { data, loading, error }] = useLikeMutation({
+ *   variables: {
+ *      tweetId: // value for 'tweetId'
+ *   },
+ * });
+ */
+export function useLikeMutation(baseOptions?: Apollo.MutationHookOptions<LikeMutation, LikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeMutation, LikeMutationVariables>(LikeDocument, options);
+      }
+export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
+export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
+export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
+export const UnLikeDocument = gql`
+    mutation unLike($tweetId: ID!) {
+  unLike(tweetId: $tweetId) {
+    node {
+      id
+      ...tweetItem
+    }
+    cursor
+  }
+}
+    ${TweetItemFragmentDoc}`;
+export type UnLikeMutationFn = Apollo.MutationFunction<UnLikeMutation, UnLikeMutationVariables>;
+
+/**
+ * __useUnLikeMutation__
+ *
+ * To run a mutation, you first call `useUnLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unLikeMutation, { data, loading, error }] = useUnLikeMutation({
+ *   variables: {
+ *      tweetId: // value for 'tweetId'
+ *   },
+ * });
+ */
+export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeMutation, UnLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnLikeMutation, UnLikeMutationVariables>(UnLikeDocument, options);
+      }
+export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
+export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
+export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
 export const UsersForIndexPageDocument = gql`
     query usersForIndexPage {
   users {
@@ -635,107 +629,17 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
-export const FeedDocument = gql`
-    query feed($input: FeedInput!) {
-  feed(input: $input) {
-    edges {
-      node {
-        id
-        ...feedItem
-      }
-      cursor
-    }
-    pageInfo {
-      hasNext
-      endCursor
-    }
-  }
-}
-    ${FeedItemFragmentDoc}`;
-
-/**
- * __useFeedQuery__
- *
- * To run a query within a React component, call `useFeedQuery` and pass it any options that fit your needs.
- * When your component renders, `useFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFeedQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useFeedQuery(baseOptions: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
-      }
-export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQuery, FeedQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
-        }
-export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
-export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
-export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
-export const FavoriteTweetsDocument = gql`
-    query favoriteTweets($input: FavoriteTweetsInput!) {
-  favoriteTweets(input: $input) {
-    edges {
-      node {
-        id
-        ...feedItem
-      }
-      cursor
-    }
-    pageInfo {
-      hasNext
-      endCursor
-    }
-  }
-}
-    ${FeedItemFragmentDoc}`;
-
-/**
- * __useFavoriteTweetsQuery__
- *
- * To run a query within a React component, call `useFavoriteTweetsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFavoriteTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFavoriteTweetsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useFavoriteTweetsQuery(baseOptions: Apollo.QueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
-      }
-export function useFavoriteTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
-        }
-export type FavoriteTweetsQueryHookResult = ReturnType<typeof useFavoriteTweetsQuery>;
-export type FavoriteTweetsLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsLazyQuery>;
-export type FavoriteTweetsQueryResult = Apollo.QueryResult<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>;
 export const TweetEdgeDocument = gql`
     query tweetEdge($id: ID!) {
   tweetEdge(id: $id) {
     node {
       id
-      ...feedItem
+      ...tweetItem
     }
     cursor
   }
 }
-    ${FeedItemFragmentDoc}`;
+    ${TweetItemFragmentDoc}`;
 
 /**
  * __useTweetEdgeQuery__
@@ -764,6 +668,53 @@ export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
 export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
 export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
+export const FeedDocument = gql`
+    query feed($userId: ID!, $input: TweetsInput!) {
+  user(id: $userId) {
+    feed(input: $input) {
+      edges {
+        node {
+          ...tweetItem
+        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
+      }
+    }
+  }
+}
+    ${TweetItemFragmentDoc}`;
+
+/**
+ * __useFeedQuery__
+ *
+ * To run a query within a React component, call `useFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFeedQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useFeedQuery(baseOptions: Apollo.QueryHookOptions<FeedQuery, FeedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
+      }
+export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQuery, FeedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FeedQuery, FeedQueryVariables>(FeedDocument, options);
+        }
+export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
+export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
+export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {

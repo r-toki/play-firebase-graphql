@@ -3,7 +3,9 @@ scalar DateTime
 type User {
   id: String!
   displayName: String!
-  tweets: [Tweet!]!
+  tweets(input: TweetsInput!): TweetConnection!
+  feed(input: TweetsInput!): TweetConnection!
+  favoriteTweets(input: TweetsInput!): TweetConnection!
   followings: [User!]!
   followers: [User!]!
 }
@@ -16,14 +18,7 @@ type Tweet {
   favorite: Boolean!
 }
 
-input FeedInput {
-  userId: ID!
-  first: Int!
-  after: String
-}
-
-input FavoriteTweetsInput {
-  userId: ID!
+input TweetsInput {
   first: Int!
   after: String
 }
@@ -45,10 +40,9 @@ type TweetConnection {
 
 type Query {
   me: User!
+  user(id: ID!): User!
   users: [User!]!
   tweetEdge(id: ID!): TweetEdge!
-  feed(input: FeedInput!): TweetConnection!
-  favoriteTweets(input: FavoriteTweetsInput!): TweetConnection!
 }
 
 input UpdateProfileInput {
