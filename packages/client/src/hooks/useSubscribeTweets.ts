@@ -6,7 +6,6 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase-app";
 import { FeedDocument, useTweetEdgeLazyQuery } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
-import { useAuthed } from "./../context/Authed";
 
 gql`
   query tweetEdge($id: ID!) {
@@ -20,10 +19,8 @@ gql`
   }
 `;
 
-export const useSubscribeTweets = () => {
+export const useSubscribeTweets = (userId: string) => {
   const client = useApolloClient();
-
-  const { currentUser } = useAuthed();
 
   const [getTweetEdge] = useTweetEdgeLazyQuery();
 
@@ -44,7 +41,7 @@ export const useSubscribeTweets = () => {
         if (!tweetEdge) return;
 
         client.cache.updateQuery(
-          { query: FeedDocument, overwrite: true, variables: { userId: currentUser.id } },
+          { query: FeedDocument, overwrite: true, variables: { userId } },
           (data) => {
             if (!data) return data;
             const edges = [tweetEdge, ...data.user.feed.edges];
@@ -65,7 +62,7 @@ export const useSubscribeTweets = () => {
         console.log("--- tweet has been deleted ---");
 
         client.cache.updateQuery(
-          { query: FeedDocument, overwrite: true, variables: { userId: currentUser.id } },
+          { query: FeedDocument, overwrite: true, variables: { userId } },
           (data) => {
             if (!data) return data;
             const edges = [...data.user.feed.edges].filter(
