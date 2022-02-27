@@ -78,10 +78,13 @@ export const useSubscribeTweets = (userId: string) => {
           { query: FavoriteTweetsDocument, overwrite: true, variables: { userId } },
           (data) => {
             if (!data) return data;
-            const edges = [...data.user.feed.edges].filter(
+            const edges = [...data.user.favoriteTweets.edges].filter(
               (v) => v.node.id !== change.doc.data().tweetId
             );
-            const merged = { ...data, user: { ...data.user, feed: { ...data.user.feed, edges } } };
+            const merged = {
+              ...data,
+              user: { ...data.user, favoriteTweets: { ...data.user.favoriteTweets, edges } },
+            };
             return merged;
           }
         );

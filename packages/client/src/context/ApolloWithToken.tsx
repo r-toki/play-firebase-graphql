@@ -29,21 +29,13 @@ const cache = new InMemoryCache({
         },
       },
     },
-    // Query: {
-    //   fields: {
-    //     user: {
-    //       // keyArgs: false,
-    //       merge(existing, incoming) {
-    //         console.log("--- existing ---");
-    //         console.log(existing);
-    //         console.log("--- incoming ---");
-    //         console.log(incoming);
-    //         if (!existing) return incoming;
-    //         return { feed: { ...incoming.feed }, favoriteTweets: { ...incoming.favoriteTweets } };
-    //       },
-    //     },
-    //   },
-    // },
+    Query: {
+      fields: {
+        user: {
+          merge: false,
+        },
+      },
+    },
   },
 });
 
