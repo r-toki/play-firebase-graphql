@@ -1,4 +1,5 @@
-import { db } from "../../firebase-app";
+import { last } from "lodash";
+
 import { Resolvers } from "../../graphql/generated";
 import { getDoc } from "../../lib/query-util/get";
 import { getFeed } from "../../lib/repositories/feed";
@@ -9,30 +10,33 @@ import { checkLiked, getFavoriteTweets, getLikedUsers } from "./../../lib/reposi
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {
-    const tweetConnection = await getTweets(context.db, {
+    const edges = await getTweets(context.db, {
       userId: parent.id,
       first: args.input.first,
       after: args.input.after,
     });
-    return tweetConnection;
+    const pageInfo = { hasNext: edges.length === args.input.first, endCursor: last(edges)?.cursor };
+    return { edges, pageInfo };
   },
 
   feed: async (parent, args, context) => {
-    const tweetConnection = await getFeed(context.db, {
+    const edges = await getFeed(context.db, {
       userId: parent.id,
       first: args.input.first,
       after: args.input.after,
     });
-    return tweetConnection;
+    const pageInfo = { hasNext: edges.length === args.input.first, endCursor: last(edges)?.cursor };
+    return { edges, pageInfo };
   },
 
   favoriteTweets: async (parent, args, context) => {
-    const tweetConnection = await getFavoriteTweets(context.db, {
+    const edges = await getFavoriteTweets(context.db, {
       userId: parent.id,
       first: args.input.first,
       after: args.input.after,
     });
-    return tweetConnection;
+    const pageInfo = { hasNext: edges.length === args.input.first, endCursor: last(edges)?.cursor };
+    return { edges, pageInfo };
   },
 
   followings: async (parent, args, context) => {
@@ -57,7 +61,7 @@ export const Tweet: Resolvers["Tweet"] = {
   },
   liked: async (parent, args, context) => {
     if (!context.uid) return false;
-    const liked = await checkLiked(db, { tweetId: parent.id, userId: context.uid });
+    const liked = await checkLiked(context.db, { tweetId: parent.id, userId: context.uid });
     return liked;
   },
 };

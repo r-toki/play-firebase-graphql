@@ -1,5 +1,5 @@
 import { Firestore, Timestamp } from "firebase-admin/firestore";
-import { first as firstOfList, last as lastOfList, orderBy } from "lodash";
+import { first as firstOfList, orderBy } from "lodash";
 
 import { Edge, execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-with-cursor";
 import { getDocs } from "../query-util/get";
@@ -62,9 +62,7 @@ export const getTweets = async (
     after: after ?? new Date().toISOString(),
   });
 
-  const pageInfo = { hasNext: edges.length === first, endCursor: lastOfList(edges)?.cursor };
-
-  return { edges, pageInfo };
+  return edges;
 };
 
 // NOTE: Mutation

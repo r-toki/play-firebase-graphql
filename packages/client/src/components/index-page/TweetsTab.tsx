@@ -24,11 +24,11 @@ const Feed: VFC = () => {
         </AppList>
       )}
       {loading ? (
-        <Center>
+        <Center my="4">
           <Spinner />
         </Center>
       ) : hasNext ? (
-        <Center>
+        <Center my="4">
           <MoreSpinner cb={loadMore} />
         </Center>
       ) : null}
@@ -52,11 +52,11 @@ const Tweets: VFC = () => {
         </AppList>
       )}
       {loading ? (
-        <Center>
+        <Center my="4">
           <Spinner />
         </Center>
       ) : hasNext ? (
-        <Center>
+        <Center my="4">
           <MoreSpinner cb={loadMore} />
         </Center>
       ) : null}
@@ -80,11 +80,11 @@ const Likes: VFC = () => {
         </AppList>
       )}
       {loading ? (
-        <Center>
+        <Center my="4">
           <Spinner />
         </Center>
       ) : hasNext ? (
-        <Center>
+        <Center my="4">
           <MoreSpinner cb={loadMore} />
         </Center>
       ) : null}
