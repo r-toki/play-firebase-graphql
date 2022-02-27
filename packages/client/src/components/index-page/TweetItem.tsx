@@ -19,11 +19,12 @@ gql`
     id
     content
     createdAt
-    creator {
-      id
-      displayName
-    }
-    favorite
+    # creator {
+    #   id
+    #   displayName
+    # }
+    # favorite
+    # likedAt
   }
 
   mutation deleteTweet($id: ID!) {
@@ -120,7 +121,7 @@ export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
         <Box>{tweet.content}</Box>
       )}
 
-      <Box>
+      <HStack>
         {tweet.favorite ? (
           <Button
             variant="outline"
@@ -142,7 +143,12 @@ export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
             <StarIcon color="gray.400" />
           </Button>
         )}
-      </Box>
+        {tweet.likedAt && (
+          <Box fontSize="sm" color="gray.500">
+            {format(new Date(tweet.likedAt), "yyyy-MM-dd HH:mm")} にいいね！
+          </Box>
+        )}
+      </HStack>
     </Stack>
   );
 };

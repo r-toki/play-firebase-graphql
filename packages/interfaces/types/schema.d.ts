@@ -11,7 +11,7 @@ export type _UserTweetData<Timestamp> = {
   createdAt: Timestamp;
   updatedAt: Timestamp;
   tweetId: UserTweetId;
-  creatorId: UserId;
+  userId: UserId;
 };
 
 type FollowRelationshipId = string;

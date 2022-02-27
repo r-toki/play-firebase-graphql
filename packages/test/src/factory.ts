@@ -36,9 +36,9 @@ export class AuthUserFactory {
 
 export class UserTweetFactory {
   static n = 0;
-  static of(init: Pick<UserTweetData, "creatorId"> & Partial<UserTweetData>) {
+  static of(init: Pick<UserTweetData, "userId"> & Partial<UserTweetData>) {
     const tweetId = v4();
-    return userTweetsRef(db, { userId: init.creatorId })
+    return userTweetsRef(db, { userId: init.userId })
       .doc(tweetId)
       .set({
         content: StringFactory.of(),

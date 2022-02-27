@@ -103,10 +103,9 @@ export type Tweet = {
   __typename?: 'Tweet';
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  creator: User;
-  favorite: Scalars['Boolean'];
   id: Scalars['String'];
-  likedAt?: Maybe<Scalars['DateTime']>;
+  likedBy: Array<User>;
+  postedBy: User;
 };
 
 export type TweetConnection = {
@@ -299,10 +298,9 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type TweetResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Tweet'] = ResolversParentTypes['Tweet']> = ResolversObject<{
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  favorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  likedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  likedBy?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  postedBy?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

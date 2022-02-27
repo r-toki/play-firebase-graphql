@@ -20,7 +20,7 @@ export const getFeed = async (
       async ({ after }: { after: string }) => {
         const docs = await getDocs(
           tweetsRef(db)
-            .where("creatorId", "==", id)
+            .where("userId", "==", id)
             .orderBy("createdAt", "desc")
             .startAfter(Timestamp.fromDate(new Date(after)))
             .limit(1)

@@ -1,10 +1,8 @@
 import { Resolvers } from "../../graphql/generated";
-import { getDoc } from "../../lib/query-util/get";
 import { getFeed } from "../../lib/repositories/feed";
 import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
 import { getTweets } from "../../lib/repositories/tweet";
-import { usersRef } from "../../lib/typed-ref";
-import { getFavoriteTweets, getLike } from "./../../lib/repositories/like";
+import { getFavoriteTweets } from "./../../lib/repositories/like";
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {
@@ -46,20 +44,18 @@ export const User: Resolvers["User"] = {
 };
 
 export const Tweet: Resolvers["Tweet"] = {
-  creator: async (parent, args, context) => {
-    const creator = await getDoc(usersRef(context.db).doc(parent.creatorId));
-    return creator;
-  },
-
-  favorite: async (parent, args, context) => {
-    if (!context.uid) return false;
-    const likeDoc = await getLike(context.db, { userId: context.uid, tweetId: parent.id });
-    return !!likeDoc;
-  },
-
-  likedAt: async (parent, args, context) => {
-    if (!context.uid) return null;
-    const likeDoc = await getLike(context.db, { userId: context.uid, tweetId: parent.id });
-    return likeDoc ? likeDoc.createdAt.toDate().toISOString() : null;
-  },
+  // creator: async (parent, args, context) => {
+  //   const creator = await getDoc(usersRef(context.db).doc(parent.creatorId));
+  //   return creator;
+  // },
+  // favorite: async (parent, args, context) => {
+  //   if (!context.uid) return false;
+  //   const likeDoc = await getLike(context.db, { userId: context.uid, tweetId: parent.id });
+  //   return !!likeDoc;
+  // },
+  // likedAt: async (parent, args, context) => {
+  //   if (!context.uid) return null;
+  //   const likeDoc = await getLike(context.db, { userId: context.uid, tweetId: parent.id });
+  //   return likeDoc ? likeDoc.createdAt : null;
+  // },
 };

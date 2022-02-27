@@ -12,6 +12,7 @@ generates:
       mappers:
         User: ../lib/typed-ref/types#UserDoc
         Tweet: ../lib/typed-ref/types#UserTweetDoc
+        # Like: ../lib/typed-ref/types#LikeDoc
   packages/functions/src/graphql/typeDefs.ts:
     plugins:
       - "typescript-typedefs.js"

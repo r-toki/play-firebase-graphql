@@ -14,9 +14,8 @@ type Tweet {
   id: String!
   content: String!
   createdAt: DateTime!
-  creator: User!
-  favorite: Boolean!
-  likedAt: DateTime
+  postedBy: User!
+  likedBy: [User!]!
 }
 
 input TweetsInput {

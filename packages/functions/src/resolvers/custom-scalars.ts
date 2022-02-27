@@ -9,8 +9,9 @@ export const DateTime = new GraphQLScalarType({
     return new Date(value);
   },
   serialize(value) {
-    if (!(value instanceof Timestamp)) throw new Error("DateTime serialize failed");
-    return value.toDate().toISOString();
+    if (value instanceof Date) return value.toISOString();
+    if (value instanceof Timestamp) return value.toDate().toISOString();
+    throw new Error("DateTime serialize failed");
   },
   parseLiteral(ast: ValueNode) {
     switch (ast.kind) {

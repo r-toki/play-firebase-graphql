@@ -23,7 +23,7 @@ const main = async () => {
     authUsers.flatMap((authUser, i) =>
       ArrayFactory.of(10).map((_, j) => {
         const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), 10 * i + j));
-        return UserTweetFactory.of({ creatorId: authUser.uid, createdAt, updatedAt: createdAt });
+        return UserTweetFactory.of({ userId: authUser.uid, createdAt, updatedAt: createdAt });
       })
     )
   );

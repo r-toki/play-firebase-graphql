@@ -29,7 +29,7 @@ export const Mutation: Resolvers["Mutation"] = {
     const tweetId = v4();
     await createTweet(context.db, {
       tweetId,
-      creatorId: context.uid,
+      userId: context.uid,
       content: args.input.content,
     });
     const tweetDoc = await getDoc(userTweetsRef(context.db, { userId: context.uid }).doc(tweetId));
@@ -41,7 +41,7 @@ export const Mutation: Resolvers["Mutation"] = {
 
     await updateTweet(context.db, {
       tweetId: args.id,
-      creatorId: context.uid,
+      userId: context.uid,
       content: args.input.content,
     });
     const tweetDoc = await getTweet(context.db, { id: args.id });
@@ -51,7 +51,7 @@ export const Mutation: Resolvers["Mutation"] = {
   deleteTweet: async (parent, args, context) => {
     isSignedIn(context);
 
-    await deleteTweet(context.db, { tweetId: args.id, creatorId: context.uid });
+    await deleteTweet(context.db, { tweetId: args.id, userId: context.uid });
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
     return meDoc;
   },

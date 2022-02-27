@@ -33,10 +33,9 @@ type Query {
 type Tweet {
   content: String!
   createdAt: DateTime!
-  creator: User!
-  favorite: Boolean!
   id: String!
-  likedAt: DateTime
+  likedBy: [User!]!
+  postedBy: User!
 }
 
 type TweetConnection {

@@ -42,27 +42,27 @@ export const getTweets = async (
 // NOTE: Mutation
 export const createTweet = async (
   db: Firestore,
-  { tweetId, creatorId, content }: { tweetId: string; creatorId: string; content: string }
+  { tweetId, userId, content }: { tweetId: string; userId: string; content: string }
 ) => {
-  await userTweetsRef(db, { userId: creatorId }).doc(tweetId).set({
+  await userTweetsRef(db, { userId }).doc(tweetId).set({
     content,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
     tweetId,
-    creatorId,
+    userId,
   });
 };
 
 export const updateTweet = async (
   db: Firestore,
-  { tweetId, creatorId, content }: { tweetId: string; creatorId: string; content: string }
+  { tweetId, userId, content }: { tweetId: string; userId: string; content: string }
 ) => {
-  await userTweetsRef(db, { userId: creatorId }).doc(tweetId).set({ content }, { merge: true });
+  await userTweetsRef(db, { userId }).doc(tweetId).set({ content }, { merge: true });
 };
 
 export const deleteTweet = async (
   db: Firestore,
-  { tweetId, creatorId }: { tweetId: string; creatorId: string }
+  { tweetId, userId }: { tweetId: string; userId: string }
 ) => {
-  await userTweetsRef(db, { userId: creatorId }).doc(tweetId).delete();
+  await userTweetsRef(db, { userId }).doc(tweetId).delete();
 };
