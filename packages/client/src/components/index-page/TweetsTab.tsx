@@ -21,21 +21,17 @@ const Feed: VFC = () => {
               <TweetItem tweet={tweet} />
             </AppListItem>
           ))}
-          {loading ? (
-            <AppListItem>
-              <Center>
-                <Spinner />
-              </Center>
-            </AppListItem>
-          ) : hasNext ? (
-            <AppListItem>
-              <Center>
-                <MoreSpinner cb={loadMore} />
-              </Center>
-            </AppListItem>
-          ) : null}
         </AppList>
       )}
+      {loading ? (
+        <Center>
+          <Spinner />
+        </Center>
+      ) : hasNext ? (
+        <Center>
+          <MoreSpinner cb={loadMore} />
+        </Center>
+      ) : null}
     </Stack>
   );
 };
@@ -53,21 +49,17 @@ const Tweets: VFC = () => {
               <TweetItem tweet={tweet} />
             </AppListItem>
           ))}
-          {loading ? (
-            <AppListItem>
-              <Center>
-                <Spinner />
-              </Center>
-            </AppListItem>
-          ) : hasNext ? (
-            <AppListItem>
-              <Center>
-                <MoreSpinner cb={loadMore} />
-              </Center>
-            </AppListItem>
-          ) : null}
         </AppList>
       )}
+      {loading ? (
+        <Center>
+          <Spinner />
+        </Center>
+      ) : hasNext ? (
+        <Center>
+          <MoreSpinner cb={loadMore} />
+        </Center>
+      ) : null}
     </Stack>
   );
 };
@@ -85,21 +77,17 @@ const Likes: VFC = () => {
               <TweetItem tweet={tweet} />
             </AppListItem>
           ))}
-          {loading ? (
-            <AppListItem>
-              <Center>
-                <Spinner />
-              </Center>
-            </AppListItem>
-          ) : hasNext ? (
-            <AppListItem>
-              <Center>
-                <MoreSpinner cb={loadMore} />
-              </Center>
-            </AppListItem>
-          ) : null}
         </AppList>
       )}
+      {loading ? (
+        <Center>
+          <Spinner />
+        </Center>
+      ) : hasNext ? (
+        <Center>
+          <MoreSpinner cb={loadMore} />
+        </Center>
+      ) : null}
     </Stack>
   );
 };
