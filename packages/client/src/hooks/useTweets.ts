@@ -5,6 +5,7 @@ import { useFavoriteTweetsQuery, useFeedQuery } from "../graphql/generated";
 gql`
   query feed($userId: ID!, $input: TweetsInput!) {
     user(id: $userId) {
+      id
       feed(input: $input) {
         edges {
           node {
@@ -41,6 +42,7 @@ export const useFeed = (userId: string) => {
 gql`
   query favoriteTweets($userId: ID!, $input: TweetsInput!) {
     user(id: $userId) {
+      id
       favoriteTweets(input: $input) {
         edges {
           node {

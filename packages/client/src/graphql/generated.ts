@@ -239,7 +239,7 @@ export type FeedQueryVariables = Exact<{
 }>;
 
 
-export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type FavoriteTweetsQueryVariables = Exact<{
   userId: Scalars['ID'];
@@ -247,7 +247,7 @@ export type FavoriteTweetsQueryVariables = Exact<{
 }>;
 
 
-export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -679,6 +679,7 @@ export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQ
 export const FeedDocument = gql`
     query feed($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
+    id
     feed(input: $input) {
       edges {
         node {
@@ -726,6 +727,7 @@ export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
 export const FavoriteTweetsDocument = gql`
     query favoriteTweets($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
+    id
     favoriteTweets(input: $input) {
       edges {
         node {
