@@ -25,9 +25,9 @@ export type Mutation = {
   createTweet: Tweet;
   deleteTweet: User;
   follow: User;
-  like: TweetEdge;
+  like: Tweet;
   unFollow: User;
-  unLike: TweetEdge;
+  unLike: Tweet;
   updateProfile: User;
   updateTweet: Tweet;
 };
@@ -186,14 +186,14 @@ export type LikeMutationVariables = Exact<{
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UnLikeMutationVariables = Exact<{
   tweetId: Scalars['ID'];
 }>;
 
 
-export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
+export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -384,11 +384,8 @@ export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetM
 export const LikeDocument = gql`
     mutation like($tweetId: ID!) {
   like(tweetId: $tweetId) {
-    node {
-      id
-      ...tweetItem
-    }
-    cursor
+    id
+    ...tweetItem
   }
 }
     ${TweetItemFragmentDoc}`;
@@ -421,11 +418,8 @@ export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeM
 export const UnLikeDocument = gql`
     mutation unLike($tweetId: ID!) {
   unLike(tweetId: $tweetId) {
-    node {
-      id
-      ...tweetItem
-    }
-    cursor
+    id
+    ...tweetItem
   }
 }
     ${TweetItemFragmentDoc}`;

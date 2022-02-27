@@ -41,21 +41,15 @@ gql`
 
   mutation like($tweetId: ID!) {
     like(tweetId: $tweetId) {
-      node {
-        id
-        ...tweetItem
-      }
-      cursor
+      id
+      ...tweetItem
     }
   }
 
   mutation unLike($tweetId: ID!) {
     unLike(tweetId: $tweetId) {
-      node {
-        id
-        ...tweetItem
-      }
-      cursor
+      id
+      ...tweetItem
     }
   }
 `;

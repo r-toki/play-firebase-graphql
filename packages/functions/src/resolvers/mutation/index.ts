@@ -81,16 +81,16 @@ export const Mutation: Resolvers["Mutation"] = {
   like: async (parent, args, context) => {
     isSignedIn(context);
 
-    const addedLikeDoc = await like(context.db, { userId: context.uid, tweetId: args.tweetId });
+    await like(context.db, { userId: context.uid, tweetId: args.tweetId });
     const tweetDoc = await getTweet(context.db, { id: args.tweetId });
-    return { node: tweetDoc, cursor: addedLikeDoc.createdAt.toDate().toISOString() };
+    return tweetDoc;
   },
 
   unLike: async (parent, args, context) => {
     isSignedIn(context);
 
-    const deletedLikeDoc = await unLike(context.db, { userId: context.uid, tweetId: args.tweetId });
+    await unLike(context.db, { userId: context.uid, tweetId: args.tweetId });
     const tweetDoc = await getTweet(context.db, { id: args.tweetId });
-    return { node: tweetDoc, cursor: deletedLikeDoc.createdAt.toDate().toISOString() };
+    return tweetDoc;
   },
 };

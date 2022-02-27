@@ -27,9 +27,9 @@ export type Mutation = {
   createTweet: Tweet;
   deleteTweet: User;
   follow: User;
-  like: TweetEdge;
+  like: Tweet;
   unFollow: User;
-  unLike: TweetEdge;
+  unLike: Tweet;
   updateProfile: User;
   updateTweet: Tweet;
 };
@@ -275,9 +275,9 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationCreateTweetArgs, 'input'>>;
   deleteTweet?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteTweetArgs, 'id'>>;
   follow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationFollowArgs, 'userId'>>;
-  like?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<MutationLikeArgs, 'tweetId'>>;
+  like?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationLikeArgs, 'tweetId'>>;
   unFollow?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUnFollowArgs, 'userId'>>;
-  unLike?: Resolver<ResolversTypes['TweetEdge'], ParentType, ContextType, RequireFields<MutationUnLikeArgs, 'tweetId'>>;
+  unLike?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationUnLikeArgs, 'tweetId'>>;
   updateProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateProfileArgs, 'input'>>;
   updateTweet?: Resolver<ResolversTypes['Tweet'], ParentType, ContextType, RequireFields<MutationUpdateTweetArgs, 'id' | 'input'>>;
 }>;
