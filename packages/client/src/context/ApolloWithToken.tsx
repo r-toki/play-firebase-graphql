@@ -19,6 +19,14 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
+        tweets: {
+          keyArgs: false,
+          merge(existing, incoming) {
+            if (!existing) return incoming;
+            const merged = { ...incoming, edges: [...existing.edges, ...incoming.edges] };
+            return merged;
+          },
+        },
         favoriteTweets: {
           keyArgs: false,
           merge(existing, incoming) {

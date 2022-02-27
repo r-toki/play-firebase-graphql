@@ -4,8 +4,12 @@ import { useEffect, useMemo } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
-import { FeedDocument, useTweetEdgeLazyQuery } from "../graphql/generated";
-import { FavoriteTweetsDocument } from "../graphql/generated";
+import {
+  FavoriteTweetsDocument,
+  FeedDocument,
+  TweetsDocument,
+  useTweetEdgeLazyQuery,
+} from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 
 gql`
@@ -50,6 +54,19 @@ export const useTweetsSubscription = (userId: string) => {
             return merged;
           }
         );
+
+        client.cache.updateQuery(
+          { query: TweetsDocument, overwrite: true, variables: { userId } },
+          (data) => {
+            if (!data) return data;
+            const edges = [tweetEdge, ...data.user.tweets.edges];
+            const merged = {
+              ...data,
+              user: { ...data.user, tweets: { ...data.user.tweets, edges } },
+            };
+            return merged;
+          }
+        );
       }
 
       if (change.doc.data().type === "update") {
@@ -70,6 +87,21 @@ export const useTweetsSubscription = (userId: string) => {
               (v) => v.node.id !== change.doc.data().tweetId
             );
             const merged = { ...data, user: { ...data.user, feed: { ...data.user.feed, edges } } };
+            return merged;
+          }
+        );
+
+        client.cache.updateQuery(
+          { query: TweetsDocument, overwrite: true, variables: { userId } },
+          (data) => {
+            if (!data) return data;
+            const edges = [...data.user.tweets.edges].filter(
+              (v) => v.node.id !== change.doc.data().tweetId
+            );
+            const merged = {
+              ...data,
+              user: { ...data.user, tweets: { ...data.user.tweets, edges } },
+            };
             return merged;
           }
         );

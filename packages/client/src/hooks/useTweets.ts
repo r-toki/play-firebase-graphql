@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { useEffect } from "react";
 
-import { useFavoriteTweetsQuery, useFeedQuery } from "../graphql/generated";
+import { useFavoriteTweetsQuery, useFeedQuery, useTweetsQuery } from "../graphql/generated";
 
 gql`
   query feed($userId: ID!, $input: TweetsInput!) {
@@ -38,6 +38,48 @@ export const useFeed = (userId: string) => {
   };
 
   // NOTE: レンダーされる度に再ロードしたい
+  useEffect(() => {
+    if (!data) return;
+    refetch();
+  }, []);
+
+  return { tweets, hasNext, loading, loadMore };
+};
+
+gql`
+  query tweets($userId: ID!, $input: TweetsInput!) {
+    user(id: $userId) {
+      id
+      tweets(input: $input) {
+        edges {
+          node {
+            ...tweetItem
+          }
+          cursor
+        }
+        pageInfo {
+          hasNext
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
+export const useTweets = (userId: string) => {
+  const { data, loading, fetchMore, refetch } = useTweetsQuery({
+    variables: { userId, input: { first: 10 } },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const tweets = data?.user.tweets.edges.map(({ node }) => node) ?? [];
+  const hasNext = data?.user.tweets.pageInfo.hasNext;
+  const endCursor = data?.user.tweets.pageInfo.endCursor;
+
+  const loadMore = () => {
+    fetchMore({ variables: { userId, input: { first: 10, after: endCursor } } });
+  };
+
   useEffect(() => {
     if (!data) return;
     refetch();

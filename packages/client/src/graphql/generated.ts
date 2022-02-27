@@ -235,6 +235,14 @@ export type FeedQueryVariables = Exact<{
 
 export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
+export type TweetsQueryVariables = Exact<{
+  userId: Scalars['ID'];
+  input: TweetsInput;
+}>;
+
+
+export type TweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, tweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+
 export type FavoriteTweetsQueryVariables = Exact<{
   userId: Scalars['ID'];
   input: TweetsInput;
@@ -675,6 +683,54 @@ export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQ
 export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
 export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
 export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
+export const TweetsDocument = gql`
+    query tweets($userId: ID!, $input: TweetsInput!) {
+  user(id: $userId) {
+    id
+    tweets(input: $input) {
+      edges {
+        node {
+          ...tweetItem
+        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
+      }
+    }
+  }
+}
+    ${TweetItemFragmentDoc}`;
+
+/**
+ * __useTweetsQuery__
+ *
+ * To run a query within a React component, call `useTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTweetsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useTweetsQuery(baseOptions: Apollo.QueryHookOptions<TweetsQuery, TweetsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TweetsQuery, TweetsQueryVariables>(TweetsDocument, options);
+      }
+export function useTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetsQuery, TweetsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TweetsQuery, TweetsQueryVariables>(TweetsDocument, options);
+        }
+export type TweetsQueryHookResult = ReturnType<typeof useTweetsQuery>;
+export type TweetsLazyQueryHookResult = ReturnType<typeof useTweetsLazyQuery>;
+export type TweetsQueryResult = Apollo.QueryResult<TweetsQuery, TweetsQueryVariables>;
 export const FavoriteTweetsDocument = gql`
     query favoriteTweets($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
