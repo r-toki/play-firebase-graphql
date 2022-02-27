@@ -29,13 +29,6 @@ const cache = new InMemoryCache({
         },
       },
     },
-    Query: {
-      fields: {
-        user: {
-          merge: false,
-        },
-      },
-    },
   },
 });
 
