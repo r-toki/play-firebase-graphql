@@ -30,7 +30,7 @@ export const getFavoriteTweets = async (
   return { edges: tweetEdges, pageInfo };
 };
 
-export const getFavorite = async (
+export const checkFavorite = async (
   db: Firestore,
   { userId, tweetId }: { userId: string; tweetId: string }
 ) => {

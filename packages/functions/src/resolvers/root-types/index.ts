@@ -4,7 +4,7 @@ import { getFeed } from "../../lib/repositories/feed";
 import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
 import { getTweets } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
-import { getFavorite, getFavoriteTweets } from "./../../lib/repositories/like";
+import { checkFavorite, getFavoriteTweets } from "./../../lib/repositories/like";
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {
@@ -53,7 +53,7 @@ export const Tweet: Resolvers["Tweet"] = {
 
   favorite: async (parent, args, context) => {
     if (!context.uid) return false;
-    const favorite = await getFavorite(context.db, { userId: context.uid, tweetId: parent.id });
+    const favorite = await checkFavorite(context.db, { userId: context.uid, tweetId: parent.id });
     return favorite;
   },
 };
