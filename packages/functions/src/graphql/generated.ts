@@ -106,6 +106,7 @@ export type Tweet = {
   creator: User;
   favorite: Scalars['Boolean'];
   id: Scalars['String'];
+  likedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type TweetConnection = {
@@ -301,6 +302,7 @@ export type TweetResolvers<ContextType = Context, ParentType extends ResolversPa
   creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   favorite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  likedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

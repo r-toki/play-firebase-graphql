@@ -36,6 +36,7 @@ type Tweet {
   creator: User!
   favorite: Boolean!
   id: String!
+  likedAt: DateTime
 }
 
 type TweetConnection {

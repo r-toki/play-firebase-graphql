@@ -16,6 +16,7 @@ type Tweet {
   createdAt: DateTime!
   creator: User!
   favorite: Boolean!
+  likedAt: DateTime
 }
 
 input TweetsInput {

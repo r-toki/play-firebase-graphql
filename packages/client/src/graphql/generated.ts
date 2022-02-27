@@ -104,6 +104,7 @@ export type Tweet = {
   creator: User;
   favorite: Scalars['Boolean'];
   id: Scalars['String'];
+  likedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type TweetConnection = {

@@ -41,7 +41,7 @@ export const getFavoriteTweets = async (
   return { edges, pageInfo };
 };
 
-export const checkFavorite = async (
+export const getLike = async (
   db: Firestore,
   { userId, tweetId }: { userId: string; tweetId: string }
 ) => {
@@ -49,7 +49,7 @@ export const checkFavorite = async (
     likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId)
   );
   const likeDoc = firstOfList(likeDocs);
-  return likeDoc ? true : false;
+  return likeDoc;
 };
 
 // NOTE: Mutation
