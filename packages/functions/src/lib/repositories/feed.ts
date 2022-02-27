@@ -1,4 +1,4 @@
-import { Firestore } from "firebase-admin/firestore";
+import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { UserTweetDoc } from "interfaces/admin-schema";
 import { last, orderBy } from "lodash";
 
@@ -22,7 +22,7 @@ export const getFeed = async (
           tweetsRef(db)
             .where("creatorId", "==", id)
             .orderBy("createdAt", "desc")
-            .startAfter(after)
+            .startAfter(Timestamp.fromDate(new Date(after)))
             .limit(1)
         );
         return docs.map((doc) => ({ node: doc, cursor: doc.createdAt.toDate().toISOString() }));
