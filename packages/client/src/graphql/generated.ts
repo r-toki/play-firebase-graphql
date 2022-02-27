@@ -102,6 +102,7 @@ export type Tweet = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
+  liked: Scalars['Boolean'];
   likedBy: Array<User>;
   postedBy: User;
 };
@@ -162,9 +163,9 @@ export type CreateTweetMutationVariables = Exact<{
 }>;
 
 
-export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string } };
+export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
-export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string };
+export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } };
 
 export type DeleteTweetMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -179,21 +180,21 @@ export type UpdateTweetMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTweetMutation = { __typename?: 'Mutation', updateTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string } };
+export type UpdateTweetMutation = { __typename?: 'Mutation', updateTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
 export type LikeMutationVariables = Exact<{
   tweetId: Scalars['ID'];
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Tweet', id: string, content: string, createdAt: string } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UnLikeMutationVariables = Exact<{
   tweetId: Scalars['ID'];
 }>;
 
 
-export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string } };
+export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -232,7 +233,7 @@ export type FeedQueryVariables = Exact<{
 }>;
 
 
-export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type FavoriteTweetsQueryVariables = Exact<{
   userId: Scalars['ID'];
@@ -240,14 +241,14 @@ export type FavoriteTweetsQueryVariables = Exact<{
 }>;
 
 
-export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
 export type TweetEdgeQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string } } };
+export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -261,6 +262,11 @@ export const TweetItemFragmentDoc = gql`
   id
   content
   createdAt
+  postedBy {
+    id
+    displayName
+  }
+  liked
 }
     `;
 export const CurrentUserFragmentDoc = gql`

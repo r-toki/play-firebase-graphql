@@ -104,6 +104,7 @@ export type Tweet = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['String'];
+  liked: Scalars['Boolean'];
   likedBy: Array<User>;
   postedBy: User;
 };
@@ -299,6 +300,7 @@ export type TweetResolvers<ContextType = Context, ParentType extends ResolversPa
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  liked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   likedBy?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   postedBy?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

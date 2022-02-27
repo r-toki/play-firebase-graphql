@@ -2,9 +2,9 @@ import { Firestore, Timestamp } from "firebase-admin/firestore";
 import { first as firstOfList, last, orderBy } from "lodash";
 
 import { Edge, execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-with-cursor";
-import { getDocs } from "../query-util/get";
+import { getDoc, getDocs } from "../query-util/get";
 import { UserTweetDoc } from "../typed-ref/types";
-import { likesRef, tweetsRef } from "./../typed-ref/index";
+import { likesRef, tweetsRef, usersRef } from "./../typed-ref/index";
 
 // NOTE: Query
 export const getFavoriteTweets = async (
@@ -41,15 +41,25 @@ export const getFavoriteTweets = async (
   return { edges, pageInfo };
 };
 
-export const getLike = async (
+export const getLikedUsers = async (db: Firestore, { tweetId }: { tweetId: string }) => {
+  const likeDocs = await getDocs(
+    likesRef(db).where("tweetId", "==", tweetId).orderBy("createdAt", "desc")
+  );
+  const userDocs = await Promise.all(
+    likeDocs.map((likeDoc) => getDoc(usersRef(db).doc(likeDoc.userId)))
+  );
+  return userDocs;
+};
+
+export const checkLiked = async (
   db: Firestore,
-  { userId, tweetId }: { userId: string; tweetId: string }
+  { tweetId, userId }: { tweetId: string; userId: string }
 ) => {
   const likeDocs = await getDocs(
-    likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId)
+    likesRef(db).where("tweetId", "==", tweetId).where("userId", "==", userId).limit(1)
   );
   const likeDoc = firstOfList(likeDocs);
-  return likeDoc;
+  return likeDoc ? true : false;
 };
 
 // NOTE: Mutation

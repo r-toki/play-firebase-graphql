@@ -34,6 +34,7 @@ type Tweet {
   content: String!
   createdAt: DateTime!
   id: String!
+  liked: Boolean!
   likedBy: [User!]!
   postedBy: User!
 }

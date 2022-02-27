@@ -16,6 +16,7 @@ type Tweet {
   createdAt: DateTime!
   postedBy: User!
   likedBy: [User!]!
+  liked: Boolean!
 }
 
 input TweetsInput {
