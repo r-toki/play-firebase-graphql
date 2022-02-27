@@ -13,7 +13,7 @@ const apiApp = createApiApp();
 exports.api = functionsAtTokyo.https.onRequest(apiApp);
 
 exports.onAuthCreate = functionsAtTokyo.auth.user().onCreate(async (user) => {
-  const createdAt = Timestamp.fromMillis(Number(user.metadata.creationTime));
+  const createdAt = Timestamp.now();
   await usersRef(db)
     .doc(user.uid)
     .set({

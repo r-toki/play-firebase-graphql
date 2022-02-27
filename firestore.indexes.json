@@ -1,11 +1,39 @@
 {
   "indexes": [
     {
+      "collectionGroup": "followRelationships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "followerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "likes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "tweets",
       "queryScope": "COLLECTION_GROUP",
       "fields": [
         {
-          "fieldPath": "creatorId",
+          "fieldPath": "userId",
           "order": "ASCENDING"
         },
         {
@@ -18,7 +46,7 @@
   "fieldOverrides": [
     {
       "collectionGroup": "tweets",
-      "fieldPath": "createdAt",
+      "fieldPath": "tweetId",
       "indexes": [
         {
           "order": "ASCENDING",
@@ -33,7 +61,7 @@
           "queryScope": "COLLECTION"
         },
         {
-          "order": "DESCENDING",
+          "order": "ASCENDING",
           "queryScope": "COLLECTION_GROUP"
         }
       ]

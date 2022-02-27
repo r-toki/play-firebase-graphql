@@ -1,6 +1,6 @@
 import { Spinner } from "@chakra-ui/react";
 import { useEffect, useRef, VFC } from "react";
-import { useIntersection } from "react-use";
+import useIntersection from "react-use/lib/useIntersection";
 
 type MoreSpinnerProps = {
   cb: () => void;
