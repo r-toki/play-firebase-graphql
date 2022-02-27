@@ -1,13 +1,15 @@
 import { Firestore, Timestamp } from "firebase-admin/firestore";
-import { first, last } from "lodash";
+import { first as firstOfList, last as lastOfList, orderBy } from "lodash";
 
+import { Edge, execMultiQueriesWithCursor } from "../query-util/exec-multi-queries-with-cursor";
 import { getDocs } from "../query-util/get";
-import { tweetsRef, userTweetsRef } from "../typed-ref";
+import { likesRef, tweetsRef, userTweetsRef } from "../typed-ref";
+import { UserTweetDoc } from "../typed-ref/types";
 
 // NOTE: Query
 export const getTweet = async (db: Firestore, { id }: { id: string }) => {
   const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", id));
-  const tweetDoc = first(tweetDocs);
+  const tweetDoc = firstOfList(tweetDocs);
   if (!tweetDoc) throw new Error("tweetDoc not found at getTweet");
   return tweetDoc;
 };
@@ -22,21 +24,47 @@ export const getTweets = async (
   db: Firestore,
   { userId, first, after }: { userId: string; first: number; after: string | null | undefined }
 ) => {
-  const tweetDocs = await getDocs(
-    tweetsRef(db)
-      .where("userId", "==", userId)
-      .orderBy("createdAt", "desc")
-      .startAfter(after ? Timestamp.fromDate(new Date(after)) : Timestamp.now())
-      .limit(first)
-  );
+  const queries = [
+    async ({ after }: { after: string }) => {
+      const likeDocs = await getDocs(
+        likesRef(db)
+          .where("userId", "==", userId)
+          .orderBy("createdAt", "desc")
+          .startAfter(Timestamp.fromDate(new Date(after)))
+          .limit(1)
+      );
+      const likeDoc = firstOfList(likeDocs);
+      if (!likeDoc) return [];
 
-  const tweetEdges = tweetDocs.map((doc) => ({
-    node: doc,
-    cursor: doc.createdAt.toDate().toISOString(),
-  }));
-  const pageInfo = { hasNext: tweetEdges.length === first, endCursor: last(tweetEdges)?.cursor };
+      const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", likeDoc.tweetId));
+      const tweetDoc = firstOfList(tweetDocs);
+      if (!tweetDoc) return [];
 
-  return { edges: tweetEdges, pageInfo };
+      return [{ node: tweetDoc, cursor: likeDoc.createdAt.toDate().toISOString() }];
+    },
+
+    async ({ after }: { after: string }) => {
+      const docs = await getDocs(
+        tweetsRef(db)
+          .where("userId", "==", userId)
+          .orderBy("createdAt", "desc")
+          .startAfter(Timestamp.fromDate(new Date(after)))
+          .limit(1)
+      );
+      return docs.map((doc) => ({ node: doc, cursor: doc.createdAt.toDate().toISOString() }));
+    },
+  ];
+
+  const order = (edges: Edge<UserTweetDoc>[]) => orderBy(edges, (v) => v.cursor, "desc");
+
+  const edges = await execMultiQueriesWithCursor(queries, order, {
+    first,
+    after: after ?? new Date().toISOString(),
+  });
+
+  const pageInfo = { hasNext: edges.length === first, endCursor: lastOfList(edges)?.cursor };
+
+  return { edges, pageInfo };
 };
 
 // NOTE: Mutation
