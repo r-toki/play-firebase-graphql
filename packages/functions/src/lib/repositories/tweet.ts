@@ -36,7 +36,9 @@ export const getTweets = async (
       const likeDoc = firstOfList(likeDocs);
       if (!likeDoc) return [];
 
-      const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", likeDoc.tweetId));
+      const tweetDocs = await getDocs(
+        tweetsRef(db).where("userId", "!=", userId).where("tweetId", "==", likeDoc.tweetId)
+      );
       const tweetDoc = firstOfList(tweetDocs);
       if (!tweetDoc) return [];
 
