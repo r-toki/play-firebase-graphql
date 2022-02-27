@@ -164,6 +164,8 @@ export type CreateTweetMutationVariables = Exact<{
 
 export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, creator: { __typename?: 'User', id: string, displayName: string } } };
 
+export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
+
 export type DeleteTweetMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -231,8 +233,6 @@ export type TweetEdgeQueryVariables = Exact<{
 
 export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
-export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } };
-
 export type FeedQueryVariables = Exact<{
   userId: Scalars['ID'];
   input: TweetsInput;
@@ -241,6 +241,14 @@ export type FeedQueryVariables = Exact<{
 
 export type FeedQuery = { __typename?: 'Query', user: { __typename?: 'User', feed: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
 
+export type FavoriteTweetsQueryVariables = Exact<{
+  userId: Scalars['ID'];
+  input: TweetsInput;
+}>;
+
+
+export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
 }>;
@@ -248,12 +256,6 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
-export const CurrentUserFragmentDoc = gql`
-    fragment currentUser on User {
-  id
-  displayName
-}
-    `;
 export const TweetItemFragmentDoc = gql`
     fragment tweetItem on Tweet {
   id
@@ -264,6 +266,12 @@ export const TweetItemFragmentDoc = gql`
     displayName
   }
   favorite
+}
+    `;
+export const CurrentUserFragmentDoc = gql`
+    fragment currentUser on User {
+  id
+  displayName
 }
     `;
 export const CreateTweetDocument = gql`
@@ -715,6 +723,53 @@ export function useFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FeedQ
 export type FeedQueryHookResult = ReturnType<typeof useFeedQuery>;
 export type FeedLazyQueryHookResult = ReturnType<typeof useFeedLazyQuery>;
 export type FeedQueryResult = Apollo.QueryResult<FeedQuery, FeedQueryVariables>;
+export const FavoriteTweetsDocument = gql`
+    query favoriteTweets($userId: ID!, $input: TweetsInput!) {
+  user(id: $userId) {
+    favoriteTweets(input: $input) {
+      edges {
+        node {
+          ...tweetItem
+        }
+        cursor
+      }
+      pageInfo {
+        hasNext
+        endCursor
+      }
+    }
+  }
+}
+    ${TweetItemFragmentDoc}`;
+
+/**
+ * __useFavoriteTweetsQuery__
+ *
+ * To run a query within a React component, call `useFavoriteTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFavoriteTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFavoriteTweetsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useFavoriteTweetsQuery(baseOptions: Apollo.QueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
+      }
+export function useFavoriteTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>(FavoriteTweetsDocument, options);
+        }
+export type FavoriteTweetsQueryHookResult = ReturnType<typeof useFavoriteTweetsQuery>;
+export type FavoriteTweetsLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsLazyQuery>;
+export type FavoriteTweetsQueryResult = Apollo.QueryResult<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {

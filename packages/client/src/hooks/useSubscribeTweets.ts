@@ -6,6 +6,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase-app";
 import { FeedDocument, useTweetEdgeLazyQuery } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
+import { FavoriteTweetsDocument } from "./../graphql/generated";
 
 gql`
   query tweetEdge($id: ID!) {
@@ -63,6 +64,18 @@ export const useSubscribeTweets = (userId: string) => {
 
         client.cache.updateQuery(
           { query: FeedDocument, overwrite: true, variables: { userId } },
+          (data) => {
+            if (!data) return data;
+            const edges = [...data.user.feed.edges].filter(
+              (v) => v.node.id !== change.doc.data().tweetId
+            );
+            const merged = { ...data, user: { ...data.user, feed: { ...data.user.feed, edges } } };
+            return merged;
+          }
+        );
+
+        client.cache.updateQuery(
+          { query: FavoriteTweetsDocument, overwrite: true, variables: { userId } },
           (data) => {
             if (!data) return data;
             const edges = [...data.user.feed.edges].filter(

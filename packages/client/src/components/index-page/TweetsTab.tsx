@@ -3,7 +3,7 @@ import { useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
 import { useSubscribeTweets } from "../../hooks/useSubscribeTweets";
-import { useFeed } from "../../hooks/useTweets";
+import { useFavoriteTweets, useFeed } from "../../hooks/useTweets";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
 import { TweetItem } from "./TweetItem";
@@ -40,8 +40,42 @@ const Feed: VFC = () => {
   );
 };
 
+const Likes: VFC = () => {
+  const { currentUser } = useAuthed();
+  const { tweets, hasNext, loading, loadMore } = useFavoriteTweets(currentUser.id);
+
+  return (
+    <Stack>
+      {tweets.length && (
+        <AppList>
+          {tweets.map((tweet) => (
+            <AppListItem key={tweet.id}>
+              <TweetItem tweet={tweet} />
+            </AppListItem>
+          ))}
+          {loading ? (
+            <AppListItem>
+              <Center>
+                <Spinner />
+              </Center>
+            </AppListItem>
+          ) : hasNext ? (
+            <AppListItem>
+              <Center>
+                <MoreSpinner cb={loadMore} />
+              </Center>
+            </AppListItem>
+          ) : null}
+        </AppList>
+      )}
+    </Stack>
+  );
+};
+
 export const TweetsTab: VFC = () => {
-  useSubscribeTweets();
+  // TODO: user_id param に合わせる
+  const { currentUser } = useAuthed();
+  useSubscribeTweets(currentUser.id);
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -49,10 +83,10 @@ export const TweetsTab: VFC = () => {
     <Tabs onChange={setTabIndex}>
       <TabList>
         <Tab fontWeight="bold">Feed</Tab>
-        <Tab fontWeight="bold">Tweets</Tab>
         <Tab fontWeight="bold">Likes</Tab>
       </TabList>
-      <Feed />
+      {tabIndex === 0 && <Feed />}
+      {tabIndex === 1 && <Likes />}
     </Tabs>
   );
 };

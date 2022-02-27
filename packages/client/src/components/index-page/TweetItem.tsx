@@ -15,6 +15,17 @@ import {
 import { useTextInput } from "../../hooks/useTextInput";
 
 gql`
+  fragment tweetItem on Tweet {
+    id
+    content
+    createdAt
+    creator {
+      id
+      displayName
+    }
+    favorite
+  }
+
   mutation deleteTweet($id: ID!) {
     deleteTweet(id: $id) {
       id
@@ -56,6 +67,7 @@ export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
 
   const [deleteTweet] = useDeleteTweetMutation();
   const [updateTweet] = useUpdateTweetMutation();
+
   const [like] = useLikeMutation();
   const [unLike] = useUnLikeMutation();
 
