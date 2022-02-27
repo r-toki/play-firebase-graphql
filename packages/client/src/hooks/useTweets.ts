@@ -1,11 +1,7 @@
 import { gql } from "@apollo/client";
 import { useEffect } from "react";
 
-import {
-  useFavoriteTweetsLazyQuery,
-  useFavoriteTweetsQuery,
-  useFeedQuery,
-} from "../graphql/generated";
+import { useFavoriteTweetsQuery, useFeedQuery } from "../graphql/generated";
 
 gql`
   query feed($userId: ID!, $input: TweetsInput!) {

@@ -226,13 +226,6 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
-export type TweetEdgeQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
-
 export type FeedQueryVariables = Exact<{
   userId: Scalars['ID'];
   input: TweetsInput;
@@ -248,6 +241,13 @@ export type FavoriteTweetsQueryVariables = Exact<{
 
 
 export type FavoriteTweetsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, favoriteTweets: { __typename?: 'TweetConnection', edges: Array<{ __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } }>, pageInfo: { __typename?: 'PageInfo', hasNext: boolean, endCursor?: string | null } } } };
+
+export type TweetEdgeQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -637,45 +637,6 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
-export const TweetEdgeDocument = gql`
-    query tweetEdge($id: ID!) {
-  tweetEdge(id: $id) {
-    node {
-      id
-      ...tweetItem
-    }
-    cursor
-  }
-}
-    ${TweetItemFragmentDoc}`;
-
-/**
- * __useTweetEdgeQuery__
- *
- * To run a query within a React component, call `useTweetEdgeQuery` and pass it any options that fit your needs.
- * When your component renders, `useTweetEdgeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTweetEdgeQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useTweetEdgeQuery(baseOptions: Apollo.QueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
-      }
-export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
-        }
-export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
-export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
-export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
 export const FeedDocument = gql`
     query feed($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
@@ -772,6 +733,45 @@ export function useFavoriteTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FavoriteTweetsQueryHookResult = ReturnType<typeof useFavoriteTweetsQuery>;
 export type FavoriteTweetsLazyQueryHookResult = ReturnType<typeof useFavoriteTweetsLazyQuery>;
 export type FavoriteTweetsQueryResult = Apollo.QueryResult<FavoriteTweetsQuery, FavoriteTweetsQueryVariables>;
+export const TweetEdgeDocument = gql`
+    query tweetEdge($id: ID!) {
+  tweetEdge(id: $id) {
+    node {
+      id
+      ...tweetItem
+    }
+    cursor
+  }
+}
+    ${TweetItemFragmentDoc}`;
+
+/**
+ * __useTweetEdgeQuery__
+ *
+ * To run a query within a React component, call `useTweetEdgeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTweetEdgeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTweetEdgeQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useTweetEdgeQuery(baseOptions: Apollo.QueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
+      }
+export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TweetEdgeQuery, TweetEdgeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TweetEdgeQuery, TweetEdgeQueryVariables>(TweetEdgeDocument, options);
+        }
+export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
+export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
+export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {
