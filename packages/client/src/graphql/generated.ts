@@ -37,9 +37,9 @@ export type Mutation = {
   createTweet: Tweet;
   deleteTweet: User;
   follow: User;
-  like: Tweet;
+  like: TweetEdge;
   unFollow: User;
-  unLike: Tweet;
+  unLike: TweetEdge;
   updateProfile: User;
   updateTweet: Tweet;
 };
@@ -175,14 +175,14 @@ export type LikeMutationVariables = Exact<{
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type UnLikeMutationVariables = Exact<{
   tweetId: Scalars['ID'];
 }>;
 
 
-export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } };
+export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, favorite: boolean, creator: { __typename?: 'User', id: string, displayName: string } } } };
 
 export type CreateTweetMutationVariables = Exact<{
   input: CreateTweetInput;
@@ -343,8 +343,11 @@ export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetM
 export const LikeDocument = gql`
     mutation like($tweetId: ID!) {
   like(tweetId: $tweetId) {
-    id
-    ...feedItem
+    node {
+      id
+      ...feedItem
+    }
+    cursor
   }
 }
     ${FeedItemFragmentDoc}`;
@@ -377,8 +380,11 @@ export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeM
 export const UnLikeDocument = gql`
     mutation unLike($tweetId: ID!) {
   unLike(tweetId: $tweetId) {
-    id
-    ...feedItem
+    node {
+      id
+      ...feedItem
+    }
+    cursor
   }
 }
     ${FeedItemFragmentDoc}`;

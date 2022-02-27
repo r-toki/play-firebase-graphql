@@ -4,7 +4,12 @@ import { useEffect, useMemo } from "react";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
-import { useFavoriteTweetsQuery, useFeedQuery, useTweetEdgeLazyQuery } from "../graphql/generated";
+import {
+  FavoriteTweetsDocument,
+  useFavoriteTweetsQuery,
+  useFeedQuery,
+  useTweetEdgeLazyQuery,
+} from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 import { useAuthed } from "./../context/Authed";
 import { FeedDocument } from "./../graphql/generated";
@@ -129,6 +134,30 @@ export const useSubscribeTweets = () => {
 
       if (change.doc.data().type === "delete") {
         console.log("--- tweet has been deleted ---");
+
+        client.cache.updateQuery({ query: FeedDocument, overwrite: true }, (data) => {
+          if (!data) return data;
+          return {
+            ...data,
+            feed: {
+              ...data.feed,
+              edges: data.feed.edges.filter((v: any) => v.node.id !== change.doc.data().tweetId),
+            },
+          };
+        });
+
+        client.cache.updateQuery({ query: FavoriteTweetsDocument, overwrite: true }, (data) => {
+          if (!data) return data;
+          return {
+            ...data,
+            favoriteTweets: {
+              ...data.favoriteTweets,
+              edges: data.favoriteTweets.edges.filter(
+                (v: any) => v.node.id !== change.doc.data().tweetId
+              ),
+            },
+          };
+        });
       }
     });
   }, [tweetEvents]);

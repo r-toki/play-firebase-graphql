@@ -63,15 +63,21 @@ gql`
 
   mutation like($tweetId: ID!) {
     like(tweetId: $tweetId) {
-      id
-      ...feedItem
+      node {
+        id
+        ...feedItem
+      }
+      cursor
     }
   }
 
   mutation unLike($tweetId: ID!) {
     unLike(tweetId: $tweetId) {
-      id
-      ...feedItem
+      node {
+        id
+        ...feedItem
+      }
+      cursor
     }
   }
 `;
@@ -123,7 +129,7 @@ export const FeedItem: VFC<FeedItemProps> = ({ tweet }) => {
             ...data.favoriteTweets,
             edges: [...data.favoriteTweets.edges].filter(
               // FIXME: なぜか partial になる
-              (v) => v.node.id !== result.data!.unLike.id
+              (v) => v.node.id !== result.data!.unLike.node.id
             ),
           },
         };

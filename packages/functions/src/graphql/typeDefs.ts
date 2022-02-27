@@ -23,9 +23,9 @@ type Mutation {
   createTweet(input: CreateTweetInput!): Tweet!
   deleteTweet(id: ID!): User!
   follow(userId: ID!): User!
-  like(tweetId: ID!): Tweet!
+  like(tweetId: ID!): TweetEdge!
   unFollow(userId: ID!): User!
-  unLike(tweetId: ID!): Tweet!
+  unLike(tweetId: ID!): TweetEdge!
   updateProfile(input: UpdateProfileInput!): User!
   updateTweet(id: ID!, input: UpdateTweetInput!): Tweet!
 }

@@ -50,8 +50,11 @@ export const like = async (
     likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId)
   );
   const likeDoc = first(likeDocs);
-  if (likeDoc) return;
-  await likesRef(db).add({ userId, tweetId, createdAt: Timestamp.now() });
+  if (likeDoc) throw new Error("likeDoc not found");
+  const ref = await likesRef(db).add({ userId, tweetId, createdAt: Timestamp.now() });
+  const addedLikeDoc = (await ref.get()).data();
+  if (!addedLikeDoc) throw new Error("addedLikeDoc not found");
+  return addedLikeDoc;
 };
 
 export const unLike = async (
@@ -62,6 +65,7 @@ export const unLike = async (
     likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId)
   );
   const likeDoc = first(likeDocs);
-  if (!likeDoc) return;
+  if (!likeDoc) throw new Error("likeDoc not found");
   await likeDoc.ref.delete();
+  return likeDoc;
 };

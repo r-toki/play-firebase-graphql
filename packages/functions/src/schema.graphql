@@ -92,9 +92,9 @@ type Mutation {
 }
 
 type Mutation {
-  like(tweetId: ID!): Tweet!
+  like(tweetId: ID!): TweetEdge!
 }
 
 type Mutation {
-  unLike(tweetId: ID!): Tweet!
+  unLike(tweetId: ID!): TweetEdge!
 }
