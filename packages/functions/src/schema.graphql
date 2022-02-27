@@ -3,8 +3,11 @@ scalar DateTime
 type User {
   id: String!
   displayName: String!
-  tweets(input: TweetsInput!): TweetConnection!
+  # NOTE: following users tweets (order by posted at) + my tweets (order by posted at)
   feed(input: TweetsInput!): TweetConnection!
+  # NOTE: my tweets (order by posted at) + favorite tweets (order by liked at)
+  tweets(input: TweetsInput!): TweetConnection!
+  # NOTE: favorite tweets (order by liked at)
   favoriteTweets(input: TweetsInput!): TweetConnection!
   followings: [User!]!
   followers: [User!]!
@@ -51,7 +54,7 @@ input UpdateProfileInput {
 }
 
 type Mutation {
-  # return me
+  # NOTE: return me
   updateProfile(input: UpdateProfileInput!): User!
 }
 
@@ -72,17 +75,17 @@ type Mutation {
 }
 
 type Mutation {
-  # return me
+  # NOTE: return me
   deleteTweet(id: ID!): User!
 }
 
 type Mutation {
-  # return me
+  # NOTE: return me
   follow(userId: ID!): User!
 }
 
 type Mutation {
-  # return me
+  # NOTE: return me
   unFollow(userId: ID!): User!
 }
 
