@@ -5,8 +5,8 @@ import { useCollection } from "react-firebase-hooks/firestore";
 
 import { db } from "../firebase-app";
 import { FeedDocument, useTweetEdgeLazyQuery } from "../graphql/generated";
+import { FavoriteTweetsDocument } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
-import { FavoriteTweetsDocument } from "./../graphql/generated";
 
 gql`
   query tweetEdge($id: ID!) {
@@ -20,7 +20,7 @@ gql`
   }
 `;
 
-export const useSubscribeTweets = (userId: string) => {
+export const useTweetsSubscription = (userId: string) => {
   const client = useApolloClient();
 
   const [getTweetEdge] = useTweetEdgeLazyQuery();

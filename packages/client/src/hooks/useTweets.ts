@@ -1,6 +1,11 @@
 import { gql } from "@apollo/client";
+import { useEffect } from "react";
 
-import { useFavoriteTweetsQuery, useFeedQuery } from "../graphql/generated";
+import {
+  useFavoriteTweetsLazyQuery,
+  useFavoriteTweetsQuery,
+  useFeedQuery,
+} from "../graphql/generated";
 
 gql`
   query feed($userId: ID!, $input: TweetsInput!) {
@@ -23,7 +28,7 @@ gql`
 `;
 
 export const useFeed = (userId: string) => {
-  const { data, loading, fetchMore } = useFeedQuery({
+  const { data, loading, fetchMore, refetch } = useFeedQuery({
     variables: { userId, input: { first: 10 } },
     notifyOnNetworkStatusChange: true,
   });
@@ -35,6 +40,12 @@ export const useFeed = (userId: string) => {
   const loadMore = () => {
     fetchMore({ variables: { userId, input: { first: 10, after: endCursor } } });
   };
+
+  // NOTE: レンダーされる度に再ロードしたい
+  useEffect(() => {
+    if (!data) return;
+    refetch();
+  }, []);
 
   return { tweets, hasNext, loading, loadMore };
 };
@@ -60,7 +71,7 @@ gql`
 `;
 
 export const useFavoriteTweets = (userId: string) => {
-  const { data, loading, fetchMore } = useFavoriteTweetsQuery({
+  const { data, loading, fetchMore, refetch } = useFavoriteTweetsQuery({
     variables: { userId, input: { first: 10 } },
     notifyOnNetworkStatusChange: true,
   });
@@ -72,6 +83,11 @@ export const useFavoriteTweets = (userId: string) => {
   const loadMore = () => {
     fetchMore({ variables: { userId, input: { first: 10, after: endCursor } } });
   };
+
+  useEffect(() => {
+    if (!data) return;
+    refetch();
+  }, []);
 
   return { tweets, hasNext, loading, loadMore };
 };

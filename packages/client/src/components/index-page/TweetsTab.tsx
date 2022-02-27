@@ -2,8 +2,8 @@ import { Center, Spinner, Stack, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
-import { useSubscribeTweets } from "../../hooks/useSubscribeTweets";
 import { useFavoriteTweets, useFeed } from "../../hooks/useTweets";
+import { useTweetsSubscription } from "../../hooks/useTweetsSubscription";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
 import { TweetItem } from "./TweetItem";
@@ -75,7 +75,7 @@ const Likes: VFC = () => {
 export const TweetsTab: VFC = () => {
   // TODO: user_id param に合わせる
   const { currentUser } = useAuthed();
-  useSubscribeTweets(currentUser.id);
+  useTweetsSubscription(currentUser.id);
 
   const [tabIndex, setTabIndex] = useState(0);
 
