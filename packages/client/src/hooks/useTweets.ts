@@ -3,25 +3,25 @@ import { useEffect } from "react";
 
 import { useFavoriteTweetsQuery, useFeedQuery, useTweetsQuery } from "../graphql/generated";
 
-gql`
-  query feed($userId: ID!, $input: TweetsInput!) {
-    user(id: $userId) {
-      id
-      feed(input: $input) {
-        edges {
-          node {
-            ...tweetItem
-          }
-          cursor
-        }
-        pageInfo {
-          hasNext
-          endCursor
-        }
-      }
-    }
-  }
-`;
+// gql`
+//   query feed($userId: ID!, $input: TweetsInput!) {
+//     user(id: $userId) {
+//       id
+//       feed(input: $input) {
+//         edges {
+//           node {
+//             ...tweetItem
+//           }
+//           cursor
+//         }
+//         pageInfo {
+//           hasNext
+//           endCursor
+//         }
+//       }
+//     }
+//   }
+// `;
 
 export const useFeed = (userId: string) => {
   const { data, loading, fetchMore, refetch } = useFeedQuery({
@@ -46,25 +46,25 @@ export const useFeed = (userId: string) => {
   return { tweets, hasNext, loading, loadMore };
 };
 
-gql`
-  query tweets($userId: ID!, $input: TweetsInput!) {
-    user(id: $userId) {
-      id
-      tweets(input: $input) {
-        edges {
-          node {
-            ...tweetItem
-          }
-          cursor
-        }
-        pageInfo {
-          hasNext
-          endCursor
-        }
-      }
-    }
-  }
-`;
+// gql`
+//   query tweets($userId: ID!, $input: TweetsInput!) {
+//     user(id: $userId) {
+//       id
+//       tweets(input: $input) {
+//         edges {
+//           node {
+//             ...tweetItem
+//           }
+//           cursor
+//         }
+//         pageInfo {
+//           hasNext
+//           endCursor
+//         }
+//       }
+//     }
+//   }
+// `;
 
 export const useTweets = (userId: string) => {
   const { data, loading, fetchMore, refetch } = useTweetsQuery({
@@ -88,25 +88,25 @@ export const useTweets = (userId: string) => {
   return { tweets, hasNext, loading, loadMore };
 };
 
-gql`
-  query favoriteTweets($userId: ID!, $input: TweetsInput!) {
-    user(id: $userId) {
-      id
-      favoriteTweets(input: $input) {
-        edges {
-          node {
-            ...tweetItem
-          }
-          cursor
-        }
-        pageInfo {
-          hasNext
-          endCursor
-        }
-      }
-    }
-  }
-`;
+// gql`
+//   query favoriteTweets($userId: ID!, $input: TweetsInput!) {
+//     user(id: $userId) {
+//       id
+//       favoriteTweets(input: $input) {
+//         edges {
+//           node {
+//             ...tweetItem
+//           }
+//           cursor
+//         }
+//         pageInfo {
+//           hasNext
+//           endCursor
+//         }
+//       }
+//     }
+//   }
+// `;
 
 export const useFavoriteTweets = (userId: string) => {
   const { data, loading, fetchMore, refetch } = useFavoriteTweetsQuery({

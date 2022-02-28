@@ -30,6 +30,12 @@ type Query {
   users: [User!]!
 }
 
+enum TWEET_FILTER {
+  FOLLOWINGS
+  LIKES
+  SELF
+}
+
 type Tweet {
   content: String!
   createdAt: DateTime!
@@ -51,6 +57,7 @@ type TweetEdge {
 
 input TweetsInput {
   after: String
+  filters: [TWEET_FILTER!]!
   first: Int!
 }
 
@@ -64,8 +71,6 @@ input UpdateTweetInput {
 
 type User {
   displayName: String!
-  favoriteTweets(input: TweetsInput!): TweetConnection!
-  feed(input: TweetsInput!): TweetConnection!
   followers: [User!]!
   followings: [User!]!
   id: String!

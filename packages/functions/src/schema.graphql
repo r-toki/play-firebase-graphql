@@ -1,14 +1,21 @@
 scalar DateTime
 
+enum TWEET_FILTER {
+  SELF
+  FOLLOWINGS
+  LIKES
+}
+
 type User {
   id: String!
   displayName: String!
   # NOTE: following users tweets (order by posted at) + my tweets (order by posted at)
-  feed(input: TweetsInput!): TweetConnection!
+  # feed(input: TweetsInput!): TweetConnection!
   # NOTE: my tweets (order by posted at) + favorite tweets (order by liked at)
-  tweets(input: TweetsInput!): TweetConnection!
+  # tweets(input: TweetsInput!): TweetConnection!
   # NOTE: favorite tweets (order by liked at)
-  favoriteTweets(input: TweetsInput!): TweetConnection!
+  # favoriteTweets(input: TweetsInput!): TweetConnection!
+  tweets(input: TweetsInput!): TweetConnection!
   followings: [User!]!
   followers: [User!]!
 }
@@ -25,6 +32,7 @@ type Tweet {
 input TweetsInput {
   first: Int!
   after: String
+  filters: [TWEET_FILTER!]!
 }
 
 type PageInfo {

@@ -27,3 +27,5 @@ generates:
     config:
       scalars:
         DateTime: string
+config:
+  enumsAsConst: true

@@ -1,7 +1,7 @@
 import { VFC } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { ApolloWithTokenProvider } from "./context/ApolloWithToken";
+import { Apollo } from "./context/Apollo";
 import { useAuth } from "./context/Auth";
 import { paths, routes } from "./routes";
 import { Compose } from "./routes/middleware";
@@ -9,7 +9,7 @@ import { Compose } from "./routes/middleware";
 const App: VFC = () => {
   const authState = useAuth();
   return authState.initialized ? (
-    <ApolloWithTokenProvider>
+    <Apollo>
       <BrowserRouter>
         <Routes>
           {paths.map((path) => {
@@ -28,7 +28,7 @@ const App: VFC = () => {
           })}
         </Routes>
       </BrowserRouter>
-    </ApolloWithTokenProvider>
+    </Apollo>
   ) : null;
 };
 

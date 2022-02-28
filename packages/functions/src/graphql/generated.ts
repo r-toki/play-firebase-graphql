@@ -100,6 +100,13 @@ export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
+export const Tweet_Filter = {
+  Followings: 'FOLLOWINGS',
+  Likes: 'LIKES',
+  Self: 'SELF'
+} as const;
+
+export type Tweet_Filter = typeof Tweet_Filter[keyof typeof Tweet_Filter];
 export type Tweet = {
   __typename?: 'Tweet';
   content: Scalars['String'];
@@ -124,6 +131,7 @@ export type TweetEdge = {
 
 export type TweetsInput = {
   after?: InputMaybe<Scalars['String']>;
+  filters: Array<Tweet_Filter>;
   first: Scalars['Int'];
 };
 
@@ -138,22 +146,10 @@ export type UpdateTweetInput = {
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
-  favoriteTweets: TweetConnection;
-  feed: TweetConnection;
   followers: Array<User>;
   followings: Array<User>;
   id: Scalars['String'];
   tweets: TweetConnection;
-};
-
-
-export type UserFavoriteTweetsArgs = {
-  input: TweetsInput;
-};
-
-
-export type UserFeedArgs = {
-  input: TweetsInput;
 };
 
 
@@ -240,6 +236,7 @@ export type ResolversTypes = ResolversObject<{
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  TWEET_FILTER: Tweet_Filter;
   Tweet: ResolverTypeWrapper<UserTweetDoc>;
   TweetConnection: ResolverTypeWrapper<Omit<TweetConnection, 'edges'> & { edges: Array<ResolversTypes['TweetEdge']> }>;
   TweetEdge: ResolverTypeWrapper<Omit<TweetEdge, 'node'> & { node: ResolversTypes['Tweet'] }>;
@@ -321,8 +318,6 @@ export type TweetEdgeResolvers<ContextType = Context, ParentType extends Resolve
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  favoriteTweets?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<UserFavoriteTweetsArgs, 'input'>>;
-  feed?: Resolver<ResolversTypes['TweetConnection'], ParentType, ContextType, RequireFields<UserFeedArgs, 'input'>>;
   followers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   followings?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

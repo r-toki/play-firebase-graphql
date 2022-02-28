@@ -40,7 +40,7 @@ const cache = new InMemoryCache({
   },
 });
 
-const useApolloClientWithTokenContainer = () => {
+const useApolloContainer = () => {
   const { token } = useAuth();
 
   const authLink = useMemo(
@@ -72,11 +72,11 @@ const useApolloClientWithTokenContainer = () => {
   return client;
 };
 
-type ApolloWithTokenProviderProps = {
+type ApolloProps = {
   children: ReactNode;
 };
 
-export const ApolloWithTokenProvider: VFC<ApolloWithTokenProviderProps> = ({ children }) => {
-  const client = useApolloClientWithTokenContainer();
+export const Apollo: VFC<ApolloProps> = ({ children }) => {
+  const client = useApolloContainer();
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
