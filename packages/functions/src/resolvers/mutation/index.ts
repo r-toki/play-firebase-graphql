@@ -1,5 +1,3 @@
-import { v4 } from "uuid";
-
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
 import { createTweet } from "../../lib/command/createTweet";
@@ -13,7 +11,6 @@ import { updateUser } from "../../lib/command/updateUser";
 import { getTweet } from "../../lib/query/getTweet";
 import { getDoc } from "../../lib/query-util/get";
 import { usersRef } from "../../lib/typed-ref";
-import { userTweetsRef } from "./../../lib/typed-ref/index";
 
 export const Mutation: Resolvers["Mutation"] = {
   updateProfile: async (parent, args, context) => {
@@ -30,13 +27,11 @@ export const Mutation: Resolvers["Mutation"] = {
   createTweet: async (parent, args, context) => {
     isSignedIn(context);
 
-    const tweetId = v4();
-    await createTweet(context.db, {
-      tweetId,
+    const { id } = await createTweet(context.db, {
       userId: context.uid,
       content: args.input.content,
     });
-    const tweetDoc = await getDoc(userTweetsRef(context.db, { userId: context.uid }).doc(tweetId));
+    const tweetDoc = await getTweet(context.db, { id });
     return tweetDoc;
   },
 
