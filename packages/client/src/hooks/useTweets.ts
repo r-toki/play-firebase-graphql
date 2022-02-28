@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
-import { useEffect } from "react";
 
-import { Tweet_Filter, useTweetsLazyQuery, useTweetsQuery } from "./../graphql/generated";
+import { Tweet_Filter, useTweetsLazyQuery } from "./../graphql/generated";
 
 gql`
   query tweets($userId: ID!, $input: TweetsInput!) {

@@ -4,6 +4,7 @@ import { useEffect, useState, VFC } from "react";
 import { useAuthed } from "../../context/Authed";
 import { Tweet_Filter, TweetItemFragment } from "../../graphql/generated";
 import { useTweets } from "../../hooks/useTweets";
+import { useTweetsSubscription } from "../../hooks/useTweetsSubscription";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
 import { TweetItem } from "./TweetItem";
@@ -47,8 +48,13 @@ export const TweetsTab: VFC = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   const filterMaps: { [key: number]: Tweet_Filter[] } = {
-    0: ["SELF", "FOLLOWINGS", "LIKES"],
-    1: ["SELF", "LIKES"],
+    // NOTE: Feed
+    0: ["SELF", "FOLLOWINGS"],
+
+    // NOTE: Tweets
+    1: ["SELF"],
+
+    // NOTE: Likes
     2: ["LIKES"],
   };
 
@@ -60,6 +66,8 @@ export const TweetsTab: VFC = () => {
   useEffect(() => {
     fetch();
   }, [tabIndex]);
+
+  useTweetsSubscription(currentUser.id);
 
   return (
     <Tabs onChange={setTabIndex}>
