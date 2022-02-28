@@ -238,6 +238,11 @@ export type TweetEdgeQueryVariables = Exact<{
 
 export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } } };
 
+export type FollowingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FollowingsQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string }> } };
+
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
 }>;
@@ -703,6 +708,43 @@ export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
 export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
 export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
+export const FollowingsDocument = gql`
+    query followings {
+  me {
+    id
+    followings {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useFollowingsQuery__
+ *
+ * To run a query within a React component, call `useFollowingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFollowingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFollowingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFollowingsQuery(baseOptions?: Apollo.QueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FollowingsQuery, FollowingsQueryVariables>(FollowingsDocument, options);
+      }
+export function useFollowingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FollowingsQuery, FollowingsQueryVariables>(FollowingsDocument, options);
+        }
+export type FollowingsQueryHookResult = ReturnType<typeof useFollowingsQuery>;
+export type FollowingsLazyQueryHookResult = ReturnType<typeof useFollowingsLazyQuery>;
+export type FollowingsQueryResult = Apollo.QueryResult<FollowingsQuery, FollowingsQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {

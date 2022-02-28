@@ -6,6 +6,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { db } from "../firebase-app";
 import { TweetsDocument, useTweetEdgeLazyQuery } from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
+import { useAuthed } from "./../context/Authed";
 
 gql`
   query tweetEdge($id: ID!) {
@@ -17,15 +18,29 @@ gql`
       cursor
     }
   }
+
+  query followings {
+    me {
+      id
+      followings {
+        id
+      }
+    }
+  }
 `;
 
-export const useTweetsSubscription = (userId: string) => {
+// TODO: Likes を表示している時は created を追加しない
+// TODO: tweetUserId を currentUser.id + followings.map(v => v.id) に対応させたい
+export const useTweetsSubscription = (tweetUserId: string) => {
   const client = useApolloClient();
 
+  const { currentUser } = useAuthed();
   const [getTweetEdge] = useTweetEdgeLazyQuery();
 
   const now = useMemo(() => Timestamp.now(), []);
-  const [tweetEvents] = useCollection(query(tweetEventsRef(db), where("createdAt", ">=", now)));
+  const [tweetEvents] = useCollection(
+    query(tweetEventsRef(db), where("userId", "==", tweetUserId), where("createdAt", ">=", now))
+  );
 
   useEffect(() => {
     tweetEvents?.docChanges().forEach(async (change) => {
@@ -41,7 +56,7 @@ export const useTweetsSubscription = (userId: string) => {
         if (!tweetEdge) return;
 
         client.cache.updateQuery(
-          { query: TweetsDocument, overwrite: true, variables: { userId } },
+          { query: TweetsDocument, overwrite: true, variables: { userId: currentUser.id } },
           (data) => {
             if (!data) return data;
             const edges = [tweetEdge, ...data.user.tweets.edges];
@@ -65,7 +80,7 @@ export const useTweetsSubscription = (userId: string) => {
         console.log("--- tweet has been deleted ---");
 
         client.cache.updateQuery(
-          { query: TweetsDocument, overwrite: true, variables: { userId } },
+          { query: TweetsDocument, overwrite: true, variables: { userId: currentUser.id } },
           (data) => {
             if (!data) return data;
             const edges = [...data.user.tweets.edges].filter(
