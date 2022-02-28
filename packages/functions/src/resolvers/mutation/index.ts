@@ -2,13 +2,17 @@ import { v4 } from "uuid";
 
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
+import { createTweet } from "../../lib/command/createTweet";
+import { deleteTweet } from "../../lib/command/deleteTweet";
+import { follow } from "../../lib/command/follow";
+import { like } from "../../lib/command/like";
+import { unFollow } from "../../lib/command/unFollow";
+import { unLike } from "../../lib/command/unLike";
+import { updateTweet } from "../../lib/command/updateTweet";
+import { updateUser } from "../../lib/command/updateUser";
+import { getTweet } from "../../lib/query/getTweet";
 import { getDoc } from "../../lib/query-util/get";
-import { like, unLike } from "../../lib/repositories/like";
-import { createTweet, deleteTweet, getTweet } from "../../lib/repositories/tweet";
 import { usersRef } from "../../lib/typed-ref";
-import { follow, unFollow } from "./../../lib/repositories/follow-relationship";
-import { updateTweet } from "./../../lib/repositories/tweet";
-import { updateUser } from "./../../lib/repositories/user";
 import { userTweetsRef } from "./../../lib/typed-ref/index";
 
 export const Mutation: Resolvers["Mutation"] = {

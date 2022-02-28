@@ -1,11 +1,13 @@
 import { last } from "lodash";
 
 import { Resolvers } from "../../graphql/generated";
+import { checkLiked } from "../../lib/query/checkLiked";
+import { getFollowers } from "../../lib/query/getFollowers";
+import { getFollowings } from "../../lib/query/getFollowings";
+import { getLikedUsers } from "../../lib/query/getLikedUsers";
 import { getTweets } from "../../lib/query/getTweets";
 import { getDoc } from "../../lib/query-util/get";
-import { getFollowers, getFollowings } from "../../lib/repositories/follow-relationship";
 import { usersRef } from "../../lib/typed-ref";
-import { checkLiked, getLikedUsers } from "./../../lib/repositories/like";
 
 export const User: Resolvers["User"] = {
   tweets: async (parent, args, context) => {

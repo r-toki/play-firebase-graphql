@@ -1,8 +1,8 @@
 import { Resolvers } from "../../graphql/generated";
 import { isSignedIn } from "../../lib/authorization";
+import { getTweetEdge } from "../../lib/query/getTweetEdge";
 import { getDoc, getDocs } from "../../lib/query-util/get";
 import { usersRef } from "../../lib/typed-ref";
-import { getTweetEdge } from "./../../lib/repositories/tweet";
 
 export const Query: Resolvers["Query"] = {
   me: async (parent, args, context) => {
