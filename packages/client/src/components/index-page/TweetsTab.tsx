@@ -2,72 +2,20 @@ import { Center, Spinner, Stack, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
-import { useFavoriteTweets, useFeed, useTweets } from "../../hooks/useTweets";
-import { useTweetsSubscription } from "../../hooks/useTweetsSubscription";
+import { Tweet_Filter, TweetItemFragment } from "../../graphql/generated";
+import { useTweets } from "../../hooks/useTweets";
 import { AppList, AppListItem } from "../shared/AppList";
 import { MoreSpinner } from "../shared/AppMoreSpinner";
 import { TweetItem } from "./TweetItem";
 
-const Feed: VFC = () => {
-  const { currentUser } = useAuthed();
-  const { tweets, hasNext, loading, loadMore } = useFeed(currentUser.id);
-
-  return (
-    <Stack>
-      {tweets.length && (
-        <AppList>
-          {tweets.map((tweet) => (
-            <AppListItem key={tweet.id}>
-              <TweetItem tweet={tweet} />
-            </AppListItem>
-          ))}
-        </AppList>
-      )}
-      {loading ? (
-        <Center my="4">
-          <Spinner />
-        </Center>
-      ) : hasNext ? (
-        <Center my="4">
-          <MoreSpinner cb={loadMore} />
-        </Center>
-      ) : null}
-    </Stack>
-  );
+type TweetsProps = {
+  tweets: TweetItemFragment[];
+  loading: boolean;
+  hasNext: boolean;
+  loadMore: () => void;
 };
 
-const Tweets: VFC = () => {
-  const { currentUser } = useAuthed();
-  const { tweets, hasNext, loading, loadMore } = useTweets(currentUser.id);
-
-  return (
-    <Stack>
-      {tweets.length && (
-        <AppList>
-          {tweets.map((tweet) => (
-            <AppListItem key={tweet.id}>
-              <TweetItem tweet={tweet} />
-            </AppListItem>
-          ))}
-        </AppList>
-      )}
-      {loading ? (
-        <Center my="4">
-          <Spinner />
-        </Center>
-      ) : hasNext ? (
-        <Center my="4">
-          <MoreSpinner cb={loadMore} />
-        </Center>
-      ) : null}
-    </Stack>
-  );
-};
-
-const Likes: VFC = () => {
-  const { currentUser } = useAuthed();
-  const { tweets, hasNext, loading, loadMore } = useFavoriteTweets(currentUser.id);
-
+const Tweets: VFC<TweetsProps> = ({ tweets, loading, hasNext, loadMore }) => {
   return (
     <Stack>
       {tweets.length && (
@@ -95,9 +43,16 @@ const Likes: VFC = () => {
 export const TweetsTab: VFC = () => {
   // TODO: user_id param に合わせる
   const { currentUser } = useAuthed();
-  useTweetsSubscription(currentUser.id);
 
   const [tabIndex, setTabIndex] = useState(0);
+
+  const filterMaps: { [key: number]: Tweet_Filter[] } = {
+    0: ["SELF", "FOLLOWINGS", "LIKES"],
+    1: ["SELF", "LIKES"],
+    2: ["LIKES"],
+  };
+
+  const useTweetsReturn = useTweets(currentUser.id, filterMaps[tabIndex]);
 
   return (
     <Tabs onChange={setTabIndex}>
@@ -106,9 +61,7 @@ export const TweetsTab: VFC = () => {
         <Tab fontWeight="bold">Tweets</Tab>
         <Tab fontWeight="bold">Likes</Tab>
       </TabList>
-      {tabIndex === 0 && <Feed />}
-      {tabIndex === 1 && <Tweets />}
-      {tabIndex === 2 && <Likes />}
+      <Tweets {...useTweetsReturn} />
     </Tabs>
   );
 };
