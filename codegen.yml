@@ -22,6 +22,3 @@ generates:
       - "typescript-operations"
       # - "typed-document-node"
       - "typescript-react-apollo"
-config:
-  scalars:
-    DateTime: string
