@@ -73,22 +73,24 @@ export const Users: VFC = () => {
   };
 
   return (
-    <Stack>
+    <Stack h="full">
       <Box alignSelf="center" fontWeight="bold">
         Users
       </Box>
-      {otherUsers.length && (
-        <AppList>
-          {otherUsers.map((user) => (
-            <AppListItem key={user.id}>
-              <Flex justifyContent="space-between">
-                <Box fontWeight="bold">{user.displayName}</Box>
-                <ToggleFollowButton userId={user.id} />
-              </Flex>
-            </AppListItem>
-          ))}
-        </AppList>
-      )}
+      <Box overflow="auto">
+        {otherUsers.length && (
+          <AppList>
+            {otherUsers.map((user) => (
+              <AppListItem key={user.id}>
+                <Flex justifyContent="space-between">
+                  <Box fontWeight="bold">{user.displayName}</Box>
+                  <ToggleFollowButton userId={user.id} />
+                </Flex>
+              </AppListItem>
+            ))}
+          </AppList>
+        )}
+      </Box>
     </Stack>
   );
 };

@@ -8,6 +8,7 @@ import { ArrayFactory, AuthUserFactory, DateFactory, UserTweetFactory } from "./
 import { db } from "./firebase-app";
 import { wait } from "./util";
 
+// NOTE: emulators:start --only auth,firestore で実行する。functions の trigger 無視していいように書いている
 const main = async () => {
   await Promise.all([clearAuth(), clearFirestore()]);
 
@@ -17,7 +18,7 @@ const main = async () => {
   const authUsers: UserRecord[] = [];
 
   // NOTE: onAuthCreate で userDoc が作られる
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const authUser = await AuthUserFactory.of();
     authUsers.push(authUser);
   }
@@ -34,13 +35,13 @@ const main = async () => {
   await Promise.all(
     authUsers.map((authUser, i) => {
       const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), i));
-      return usersRef(db).doc(authUser.uid).set(
-        {
+      return usersRef(db)
+        .doc(authUser.uid)
+        .set({
+          displayName: authUser.email || "",
           createdAt,
           updatedAt: createdAt,
-        },
-        { merge: true }
-      );
+        });
     })
   );
 };

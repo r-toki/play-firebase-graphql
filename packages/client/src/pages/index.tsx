@@ -26,7 +26,11 @@ export const Index: VFC = () => {
       flexDirection="column"
       justifyContent="space-between"
     >
-      <Users />
+      <Box flexGrow="1" position="relative">
+        <Box position="absolute" inset="0">
+          <Users />
+        </Box>
+      </Box>
       <UserMenu />
     </Flex>
   );
