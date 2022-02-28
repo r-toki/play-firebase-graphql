@@ -3,7 +3,7 @@ import { VFC } from "react";
 
 import { News } from "../components/index-page/News";
 import { TweetForm } from "../components/index-page/TweetForm";
-import { TweetsTab } from "../components/index-page/TweetsTab";
+import { TweetsPanel } from "../components/index-page/TweetsPanel";
 import { UserMenu } from "../components/index-page/UserMenu";
 import { Users } from "../components/index-page/Users";
 import { AppLayout } from "../components/shared/AppLayout";
@@ -12,7 +12,7 @@ export const Index: VFC = () => {
   const main = (
     <Stack maxW="100%" w="xl" px="4" py="4" spacing="6">
       <TweetForm />
-      <TweetsTab />
+      <TweetsPanel />
     </Stack>
   );
 

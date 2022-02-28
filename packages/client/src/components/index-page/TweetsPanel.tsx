@@ -41,7 +41,7 @@ const Tweets: VFC<TweetsProps> = ({ tweets, loading, hasNext, loadMore }) => {
   );
 };
 
-export const TweetsTab: VFC = () => {
+export const TweetsPanel: VFC = () => {
   // TODO: user_id param に合わせる
   const { currentUser } = useAuthed();
 
