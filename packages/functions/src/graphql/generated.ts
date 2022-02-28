@@ -15,7 +15,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  DateTime: string;
+  DateTime: any;
 };
 
 export type CreateTweetInput = {
