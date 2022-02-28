@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { useEffect } from "react";
 
-import { Tweet_Filter, useTweetsQuery } from "./../graphql/generated";
+import { Tweet_Filter, useTweetsLazyQuery, useTweetsQuery } from "./../graphql/generated";
 
 gql`
   query tweets($userId: ID!, $input: TweetsInput!) {
@@ -25,7 +25,7 @@ gql`
 `;
 
 export const useTweets = (userId: string, filters: Tweet_Filter[]) => {
-  const { data, loading, fetchMore, refetch } = useTweetsQuery({
+  const [fetch, { data, loading, fetchMore }] = useTweetsLazyQuery({
     variables: { userId, input: { first: 10, filters } },
     notifyOnNetworkStatusChange: true,
   });
@@ -38,10 +38,5 @@ export const useTweets = (userId: string, filters: Tweet_Filter[]) => {
     fetchMore({ variables: { userId, input: { first: 10, after: endCursor, filters } } });
   };
 
-  // useEffect(() => {
-  //   if (!data) return;
-  //   refetch();
-  // }, [filters]);
-
-  return { tweets, hasNext, loading, loadMore };
+  return { tweets, hasNext, loading, loadMore, fetch };
 };

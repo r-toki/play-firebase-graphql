@@ -1,5 +1,5 @@
 import { Center, Spinner, Stack, Tab, TabList, Tabs } from "@chakra-ui/react";
-import { useState, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 
 import { useAuthed } from "../../context/Authed";
 import { Tweet_Filter, TweetItemFragment } from "../../graphql/generated";
@@ -52,7 +52,14 @@ export const TweetsTab: VFC = () => {
     2: ["LIKES"],
   };
 
-  const useTweetsReturn = useTweets(currentUser.id, filterMaps[tabIndex]);
+  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(
+    currentUser.id,
+    filterMaps[tabIndex]
+  );
+
+  useEffect(() => {
+    fetch();
+  }, [tabIndex]);
 
   return (
     <Tabs onChange={setTabIndex}>
@@ -61,7 +68,7 @@ export const TweetsTab: VFC = () => {
         <Tab fontWeight="bold">Tweets</Tab>
         <Tab fontWeight="bold">Likes</Tab>
       </TabList>
-      <Tweets {...useTweetsReturn} />
+      <Tweets {...{ tweets, hasNext, loading, loadMore }} />
     </Tabs>
   );
 };
