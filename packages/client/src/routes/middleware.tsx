@@ -4,6 +4,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/Auth";
 import { CurrentUserProvider, useCurrentUser } from "../context/CurrentUser";
 import { useMeForCurrentUserContextQuery } from "../graphql/generated";
+import { assertIsDefined } from "../lib/type-utils";
 import { routes } from ".";
 
 type MiddlewareProps = { children: ReactNode };
@@ -19,12 +20,13 @@ export const AfterAuth: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (!uid) return <Navigate to={routes["/login"].path()} />;
 
-  const { data, called, loading } = useMeForCurrentUserContextQuery();
-  if (!called) return null;
-  if (loading) return null;
-  const currentUser = data?.me;
-  if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
+  const { data, called, loading, error } = useMeForCurrentUserContextQuery();
+  if (!called || loading) return null;
+  if (error) throw new Error(error.message);
+  assertIsDefined(data);
 
+  const currentUser = data.me;
+  if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
   return <CurrentUserProvider currentUser={currentUser}>{children}</CurrentUserProvider>;
 };
 
@@ -37,12 +39,13 @@ export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (!uid) return <Navigate to={routes["/login"].path()} />;
 
-  const { data, called, loading } = useMeForCurrentUserContextQuery();
-  if (!called) return null;
-  if (loading) return null;
-  const currentUser = data?.me;
-  if (currentUser) return <Navigate to={routes["/"].path()} />;
+  const { data, called, loading, error } = useMeForCurrentUserContextQuery();
+  if (!called || loading) return null;
+  if (error) throw new Error(error.message);
+  assertIsDefined(data);
 
+  const currentUser = data.me;
+  if (currentUser) return <Navigate to={routes["/"].path()} />;
   return <>{children}</>;
 };
 
