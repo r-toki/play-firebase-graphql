@@ -5,7 +5,12 @@ import { chunk } from "lodash-es";
 import { useEffect, useMemo } from "react";
 
 import { db } from "../firebase-app";
-import { TweetsDocument, useFollowingsQuery, useTweetEdgeLazyQuery } from "../graphql/generated";
+import {
+  Tweet_Filter,
+  TweetsDocument,
+  useTweetEdgeLazyQuery,
+  useUserForTweetsSubscriptionQuery,
+} from "../graphql/generated";
 import { tweetEventsRef } from "../lib/typed-ref";
 
 gql`
@@ -19,7 +24,7 @@ gql`
     }
   }
 
-  query followings($id: ID!) {
+  query userForTweetsSubscription($id: ID!) {
     user(id: $id) {
       id
       followings {
@@ -29,9 +34,18 @@ gql`
   }
 `;
 
-// TODO: Likes を表示している時は created を追加しない
-export const useTweetsSubscription = (userId: string) => {
+export const useTweetsSubscription = (userId: string, filters: Tweet_Filter[]) => {
   const client = useApolloClient();
+
+  const { data } = useUserForTweetsSubscriptionQuery({ variables: { id: userId } });
+
+  const watchedUserIds = useMemo(() => {
+    const res: string[] = [];
+    if (!data) return res;
+    if (filters.includes("SELF")) res.push(data.user.id);
+    if (filters.includes("FOLLOWINGS")) res.push(...data.user.followings.map(({ id }) => id));
+    return res;
+  }, [data, filters]);
 
   const [getTweetEdge] = useTweetEdgeLazyQuery();
 
@@ -87,13 +101,6 @@ export const useTweetsSubscription = (userId: string) => {
       );
     }
   };
-
-  const { data } = useFollowingsQuery({ variables: { id: userId } });
-
-  const watchedUserIds = useMemo(
-    () => (data ? [data.user.id, ...data.user.followings.map((v) => v.id)] : []),
-    [data]
-  );
 
   useEffect(() => {
     if (!watchedUserIds.length) return;

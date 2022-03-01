@@ -192,12 +192,12 @@ export type UnLikeMutationVariables = Exact<{
 
 export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
-export type UserQueryVariables = Exact<{
+export type UserForUserNameQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
+export type UserForUserNameQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
 
 export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -245,12 +245,12 @@ export type TweetEdgeQueryVariables = Exact<{
 
 export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } } };
 
-export type FollowingsQueryVariables = Exact<{
+export type UserForTweetsSubscriptionQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type FollowingsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string }> } };
+export type UserForTweetsSubscriptionQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string }> } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -447,8 +447,8 @@ export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLik
 export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
 export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
 export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
-export const UserDocument = gql`
-    query user($id: ID!) {
+export const UserForUserNameDocument = gql`
+    query userForUserName($id: ID!) {
   user(id: $id) {
     id
     displayName
@@ -457,32 +457,32 @@ export const UserDocument = gql`
     `;
 
 /**
- * __useUserQuery__
+ * __useUserForUserNameQuery__
  *
- * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserForUserNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserForUserNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUserQuery({
+ * const { data, loading, error } = useUserForUserNameQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useUserForUserNameQuery(baseOptions: Apollo.QueryHookOptions<UserForUserNameQuery, UserForUserNameQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        return Apollo.useQuery<UserForUserNameQuery, UserForUserNameQueryVariables>(UserForUserNameDocument, options);
       }
-export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useUserForUserNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserForUserNameQuery, UserForUserNameQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+          return Apollo.useLazyQuery<UserForUserNameQuery, UserForUserNameQueryVariables>(UserForUserNameDocument, options);
         }
-export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
-export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
-export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export type UserForUserNameQueryHookResult = ReturnType<typeof useUserForUserNameQuery>;
+export type UserForUserNameLazyQueryHookResult = ReturnType<typeof useUserForUserNameLazyQuery>;
+export type UserForUserNameQueryResult = Apollo.QueryResult<UserForUserNameQuery, UserForUserNameQueryVariables>;
 export const UsersForIndexPageDocument = gql`
     query usersForIndexPage {
   users {
@@ -753,8 +753,8 @@ export function useTweetEdgeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
 export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
 export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
-export const FollowingsDocument = gql`
-    query followings($id: ID!) {
+export const UserForTweetsSubscriptionDocument = gql`
+    query userForTweetsSubscription($id: ID!) {
   user(id: $id) {
     id
     followings {
@@ -765,32 +765,32 @@ export const FollowingsDocument = gql`
     `;
 
 /**
- * __useFollowingsQuery__
+ * __useUserForTweetsSubscriptionQuery__
  *
- * To run a query within a React component, call `useFollowingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useFollowingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserForTweetsSubscriptionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserForTweetsSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFollowingsQuery({
+ * const { data, loading, error } = useUserForTweetsSubscriptionQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useFollowingsQuery(baseOptions: Apollo.QueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
+export function useUserForTweetsSubscriptionQuery(baseOptions: Apollo.QueryHookOptions<UserForTweetsSubscriptionQuery, UserForTweetsSubscriptionQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FollowingsQuery, FollowingsQueryVariables>(FollowingsDocument, options);
+        return Apollo.useQuery<UserForTweetsSubscriptionQuery, UserForTweetsSubscriptionQueryVariables>(UserForTweetsSubscriptionDocument, options);
       }
-export function useFollowingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
+export function useUserForTweetsSubscriptionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserForTweetsSubscriptionQuery, UserForTweetsSubscriptionQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FollowingsQuery, FollowingsQueryVariables>(FollowingsDocument, options);
+          return Apollo.useLazyQuery<UserForTweetsSubscriptionQuery, UserForTweetsSubscriptionQueryVariables>(UserForTweetsSubscriptionDocument, options);
         }
-export type FollowingsQueryHookResult = ReturnType<typeof useFollowingsQuery>;
-export type FollowingsLazyQueryHookResult = ReturnType<typeof useFollowingsLazyQuery>;
-export type FollowingsQueryResult = Apollo.QueryResult<FollowingsQuery, FollowingsQueryVariables>;
+export type UserForTweetsSubscriptionQueryHookResult = ReturnType<typeof useUserForTweetsSubscriptionQuery>;
+export type UserForTweetsSubscriptionLazyQueryHookResult = ReturnType<typeof useUserForTweetsSubscriptionLazyQuery>;
+export type UserForTweetsSubscriptionQueryResult = Apollo.QueryResult<UserForTweetsSubscriptionQuery, UserForTweetsSubscriptionQueryVariables>;
 export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {
