@@ -1,5 +1,15 @@
 import { HamburgerIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Flex, HStack, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import { VFC } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,32 +36,28 @@ export const UserMenu: VFC = () => {
   const { currentUser, onClickEditProfile, onClickLogout } = useUserMenu();
 
   return (
-    <Box>
-      <Menu>
-        <MenuButton
-          w="100%"
-          px="3"
-          py="2"
-          borderWidth="1px"
-          rounded="md"
-          _hover={{ bg: "gray.100" }}
-        >
-          <Flex justifyContent="space-between" alignItems="center">
-            <HStack spacing="4">
-              <Avatar />
-              <Box fontWeight="bold">{currentUser.displayName}</Box>
-            </HStack>
+    <Flex justifyContent="space-between" px="3" py="2" borderWidth="1px" rounded="md">
+      <HStack>
+        <Avatar />
+        <AppLink to={routes["/"].path()}>
+          <Box fontWeight="bold">{currentUser.displayName}</Box>
+        </AppLink>
+      </HStack>
+
+      <Box>
+        <Menu placement="top-end">
+          <MenuButton as={Button}>
             <HamburgerIcon />
-          </Flex>
-        </MenuButton>
-        <MenuList>
-          <AppLink to={routes["/"].path()}>
-            <MenuItem>Home</MenuItem>
-          </AppLink>
-          <MenuItem onClick={onClickEditProfile}>Edit Profile</MenuItem>
-          <MenuItem onClick={onClickLogout}>Logout</MenuItem>
-        </MenuList>
-      </Menu>
-    </Box>
+          </MenuButton>
+          <MenuList>
+            <AppLink to={routes["/"].path()}>
+              <MenuItem>Home</MenuItem>
+            </AppLink>
+            <MenuItem onClick={onClickEditProfile}>Edit Profile</MenuItem>
+            <MenuItem onClick={onClickLogout}>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      </Box>
+    </Flex>
   );
 };

@@ -38,7 +38,7 @@ const main = async () => {
       return usersRef(db)
         .doc(authUser.uid)
         .set({
-          displayName: authUser.email || "",
+          displayName: authUser.email?.split("@")[0] || "",
           createdAt,
           updatedAt: createdAt,
         });
