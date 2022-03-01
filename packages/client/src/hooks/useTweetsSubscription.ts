@@ -30,7 +30,6 @@ gql`
 `;
 
 // TODO: Likes を表示している時は created を追加しない
-// TODO: tweetUserId を currentUser.id + followings.map(v => v.id) に対応させたい
 export const useTweetsSubscription = (userId: string) => {
   const client = useApolloClient();
 
@@ -98,8 +97,11 @@ export const useTweetsSubscription = (userId: string) => {
 
   useEffect(() => {
     if (!watchedUserIds.length) return;
+
+    const unsubs: (() => void)[] = [];
+
     chunk(watchedUserIds, 10).map((chunkedWatchedUserIds) => {
-      onSnapshot(
+      const unsub = onSnapshot(
         query(
           tweetEventsRef(db),
           where("userId", "in", chunkedWatchedUserIds),
@@ -107,6 +109,11 @@ export const useTweetsSubscription = (userId: string) => {
         ),
         (snap) => snap.docChanges().forEach(cb)
       );
+      unsubs.push(unsub);
     });
+
+    return () => {
+      unsubs.forEach((unsub) => unsub());
+    };
   }, [watchedUserIds]);
 };
