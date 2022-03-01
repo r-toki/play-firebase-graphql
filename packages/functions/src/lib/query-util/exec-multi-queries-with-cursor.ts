@@ -1,5 +1,9 @@
 import { first as head, uniqBy } from "lodash";
 
+const assertCandidates = <T>(candidates: Edge<T>[]) => {
+  if (candidates.length > 2) throw new Error("limit of query is not 1");
+};
+
 export type Edge<T> = {
   node: T;
   cursor: string;
@@ -13,6 +17,7 @@ export const execMultiQueriesWithCursor = async <T extends { id: string }>(
   let res: Edge<T>[] = [];
 
   const candidatesList = await Promise.all(queries.map((query) => query({ after })));
+  candidatesList.forEach(assertCandidates);
 
   let i = 0;
   while (i < first) {
@@ -26,6 +31,7 @@ export const execMultiQueriesWithCursor = async <T extends { id: string }>(
 
     const headQuery = queries[headIndex];
     const newCandidates = await headQuery({ after: headCandidate.cursor });
+    assertCandidates(newCandidates);
     candidatesList[headIndex] = newCandidates;
 
     i++;

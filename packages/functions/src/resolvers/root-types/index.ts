@@ -17,7 +17,8 @@ export const User: Resolvers["User"] = {
       after: args.input.after,
       filters: args.input.filters,
     });
-    const pageInfo = { hasNext: edges.length === args.input.first, endCursor: last(edges)?.cursor };
+    // NOTE: 重複あった時を考慮して、edges.length === args.input.first で判定しない
+    const pageInfo = { hasNext: edges.length > 0, endCursor: last(edges)?.cursor };
     return { edges, pageInfo };
   },
 
