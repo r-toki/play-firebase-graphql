@@ -25,7 +25,7 @@ const main = async () => {
 
   await Promise.all(
     authUsers.map((authUser, i) =>
-      ArrayFactory.of(10).map((_, j) => {
+      ArrayFactory.of(25).map((_, j) => {
         const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), 10 * i + j));
         return UserTweetFactory.of({ userId: authUser.uid, createdAt, updatedAt: createdAt });
       })
