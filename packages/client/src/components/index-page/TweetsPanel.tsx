@@ -1,5 +1,6 @@
 import { Center, Spinner, Stack, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useEffect, useState, VFC } from "react";
+import { useParams } from "react-router-dom";
 
 import { useAuthed } from "../../context/Authed";
 import { Tweet_Filter, TweetItemFragment } from "../../graphql/generated";
@@ -42,37 +43,45 @@ const Tweets: VFC<TweetsProps> = ({ tweets, loading, hasNext, loadMore }) => {
 };
 
 export const TweetsPanel: VFC = () => {
-  // TODO: user_id param に合わせる
+  const { user_id } = useParams();
+
   const { currentUser } = useAuthed();
+
+  const isMyPage = user_id === currentUser.id;
 
   const [tabIndex, setTabIndex] = useState(0);
 
-  const filterMaps: { [key: number]: Tweet_Filter[] } = {
-    // NOTE: Feed
-    0: ["SELF", "FOLLOWINGS"],
+  const filterMaps: { [key: number]: Tweet_Filter[] } = isMyPage
+    ? {
+        // NOTE: Feed
+        0: ["SELF", "FOLLOWINGS"],
 
-    // NOTE: Tweets
-    1: ["SELF"],
+        // NOTE: Tweets
+        1: ["SELF"],
 
-    // NOTE: Likes
-    2: ["LIKES"],
-  };
+        // NOTE: Likes
+        2: ["LIKES"],
+      }
+    : {
+        // NOTE: Tweets
+        0: ["SELF"],
 
-  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(
-    currentUser.id,
-    filterMaps[tabIndex]
-  );
+        // NOTE: Likes
+        1: ["LIKES"],
+      };
+
+  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(user_id!, filterMaps[tabIndex]);
 
   useEffect(() => {
     fetch();
   }, [tabIndex]);
 
-  useTweetsSubscription(currentUser.id);
+  useTweetsSubscription(user_id!);
 
   return (
     <Tabs onChange={setTabIndex}>
       <TabList>
-        <Tab fontWeight="bold">Feed</Tab>
+        {isMyPage && <Tab fontWeight="bold">Feed</Tab>}
         <Tab fontWeight="bold">Tweets</Tab>
         <Tab fontWeight="bold">Likes</Tab>
       </TabList>

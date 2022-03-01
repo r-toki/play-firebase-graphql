@@ -8,6 +8,7 @@ import { routes } from ".";
 
 type MiddlewareProps = { children: ReactNode };
 
+// NOTE: SignUp と LogIn は Auth なし
 export const WithoutAuth: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (uid) return <Navigate to={routes["/"].path()} />;
@@ -25,6 +26,11 @@ export const WithAuthed: VFC<MiddlewareProps> = ({ children }) => {
   if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
 
   return <AuthedProvider currentUser={currentUser}>{children}</AuthedProvider>;
+};
+
+export const IndexMiddleware: VFC<MiddlewareProps> = () => {
+  const { currentUser } = useAuthed();
+  return <Navigate to={routes["/users/:user_id"].path({ user_id: currentUser.id })} />;
 };
 
 export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {

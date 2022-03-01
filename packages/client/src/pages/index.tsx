@@ -1,18 +1,27 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
+import { useParams } from "react-router-dom";
 
 import { News } from "../components/index-page/News";
 import { TweetForm } from "../components/index-page/TweetForm";
 import { TweetsPanel } from "../components/index-page/TweetsPanel";
+import { User } from "../components/index-page/User";
 import { UserMenu } from "../components/index-page/UserMenu";
 import { Users } from "../components/index-page/Users";
 import { AppLayout } from "../components/shared/AppLayout";
+import { useAuthed } from "../context/Authed";
 
 export const Index: VFC = () => {
+  const { user_id } = useParams();
+  const { currentUser } = useAuthed();
+
   const main = (
-    <Stack maxW="100%" w="xl" px="4" py="4" spacing="6">
-      <TweetForm />
-      <TweetsPanel />
+    <Stack maxW="100%" w="xl" px="4" py="4">
+      <User />
+      <Stack spacing="6">
+        {user_id === currentUser.id && <TweetForm />}
+        <TweetsPanel />
+      </Stack>
     </Stack>
   );
 

@@ -9,6 +9,8 @@ import {
   useUnFollowForIndexPageMutation,
   useUsersForIndexPageQuery,
 } from "../../graphql/generated";
+import { routes } from "../../routes";
+import { AppLink } from "../shared/AppLink";
 import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
@@ -83,7 +85,11 @@ export const Users: VFC = () => {
             {otherUsers.map((user) => (
               <AppListItem key={user.id}>
                 <Flex justifyContent="space-between">
-                  <Box fontWeight="bold">{user.displayName}</Box>
+                  <AppLink to={routes["/users/:user_id"].path({ user_id: user.id })}>
+                    <Box fontWeight="bold" isTruncated>
+                      {user.displayName}
+                    </Box>
+                  </AppLink>
                   <ToggleFollowButton userId={user.id} />
                 </Flex>
               </AppListItem>

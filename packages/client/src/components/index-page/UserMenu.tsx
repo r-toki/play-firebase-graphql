@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthed } from "../../context/Authed";
 import { auth } from "../../firebase-app";
 import { routes } from "../../routes";
+import { AppLink } from "../shared/AppLink";
 
 const useUserMenu = () => {
   const { currentUser } = useAuthed();
@@ -42,6 +43,9 @@ export const UserMenu: VFC = () => {
           </Flex>
         </MenuButton>
         <MenuList>
+          <AppLink to={routes["/"].path()}>
+            <MenuItem>HOME</MenuItem>
+          </AppLink>
           <MenuItem onClick={onEditProfile}>Edit Profile</MenuItem>
           <MenuItem onClick={onLogout}>Logout</MenuItem>
         </MenuList>
