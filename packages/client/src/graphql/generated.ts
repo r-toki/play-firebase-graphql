@@ -223,12 +223,12 @@ export type UnFollowForIndexPageMutationVariables = Exact<{
 
 export type UnFollowForIndexPageMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
-export type CurrentUserFragment = { __typename?: 'User', id: string, displayName: string };
+export type CurrentUserContextFragment = { __typename?: 'User', id: string, displayName: string };
 
-export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type MeForCurrentUserContextQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
+export type MeForCurrentUserContextQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, displayName: string } };
 
 export type TweetsQueryVariables = Exact<{
   userId: Scalars['ID'];
@@ -271,8 +271,8 @@ export const TweetItemFragmentDoc = gql`
   liked
 }
     `;
-export const CurrentUserFragmentDoc = gql`
-    fragment currentUser on User {
+export const CurrentUserContextFragmentDoc = gql`
+    fragment currentUserContext on User {
   id
   displayName
 }
@@ -630,41 +630,41 @@ export function useUnFollowForIndexPageMutation(baseOptions?: Apollo.MutationHoo
 export type UnFollowForIndexPageMutationHookResult = ReturnType<typeof useUnFollowForIndexPageMutation>;
 export type UnFollowForIndexPageMutationResult = Apollo.MutationResult<UnFollowForIndexPageMutation>;
 export type UnFollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
-export const CurrentUserDocument = gql`
-    query currentUser {
+export const MeForCurrentUserContextDocument = gql`
+    query meForCurrentUserContext {
   me {
     id
-    ...currentUser
+    ...currentUserContext
   }
 }
-    ${CurrentUserFragmentDoc}`;
+    ${CurrentUserContextFragmentDoc}`;
 
 /**
- * __useCurrentUserQuery__
+ * __useMeForCurrentUserContextQuery__
  *
- * To run a query within a React component, call `useCurrentUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMeForCurrentUserContextQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeForCurrentUserContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCurrentUserQuery({
+ * const { data, loading, error } = useMeForCurrentUserContextQuery({
  *   variables: {
  *   },
  * });
  */
-export function useCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
+export function useMeForCurrentUserContextQuery(baseOptions?: Apollo.QueryHookOptions<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, options);
+        return Apollo.useQuery<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>(MeForCurrentUserContextDocument, options);
       }
-export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
+export function useMeForCurrentUserContextLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, options);
+          return Apollo.useLazyQuery<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>(MeForCurrentUserContextDocument, options);
         }
-export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
-export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
-export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export type MeForCurrentUserContextQueryHookResult = ReturnType<typeof useMeForCurrentUserContextQuery>;
+export type MeForCurrentUserContextLazyQueryHookResult = ReturnType<typeof useMeForCurrentUserContextLazyQuery>;
+export type MeForCurrentUserContextQueryResult = Apollo.QueryResult<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>;
 export const TweetsDocument = gql`
     query tweets($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
@@ -795,10 +795,10 @@ export const UpdateProfileDocument = gql`
     mutation updateProfile($input: UpdateProfileInput!) {
   updateProfile(input: $input) {
     id
-    displayName
+    ...currentUserContext
   }
 }
-    `;
+    ${CurrentUserContextFragmentDoc}`;
 export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutation, UpdateProfileMutationVariables>;
 
 /**

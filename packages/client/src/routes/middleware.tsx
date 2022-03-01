@@ -2,34 +2,34 @@ import { ReactNode, VFC } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 import { useAuth } from "../context/Auth";
-import { AuthedProvider, useAuthed } from "../context/Authed";
-import { useCurrentUserQuery } from "../graphql/generated";
+import { CurrentUserProvider, useCurrentUser } from "../context/CurrentUser";
+import { useMeForCurrentUserContextQuery } from "../graphql/generated";
 import { routes } from ".";
 
 type MiddlewareProps = { children: ReactNode };
 
 // NOTE: SignUp と LogIn は Auth なし
-export const WithoutAuth: VFC<MiddlewareProps> = ({ children }) => {
+export const BeforeAuth: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (uid) return <Navigate to={routes["/"].path()} />;
   return <>{children}</>;
 };
 
-export const WithAuthed: VFC<MiddlewareProps> = ({ children }) => {
+export const AfterAuth: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (!uid) return <Navigate to={routes["/login"].path()} />;
 
-  const { data, called, loading } = useCurrentUserQuery();
+  const { data, called, loading } = useMeForCurrentUserContextQuery();
   if (!called) return null;
   if (loading) return null;
   const currentUser = data?.me;
   if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
 
-  return <AuthedProvider currentUser={currentUser}>{children}</AuthedProvider>;
+  return <CurrentUserProvider currentUser={currentUser}>{children}</CurrentUserProvider>;
 };
 
 export const IndexMiddleware: VFC<MiddlewareProps> = () => {
-  const { currentUser } = useAuthed();
+  const currentUser = useCurrentUser();
   return <Navigate to={routes["/users/:user_id"].path({ user_id: currentUser.id })} />;
 };
 
@@ -37,7 +37,7 @@ export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {
   const { uid } = useAuth();
   if (!uid) return <Navigate to={routes["/login"].path()} />;
 
-  const { data, called, loading } = useCurrentUserQuery();
+  const { data, called, loading } = useMeForCurrentUserContextQuery();
   if (!called) return null;
   if (loading) return null;
   const currentUser = data?.me;
@@ -48,7 +48,7 @@ export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {
 
 export const UserPrivate: VFC<MiddlewareProps> = ({ children }) => {
   const { user_id } = useParams();
-  const { currentUser } = useAuthed();
+  const currentUser = useCurrentUser();
   if (user_id !== currentUser.id) return <Navigate to={routes["/"].path()} />;
   return <>{children}</>;
 };

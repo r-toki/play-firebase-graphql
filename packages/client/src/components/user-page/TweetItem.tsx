@@ -4,7 +4,7 @@ import { Box, Button, Flex, HStack, Stack, Textarea, VStack } from "@chakra-ui/r
 import { format } from "date-fns";
 import { useState, VFC } from "react";
 
-import { useAuthed } from "../../context/Authed";
+import { useCurrentUser } from "../../context/CurrentUser";
 import {
   TweetItemFragment,
   useDeleteTweetMutation,
@@ -57,7 +57,7 @@ gql`
 type TweetItemProps = { tweet: TweetItemFragment };
 
 export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
-  const { currentUser } = useAuthed();
+  const currentUser = useCurrentUser();
 
   const [deleteTweet] = useDeleteTweetMutation();
   const [updateTweet] = useUpdateTweetMutation();

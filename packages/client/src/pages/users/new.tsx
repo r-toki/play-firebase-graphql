@@ -1,7 +1,7 @@
 import { Container, Heading, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
-export const UserNew: VFC = () => {
+export const UserNewPage: VFC = () => {
   return (
     <Container>
       <Stack>

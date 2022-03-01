@@ -2,18 +2,18 @@ import { Box, Flex, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 import { useParams } from "react-router-dom";
 
-import { News } from "../components/index-page/News";
-import { TweetForm } from "../components/index-page/TweetForm";
-import { TweetsPanel } from "../components/index-page/TweetsPanel";
-import { User } from "../components/index-page/User";
-import { UserMenu } from "../components/index-page/UserMenu";
-import { Users } from "../components/index-page/Users";
-import { AppLayout } from "../components/shared/AppLayout";
-import { useAuthed } from "../context/Authed";
+import { AppLayout } from "../../../components/shared/AppLayout";
+import { News } from "../../../components/user-page/News";
+import { TweetForm } from "../../../components/user-page/TweetForm";
+import { TweetsPanel } from "../../../components/user-page/TweetsPanel";
+import { User } from "../../../components/user-page/User";
+import { UserMenu } from "../../../components/user-page/UserMenu";
+import { Users } from "../../../components/user-page/Users";
+import { useCurrentUser } from "../../../context/CurrentUser";
 
-export const Index: VFC = () => {
+export const UserPage: VFC = () => {
   const { user_id } = useParams();
-  const { currentUser } = useAuthed();
+  const currentUser = useCurrentUser();
 
   const main = (
     <Stack maxW="100%" w="xl" px="4" py="4">

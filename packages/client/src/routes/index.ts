@@ -1,22 +1,21 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
 
-import { Index } from "../pages";
 import { Login } from "../pages/login";
 import { Signup } from "../pages/signup";
-import { UserEdit } from "../pages/users/[user_id]/edit";
-import { UserNew } from "../pages/users/new";
+import { UserEditPage } from "../pages/users/[user_id]/edit";
+import { UserPage } from "../pages/users/[user_id]/index";
+import { UserNewPage } from "../pages/users/new";
 import {
+  AfterAuth,
+  BeforeAuth,
   IndexMiddleware,
   UserNewMiddleware,
   UserPrivate,
-  WithAuthed,
-  WithoutAuth,
 } from "./middleware";
 
 const INDEX = "/";
 const SIGNUP = "/signup";
 const LOGIN = "/login";
-const USERS = "/users";
 const USER = "/users/:user_id";
 const USER_EDIT = "/users/:user_id/edit";
 const USER_NEW = "/users/new";
@@ -24,37 +23,32 @@ const USER_NEW = "/users/new";
 export const routes = {
   [INDEX]: {
     path: pathBuilder(INDEX),
-    Component: Index,
-    middleware: [WithAuthed, IndexMiddleware],
+    Component: UserPage,
+    middleware: [AfterAuth, IndexMiddleware],
   },
   [SIGNUP]: {
     path: pathBuilder(SIGNUP),
     Component: Signup,
-    middleware: [WithoutAuth],
+    middleware: [BeforeAuth],
   },
   [LOGIN]: {
     path: pathBuilder(LOGIN),
     Component: Login,
-    middleware: [WithoutAuth],
-  },
-  [USERS]: {
-    path: pathBuilder(USERS),
-    Component: Index,
-    middleware: [WithAuthed],
+    middleware: [BeforeAuth],
   },
   [USER]: {
     path: pathBuilder(USER),
-    Component: Index,
-    middleware: [WithAuthed],
+    Component: UserPage,
+    middleware: [AfterAuth],
   },
   [USER_EDIT]: {
     path: pathBuilder(USER_EDIT),
-    Component: UserEdit,
-    middleware: [WithAuthed, UserPrivate],
+    Component: UserEditPage,
+    middleware: [AfterAuth, UserPrivate],
   },
   [USER_NEW]: {
     path: pathBuilder(USER_NEW),
-    Component: UserNew,
+    Component: UserNewPage,
     middleware: [UserNewMiddleware],
   },
   // TODO: 404

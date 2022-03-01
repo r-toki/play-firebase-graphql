@@ -2,7 +2,7 @@ import { Center, Spinner, Stack, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useEffect, useState, VFC } from "react";
 import { useParams } from "react-router-dom";
 
-import { useAuthed } from "../../context/Authed";
+import { useCurrentUser } from "../../context/CurrentUser";
 import { Tweet_Filter, TweetItemFragment } from "../../graphql/generated";
 import { useTweets } from "../../hooks/useTweets";
 import { useTweetsSubscription } from "../../hooks/useTweetsSubscription";
@@ -44,9 +44,7 @@ const Tweets: VFC<TweetsProps> = ({ tweets, loading, hasNext, loadMore }) => {
 
 export const TweetsPanel: VFC = () => {
   const { user_id } = useParams();
-
-  const { currentUser } = useAuthed();
-
+  const currentUser = useCurrentUser();
   const isMyPage = user_id === currentUser.id;
 
   const [tabIndex, setTabIndex] = useState(0);

@@ -1,42 +1,43 @@
 import { gql } from "@apollo/client";
 import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
-import { FormEventHandler, VFC } from "react";
+import { VFC } from "react";
 
 import { AppLink } from "../../../components/shared/AppLink";
-import { useAuthed } from "../../../context/Authed";
+import { useCurrentUser } from "../../../context/CurrentUser";
 import { useUpdateProfileMutation } from "../../../graphql/generated";
-import { useTextInput } from "../../../hooks/useTextInput";
+import { TextInput, useTextInput } from "../../../hooks/useTextInput";
 import { routes } from "../../../routes";
+import { OnSubmit } from "../../../types";
 
 gql`
   mutation updateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) {
       id
-      displayName
+      ...currentUserContext
     }
   }
 `;
 
-const UserEditForm: VFC = () => {
-  const { currentUser } = useAuthed();
+const useUserEditPage = () => {
+  const currentUser = useCurrentUser();
 
   const [updateProfile] = useUpdateProfileMutation();
 
-  const [displayNameInput] = useTextInput(currentUser?.displayName);
-
-  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const [displayNameInput] = useTextInput(currentUser.displayName);
+  const onSubmit: OnSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await updateProfile({
-        variables: {
-          input: { displayName: displayNameInput.value },
-        },
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    await updateProfile({ variables: { input: { displayName: displayNameInput.value } } });
   };
 
+  return { displayNameInput, onSubmit };
+};
+
+type UserEditFormProps = {
+  displayNameInput: TextInput;
+  onSubmit: OnSubmit;
+};
+
+const UserEditForm: VFC<UserEditFormProps> = ({ displayNameInput, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
@@ -51,12 +52,13 @@ const UserEditForm: VFC = () => {
   );
 };
 
-export const UserEdit: VFC = () => {
+export const UserEditPage: VFC = () => {
+  const { displayNameInput, onSubmit } = useUserEditPage();
   return (
     <Container>
       <Stack>
         <Heading>User Edit</Heading>
-        <UserEditForm />
+        <UserEditForm {...{ displayNameInput, onSubmit }} />
         <AppLink to={routes["/"].path()}>Back</AppLink>
       </Stack>
     </Container>

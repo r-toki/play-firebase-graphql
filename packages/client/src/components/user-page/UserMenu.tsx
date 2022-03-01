@@ -4,24 +4,26 @@ import { signOut } from "firebase/auth";
 import { VFC } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useAuthed } from "../../context/Authed";
+import { useCurrentUser } from "../../context/CurrentUser";
 import { auth } from "../../firebase-app";
 import { routes } from "../../routes";
 import { AppLink } from "../shared/AppLink";
 
 const useUserMenu = () => {
-  const { currentUser } = useAuthed();
   const navigate = useNavigate();
 
-  const onEditProfile = () =>
-    navigate(routes["/users/:user_id/edit"].path({ user_id: currentUser.id }));
-  const onLogout = () => signOut(auth);
+  const currentUser = useCurrentUser();
 
-  return { currentUser, onEditProfile, onLogout };
+  const onClickEditProfile = () =>
+    navigate(routes["/users/:user_id/edit"].path({ user_id: currentUser.id }));
+
+  const onClickLogout = () => signOut(auth);
+
+  return { currentUser, onClickEditProfile, onClickLogout };
 };
 
 export const UserMenu: VFC = () => {
-  const { currentUser, onEditProfile, onLogout } = useUserMenu();
+  const { currentUser, onClickEditProfile, onClickLogout } = useUserMenu();
 
   return (
     <Box>
@@ -44,10 +46,10 @@ export const UserMenu: VFC = () => {
         </MenuButton>
         <MenuList>
           <AppLink to={routes["/"].path()}>
-            <MenuItem>HOME</MenuItem>
+            <MenuItem>Home</MenuItem>
           </AppLink>
-          <MenuItem onClick={onEditProfile}>Edit Profile</MenuItem>
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
+          <MenuItem onClick={onClickEditProfile}>Edit Profile</MenuItem>
+          <MenuItem onClick={onClickLogout}>Logout</MenuItem>
         </MenuList>
       </Menu>
     </Box>
