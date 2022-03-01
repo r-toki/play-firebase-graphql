@@ -238,10 +238,12 @@ export type TweetEdgeQueryVariables = Exact<{
 
 export type TweetEdgeQuery = { __typename?: 'Query', tweetEdge: { __typename?: 'TweetEdge', cursor: string, node: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } } };
 
-export type FollowingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type FollowingsQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
 
 
-export type FollowingsQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string }> } };
+export type FollowingsQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string }> } };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
@@ -709,8 +711,8 @@ export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
 export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
 export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
 export const FollowingsDocument = gql`
-    query followings {
-  me {
+    query followings($id: ID!) {
+  user(id: $id) {
     id
     followings {
       id
@@ -731,10 +733,11 @@ export const FollowingsDocument = gql`
  * @example
  * const { data, loading, error } = useFollowingsQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useFollowingsQuery(baseOptions?: Apollo.QueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
+export function useFollowingsQuery(baseOptions: Apollo.QueryHookOptions<FollowingsQuery, FollowingsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<FollowingsQuery, FollowingsQueryVariables>(FollowingsDocument, options);
       }
