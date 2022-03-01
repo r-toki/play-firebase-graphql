@@ -97,7 +97,7 @@ export const useTweetsSubscription = (userId: string) => {
   );
 
   useEffect(() => {
-    if (!data) return;
+    if (!watchedUserIds.length) return;
     chunk(watchedUserIds, 10).map((chunkedWatchedUserIds) => {
       onSnapshot(
         query(
