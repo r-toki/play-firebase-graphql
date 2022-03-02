@@ -19,12 +19,10 @@ import {
 } from "../../../graphql/generated";
 
 const useUserPageContainer = () => {
-  const { user_id: _user_id } = useParams();
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const user_id = _user_id!;
+  const { user_id } = useParams();
   const currentUser = useCurrentUser();
-  const isMyPage = user_id === currentUser.id;
-  return { user_id, isMyPage };
+  const isMyPage = user_id! === currentUser.id;
+  return { user_id: user_id!, isMyPage };
 };
 
 const userPageContainer = createContainer(useUserPageContainer);
