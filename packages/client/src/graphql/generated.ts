@@ -305,7 +305,7 @@ export const CurrentUserContextFragmentDoc = gql`
 }
     `;
 export const CreateTweetDocument = gql`
-    mutation createTweet($input: CreateTweetInput!) {
+    mutation CreateTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {
     id
     ...TweetItem

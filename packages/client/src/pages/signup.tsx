@@ -1,17 +1,18 @@
 import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { FormEventHandler, VFC } from "react";
+import { VFC } from "react";
 
 import { AppLink } from "../components/shared/AppLink";
-import { useTextInput } from "../hooks/useTextInput";
+import { TextInput, useTextInput } from "../hooks/useTextInput";
 import { routes } from "../routes";
+import { OnSubmit } from "../types";
 
-const SignupForm: VFC = () => {
+const useSignUpPage = () => {
   const [emailInput] = useTextInput();
   const [passwordInput] = useTextInput();
-  const [passwordConfirmationInput] = useTextInput();
+  const [passwordConfirmInput] = useTextInput();
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const onSubmit: OnSubmit = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
@@ -20,6 +21,27 @@ const SignupForm: VFC = () => {
     }
   };
 
+  return {
+    emailInput,
+    passwordInput,
+    passwordConfirmInput,
+    onSubmit,
+  };
+};
+
+type SignupFormProps = {
+  emailInput: TextInput;
+  passwordInput: TextInput;
+  passwordConfirmInput: TextInput;
+  onSubmit: OnSubmit;
+};
+
+const SignupForm: VFC<SignupFormProps> = ({
+  emailInput,
+  passwordInput,
+  passwordConfirmInput,
+  onSubmit,
+}) => {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
@@ -35,7 +57,7 @@ const SignupForm: VFC = () => {
 
         <FormControl>
           <FormLabel>Password Confirmation</FormLabel>
-          <Input type="password" {...passwordConfirmationInput} />
+          <Input type="password" {...passwordConfirmInput} />
         </FormControl>
 
         <Button type="submit">Signup</Button>
@@ -45,11 +67,13 @@ const SignupForm: VFC = () => {
 };
 
 export const Signup: VFC = () => {
+  const { emailInput, passwordInput, passwordConfirmInput, onSubmit } = useSignUpPage();
+
   return (
     <Container py="4">
       <Stack>
         <Heading textAlign="center">Signup</Heading>
-        <SignupForm />
+        <SignupForm {...{ emailInput, passwordInput, passwordConfirmInput, onSubmit }} />
         <AppLink to={routes["/login"].path()}>to Login</AppLink>
       </Stack>
     </Container>

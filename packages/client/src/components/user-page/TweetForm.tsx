@@ -6,7 +6,7 @@ import { useCreateTweetMutation } from "../../graphql/generated";
 import { useTextInput } from "../../hooks/useTextInput";
 
 gql`
-  mutation createTweet($input: CreateTweetInput!) {
+  mutation CreateTweet($input: CreateTweetInput!) {
     createTweet(input: $input) {
       id
       ...TweetItem

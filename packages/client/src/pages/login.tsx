@@ -1,16 +1,17 @@
 import { Button, Container, FormControl, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { FormEventHandler, VFC } from "react";
+import { VFC } from "react";
 
 import { AppLink } from "../components/shared/AppLink";
-import { useTextInput } from "../hooks/useTextInput";
+import { TextInput, useTextInput } from "../hooks/useTextInput";
 import { routes } from "../routes";
+import { OnSubmit } from "../types";
 
-const LoginForm: VFC = () => {
+const useLoginPage = () => {
   const [emailInput] = useTextInput();
   const [passwordInput] = useTextInput();
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const onSubmit: OnSubmit = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value);
@@ -19,6 +20,16 @@ const LoginForm: VFC = () => {
     }
   };
 
+  return { emailInput, passwordInput, onSubmit };
+};
+
+type LoginFormProps = {
+  emailInput: TextInput;
+  passwordInput: TextInput;
+  onSubmit: OnSubmit;
+};
+
+const LoginForm: VFC<LoginFormProps> = ({ emailInput, passwordInput, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
@@ -39,11 +50,13 @@ const LoginForm: VFC = () => {
 };
 
 export const Login: VFC = () => {
+  const { emailInput, passwordInput, onSubmit } = useLoginPage();
+
   return (
     <Container py="4">
       <Stack>
         <Heading textAlign="center">Login</Heading>
-        <LoginForm />
+        <LoginForm {...{ emailInput, passwordInput, onSubmit }} />
         <AppLink to={routes["/signup"].path()}>to Signup</AppLink>
       </Stack>
     </Container>
