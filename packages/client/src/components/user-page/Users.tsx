@@ -4,63 +4,65 @@ import { VFC } from "react";
 
 import { useCurrentUser } from "../../context/CurrentUser";
 import {
-  useFollowForIndexPageMutation,
-  useMeForIndexPageQuery,
-  useUnFollowForIndexPageMutation,
-  useUsersForIndexPageQuery,
+  MeForUsersFragment,
+  useFollowMutation,
+  UserForUsersFragment,
+  useUnFollowMutation,
 } from "../../graphql/generated";
 import { routes } from "../../routes";
 import { AppLink } from "../shared/AppLink";
 import { AppList, AppListItem } from "../shared/AppList";
 
 gql`
-  query usersForIndexPage {
-    users {
-      id
-      displayName
-    }
-  }
-
-  query meForIndexPage {
-    me {
-      id
-      followings {
-        id
-        displayName
-      }
-    }
-  }
-
-  mutation followForIndexPage($userId: ID!) {
+  mutation Follow($userId: ID!) {
     follow(userId: $userId) {
       id
       followings {
         id
-        displayName
+        ...UserForUsers
       }
     }
   }
 
-  mutation unFollowForIndexPage($userId: ID!) {
+  mutation UnFollow($userId: ID!) {
     unFollow(userId: $userId) {
       id
       followings {
         id
-        displayName
+        ...UserForUsers
       }
     }
   }
 `;
 
-export const Users: VFC = () => {
-  const currentUser = useCurrentUser();
-  const { data: usersData } = useUsersForIndexPageQuery();
-  const { data: meData } = useMeForIndexPageQuery();
-  const otherUsers = usersData?.users.filter((user) => user.id !== currentUser.id) ?? [];
-  const followings = meData?.me.followings ?? [];
+gql`
+  fragment UserForUsers on User {
+    id
+    displayName
+  }
 
-  const [follow] = useFollowForIndexPageMutation();
-  const [unFollow] = useUnFollowForIndexPageMutation();
+  fragment MeForUsers on User {
+    id
+    followings {
+      id
+      ...UserForUsers
+    }
+  }
+`;
+
+type UsersProps = {
+  users: UserForUsersFragment[];
+  me: MeForUsersFragment;
+};
+
+export const Users: VFC<UsersProps> = ({ users, me }) => {
+  const currentUser = useCurrentUser();
+
+  const otherUsers = users.filter((user) => user.id !== currentUser.id);
+  const followings = me.followings;
+
+  const [follow] = useFollowMutation();
+  const [unFollow] = useUnFollowMutation();
 
   const ToggleFollowButton: VFC<{ userId: string }> = ({ userId }) => {
     return followings.find((following) => following.id === userId) ? (

@@ -3,14 +3,14 @@ import { gql } from "@apollo/client";
 import { Tweet_Filter, useTweetsLazyQuery } from "./../graphql/generated";
 
 gql`
-  query tweets($userId: ID!, $input: TweetsInput!) {
+  query Tweets($userId: ID!, $input: TweetsInput!) {
     user(id: $userId) {
       id
       tweets(input: $input) {
         edges {
           node {
             id
-            ...tweetItem
+            ...TweetItem
           }
           cursor
         }

@@ -9,7 +9,7 @@ gql`
   mutation createTweet($input: CreateTweetInput!) {
     createTweet(input: $input) {
       id
-      ...tweetItem
+      ...TweetItem
     }
   }
 `;

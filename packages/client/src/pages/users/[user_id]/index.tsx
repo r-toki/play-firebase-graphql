@@ -1,3 +1,4 @@
+import { gql } from "@apollo/client";
 import { Box, Flex, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 import { useParams } from "react-router-dom";
@@ -11,16 +12,18 @@ import { UserMenu } from "../../../components/user-page/UserMenu";
 import { UserName } from "../../../components/user-page/UserName";
 import { Users } from "../../../components/user-page/Users";
 import { useCurrentUser } from "../../../context/CurrentUser";
-import { assertIsDefined } from "../../../lib/type-utils";
+import {
+  useMeForUserPageQuery,
+  useUserForUserPageQuery,
+  useUsersForUserPageQuery,
+} from "../../../graphql/generated";
 
 const useUserPageContainer = () => {
-  const { user_id } = useParams();
-  assertIsDefined(user_id);
-
+  const { user_id: _user_id } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const user_id = _user_id!;
   const currentUser = useCurrentUser();
-
   const isMyPage = user_id === currentUser.id;
-
   return { user_id, isMyPage };
 };
 
@@ -28,12 +31,39 @@ const userPageContainer = createContainer(useUserPageContainer);
 const UserPageProvider = userPageContainer.Provider;
 export const useUserPageContext = userPageContainer.useContainer;
 
+gql`
+  query UserForUserPage($id: ID!) {
+    user(id: $id) {
+      id
+      ...UserName
+    }
+  }
+
+  query UsersForUserPage {
+    users {
+      id
+      ...UserForUsers
+    }
+  }
+
+  query MeForUserPage {
+    me {
+      id
+      ...MeForUsers
+    }
+  }
+`;
+
 const _UserPage: VFC = () => {
-  const { isMyPage } = useUserPageContext();
+  const { user_id, isMyPage } = useUserPageContext();
+
+  const { data: userData } = useUserForUserPageQuery({ variables: { id: user_id } });
+  const { data: usersData } = useUsersForUserPageQuery();
+  const { data: meData } = useMeForUserPageQuery();
 
   const main = (
     <Stack maxW="100%" w="xl" px="4" py="4">
-      <UserName />
+      {userData && <UserName user={userData.user} />}
       <Stack spacing="6">
         {isMyPage && <TweetForm />}
         <TweetsPanel />
@@ -53,7 +83,7 @@ const _UserPage: VFC = () => {
     >
       <Box flexGrow="1" position="relative">
         <Box position="absolute" inset="0">
-          <Users />
+          {usersData && meData && <Users users={usersData.users} me={meData.me} />}
         </Box>
       </Box>
       <UserMenu />

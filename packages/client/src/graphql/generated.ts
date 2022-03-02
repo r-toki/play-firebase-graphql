@@ -161,8 +161,6 @@ export type CreateTweetMutationVariables = Exact<{
 
 export type CreateTweetMutation = { __typename?: 'Mutation', createTweet: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
-export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } };
-
 export type DeleteTweetMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -192,36 +190,27 @@ export type UnLikeMutationVariables = Exact<{
 
 export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } } };
 
-export type UserForUserNameQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
+export type TweetItemFragment = { __typename?: 'Tweet', id: string, content: string, createdAt: string, liked: boolean, postedBy: { __typename?: 'User', id: string, displayName: string } };
 
+export type UserNameFragment = { __typename?: 'User', id: string, displayName: string };
 
-export type UserForUserNameQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
-
-export type UsersForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UsersForIndexPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string }> };
-
-export type MeForIndexPageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeForIndexPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
-
-export type FollowForIndexPageMutationVariables = Exact<{
+export type FollowMutationVariables = Exact<{
   userId: Scalars['ID'];
 }>;
 
 
-export type FollowForIndexPageMutation = { __typename?: 'Mutation', follow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
 
-export type UnFollowForIndexPageMutationVariables = Exact<{
+export type UnFollowMutationVariables = Exact<{
   userId: Scalars['ID'];
 }>;
 
 
-export type UnFollowForIndexPageMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+export type UnFollowMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+
+export type UserForUsersFragment = { __typename?: 'User', id: string, displayName: string };
+
+export type MeForUsersFragment = { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> };
 
 export type CurrentUserContextFragment = { __typename?: 'User', id: string, displayName: string };
 
@@ -259,8 +248,25 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'User', id: string, displayName: string } };
 
+export type UserForUserPageQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UserForUserPageQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, displayName: string } };
+
+export type UsersForUserPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersForUserPageQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: string, displayName: string }> };
+
+export type MeForUserPageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeForUserPageQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, followings: Array<{ __typename?: 'User', id: string, displayName: string }> } };
+
 export const TweetItemFragmentDoc = gql`
-    fragment tweetItem on Tweet {
+    fragment TweetItem on Tweet {
   id
   content
   createdAt
@@ -271,6 +277,27 @@ export const TweetItemFragmentDoc = gql`
   liked
 }
     `;
+export const UserNameFragmentDoc = gql`
+    fragment UserName on User {
+  id
+  displayName
+}
+    `;
+export const UserForUsersFragmentDoc = gql`
+    fragment UserForUsers on User {
+  id
+  displayName
+}
+    `;
+export const MeForUsersFragmentDoc = gql`
+    fragment MeForUsers on User {
+  id
+  followings {
+    id
+    ...UserForUsers
+  }
+}
+    ${UserForUsersFragmentDoc}`;
 export const CurrentUserContextFragmentDoc = gql`
     fragment currentUserContext on User {
   id
@@ -281,7 +308,7 @@ export const CreateTweetDocument = gql`
     mutation createTweet($input: CreateTweetInput!) {
   createTweet(input: $input) {
     id
-    ...tweetItem
+    ...TweetItem
   }
 }
     ${TweetItemFragmentDoc}`;
@@ -312,7 +339,7 @@ export type CreateTweetMutationHookResult = ReturnType<typeof useCreateTweetMuta
 export type CreateTweetMutationResult = Apollo.MutationResult<CreateTweetMutation>;
 export type CreateTweetMutationOptions = Apollo.BaseMutationOptions<CreateTweetMutation, CreateTweetMutationVariables>;
 export const DeleteTweetDocument = gql`
-    mutation deleteTweet($id: ID!) {
+    mutation DeleteTweet($id: ID!) {
   deleteTweet(id: $id) {
     id
   }
@@ -345,10 +372,10 @@ export type DeleteTweetMutationHookResult = ReturnType<typeof useDeleteTweetMuta
 export type DeleteTweetMutationResult = Apollo.MutationResult<DeleteTweetMutation>;
 export type DeleteTweetMutationOptions = Apollo.BaseMutationOptions<DeleteTweetMutation, DeleteTweetMutationVariables>;
 export const UpdateTweetDocument = gql`
-    mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
+    mutation UpdateTweet($id: ID!, $input: UpdateTweetInput!) {
   updateTweet(id: $id, input: $input) {
     id
-    ...tweetItem
+    ...TweetItem
   }
 }
     ${TweetItemFragmentDoc}`;
@@ -380,10 +407,10 @@ export type UpdateTweetMutationHookResult = ReturnType<typeof useUpdateTweetMuta
 export type UpdateTweetMutationResult = Apollo.MutationResult<UpdateTweetMutation>;
 export type UpdateTweetMutationOptions = Apollo.BaseMutationOptions<UpdateTweetMutation, UpdateTweetMutationVariables>;
 export const LikeDocument = gql`
-    mutation like($tweetId: ID!) {
+    mutation Like($tweetId: ID!) {
   like(tweetId: $tweetId) {
     id
-    ...tweetItem
+    ...TweetItem
   }
 }
     ${TweetItemFragmentDoc}`;
@@ -414,10 +441,10 @@ export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
 export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
 export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
 export const UnLikeDocument = gql`
-    mutation unLike($tweetId: ID!) {
+    mutation UnLike($tweetId: ID!) {
   unLike(tweetId: $tweetId) {
     id
-    ...tweetItem
+    ...TweetItem
   }
 }
     ${TweetItemFragmentDoc}`;
@@ -447,189 +474,80 @@ export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLik
 export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
 export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
 export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
-export const UserForUserNameDocument = gql`
-    query userForUserName($id: ID!) {
-  user(id: $id) {
-    id
-    displayName
-  }
-}
-    `;
-
-/**
- * __useUserForUserNameQuery__
- *
- * To run a query within a React component, call `useUserForUserNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserForUserNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserForUserNameQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useUserForUserNameQuery(baseOptions: Apollo.QueryHookOptions<UserForUserNameQuery, UserForUserNameQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserForUserNameQuery, UserForUserNameQueryVariables>(UserForUserNameDocument, options);
-      }
-export function useUserForUserNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserForUserNameQuery, UserForUserNameQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserForUserNameQuery, UserForUserNameQueryVariables>(UserForUserNameDocument, options);
-        }
-export type UserForUserNameQueryHookResult = ReturnType<typeof useUserForUserNameQuery>;
-export type UserForUserNameLazyQueryHookResult = ReturnType<typeof useUserForUserNameLazyQuery>;
-export type UserForUserNameQueryResult = Apollo.QueryResult<UserForUserNameQuery, UserForUserNameQueryVariables>;
-export const UsersForIndexPageDocument = gql`
-    query usersForIndexPage {
-  users {
-    id
-    displayName
-  }
-}
-    `;
-
-/**
- * __useUsersForIndexPageQuery__
- *
- * To run a query within a React component, call `useUsersForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersForIndexPageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUsersForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>(UsersForIndexPageDocument, options);
-      }
-export function useUsersForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>(UsersForIndexPageDocument, options);
-        }
-export type UsersForIndexPageQueryHookResult = ReturnType<typeof useUsersForIndexPageQuery>;
-export type UsersForIndexPageLazyQueryHookResult = ReturnType<typeof useUsersForIndexPageLazyQuery>;
-export type UsersForIndexPageQueryResult = Apollo.QueryResult<UsersForIndexPageQuery, UsersForIndexPageQueryVariables>;
-export const MeForIndexPageDocument = gql`
-    query meForIndexPage {
-  me {
-    id
-    followings {
-      id
-      displayName
-    }
-  }
-}
-    `;
-
-/**
- * __useMeForIndexPageQuery__
- *
- * To run a query within a React component, call `useMeForIndexPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeForIndexPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMeForIndexPageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMeForIndexPageQuery(baseOptions?: Apollo.QueryHookOptions<MeForIndexPageQuery, MeForIndexPageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeForIndexPageQuery, MeForIndexPageQueryVariables>(MeForIndexPageDocument, options);
-      }
-export function useMeForIndexPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeForIndexPageQuery, MeForIndexPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeForIndexPageQuery, MeForIndexPageQueryVariables>(MeForIndexPageDocument, options);
-        }
-export type MeForIndexPageQueryHookResult = ReturnType<typeof useMeForIndexPageQuery>;
-export type MeForIndexPageLazyQueryHookResult = ReturnType<typeof useMeForIndexPageLazyQuery>;
-export type MeForIndexPageQueryResult = Apollo.QueryResult<MeForIndexPageQuery, MeForIndexPageQueryVariables>;
-export const FollowForIndexPageDocument = gql`
-    mutation followForIndexPage($userId: ID!) {
+export const FollowDocument = gql`
+    mutation Follow($userId: ID!) {
   follow(userId: $userId) {
     id
     followings {
       id
-      displayName
+      ...UserForUsers
     }
   }
 }
-    `;
-export type FollowForIndexPageMutationFn = Apollo.MutationFunction<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>;
+    ${UserForUsersFragmentDoc}`;
+export type FollowMutationFn = Apollo.MutationFunction<FollowMutation, FollowMutationVariables>;
 
 /**
- * __useFollowForIndexPageMutation__
+ * __useFollowMutation__
  *
- * To run a mutation, you first call `useFollowForIndexPageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useFollowForIndexPageMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [followForIndexPageMutation, { data, loading, error }] = useFollowForIndexPageMutation({
+ * const [followMutation, { data, loading, error }] = useFollowMutation({
  *   variables: {
  *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useFollowForIndexPageMutation(baseOptions?: Apollo.MutationHookOptions<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>) {
+export function useFollowMutation(baseOptions?: Apollo.MutationHookOptions<FollowMutation, FollowMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>(FollowForIndexPageDocument, options);
+        return Apollo.useMutation<FollowMutation, FollowMutationVariables>(FollowDocument, options);
       }
-export type FollowForIndexPageMutationHookResult = ReturnType<typeof useFollowForIndexPageMutation>;
-export type FollowForIndexPageMutationResult = Apollo.MutationResult<FollowForIndexPageMutation>;
-export type FollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<FollowForIndexPageMutation, FollowForIndexPageMutationVariables>;
-export const UnFollowForIndexPageDocument = gql`
-    mutation unFollowForIndexPage($userId: ID!) {
+export type FollowMutationHookResult = ReturnType<typeof useFollowMutation>;
+export type FollowMutationResult = Apollo.MutationResult<FollowMutation>;
+export type FollowMutationOptions = Apollo.BaseMutationOptions<FollowMutation, FollowMutationVariables>;
+export const UnFollowDocument = gql`
+    mutation UnFollow($userId: ID!) {
   unFollow(userId: $userId) {
     id
     followings {
       id
-      displayName
+      ...UserForUsers
     }
   }
 }
-    `;
-export type UnFollowForIndexPageMutationFn = Apollo.MutationFunction<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
+    ${UserForUsersFragmentDoc}`;
+export type UnFollowMutationFn = Apollo.MutationFunction<UnFollowMutation, UnFollowMutationVariables>;
 
 /**
- * __useUnFollowForIndexPageMutation__
+ * __useUnFollowMutation__
  *
- * To run a mutation, you first call `useUnFollowForIndexPageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUnFollowForIndexPageMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUnFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnFollowMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [unFollowForIndexPageMutation, { data, loading, error }] = useUnFollowForIndexPageMutation({
+ * const [unFollowMutation, { data, loading, error }] = useUnFollowMutation({
  *   variables: {
  *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useUnFollowForIndexPageMutation(baseOptions?: Apollo.MutationHookOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>) {
+export function useUnFollowMutation(baseOptions?: Apollo.MutationHookOptions<UnFollowMutation, UnFollowMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>(UnFollowForIndexPageDocument, options);
+        return Apollo.useMutation<UnFollowMutation, UnFollowMutationVariables>(UnFollowDocument, options);
       }
-export type UnFollowForIndexPageMutationHookResult = ReturnType<typeof useUnFollowForIndexPageMutation>;
-export type UnFollowForIndexPageMutationResult = Apollo.MutationResult<UnFollowForIndexPageMutation>;
-export type UnFollowForIndexPageMutationOptions = Apollo.BaseMutationOptions<UnFollowForIndexPageMutation, UnFollowForIndexPageMutationVariables>;
+export type UnFollowMutationHookResult = ReturnType<typeof useUnFollowMutation>;
+export type UnFollowMutationResult = Apollo.MutationResult<UnFollowMutation>;
+export type UnFollowMutationOptions = Apollo.BaseMutationOptions<UnFollowMutation, UnFollowMutationVariables>;
 export const MeForCurrentUserContextDocument = gql`
     query meForCurrentUserContext {
   me {
@@ -666,14 +584,14 @@ export type MeForCurrentUserContextQueryHookResult = ReturnType<typeof useMeForC
 export type MeForCurrentUserContextLazyQueryHookResult = ReturnType<typeof useMeForCurrentUserContextLazyQuery>;
 export type MeForCurrentUserContextQueryResult = Apollo.QueryResult<MeForCurrentUserContextQuery, MeForCurrentUserContextQueryVariables>;
 export const TweetsDocument = gql`
-    query tweets($userId: ID!, $input: TweetsInput!) {
+    query Tweets($userId: ID!, $input: TweetsInput!) {
   user(id: $userId) {
     id
     tweets(input: $input) {
       edges {
         node {
           id
-          ...tweetItem
+          ...TweetItem
         }
         cursor
       }
@@ -715,11 +633,11 @@ export type TweetsQueryHookResult = ReturnType<typeof useTweetsQuery>;
 export type TweetsLazyQueryHookResult = ReturnType<typeof useTweetsLazyQuery>;
 export type TweetsQueryResult = Apollo.QueryResult<TweetsQuery, TweetsQueryVariables>;
 export const TweetEdgeDocument = gql`
-    query tweetEdge($id: ID!) {
+    query TweetEdge($id: ID!) {
   tweetEdge(id: $id) {
     node {
       id
-      ...tweetItem
+      ...TweetItem
     }
     cursor
   }
@@ -754,7 +672,7 @@ export type TweetEdgeQueryHookResult = ReturnType<typeof useTweetEdgeQuery>;
 export type TweetEdgeLazyQueryHookResult = ReturnType<typeof useTweetEdgeLazyQuery>;
 export type TweetEdgeQueryResult = Apollo.QueryResult<TweetEdgeQuery, TweetEdgeQueryVariables>;
 export const UserForTweetsSubscriptionDocument = gql`
-    query userForTweetsSubscription($id: ID!) {
+    query UserForTweetsSubscription($id: ID!) {
   user(id: $id) {
     id
     followings {
@@ -825,3 +743,109 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UserForUserPageDocument = gql`
+    query UserForUserPage($id: ID!) {
+  user(id: $id) {
+    id
+    ...UserName
+  }
+}
+    ${UserNameFragmentDoc}`;
+
+/**
+ * __useUserForUserPageQuery__
+ *
+ * To run a query within a React component, call `useUserForUserPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserForUserPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserForUserPageQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserForUserPageQuery(baseOptions: Apollo.QueryHookOptions<UserForUserPageQuery, UserForUserPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserForUserPageQuery, UserForUserPageQueryVariables>(UserForUserPageDocument, options);
+      }
+export function useUserForUserPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserForUserPageQuery, UserForUserPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserForUserPageQuery, UserForUserPageQueryVariables>(UserForUserPageDocument, options);
+        }
+export type UserForUserPageQueryHookResult = ReturnType<typeof useUserForUserPageQuery>;
+export type UserForUserPageLazyQueryHookResult = ReturnType<typeof useUserForUserPageLazyQuery>;
+export type UserForUserPageQueryResult = Apollo.QueryResult<UserForUserPageQuery, UserForUserPageQueryVariables>;
+export const UsersForUserPageDocument = gql`
+    query UsersForUserPage {
+  users {
+    id
+    ...UserForUsers
+  }
+}
+    ${UserForUsersFragmentDoc}`;
+
+/**
+ * __useUsersForUserPageQuery__
+ *
+ * To run a query within a React component, call `useUsersForUserPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersForUserPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersForUserPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersForUserPageQuery(baseOptions?: Apollo.QueryHookOptions<UsersForUserPageQuery, UsersForUserPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersForUserPageQuery, UsersForUserPageQueryVariables>(UsersForUserPageDocument, options);
+      }
+export function useUsersForUserPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersForUserPageQuery, UsersForUserPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersForUserPageQuery, UsersForUserPageQueryVariables>(UsersForUserPageDocument, options);
+        }
+export type UsersForUserPageQueryHookResult = ReturnType<typeof useUsersForUserPageQuery>;
+export type UsersForUserPageLazyQueryHookResult = ReturnType<typeof useUsersForUserPageLazyQuery>;
+export type UsersForUserPageQueryResult = Apollo.QueryResult<UsersForUserPageQuery, UsersForUserPageQueryVariables>;
+export const MeForUserPageDocument = gql`
+    query MeForUserPage {
+  me {
+    id
+    ...MeForUsers
+  }
+}
+    ${MeForUsersFragmentDoc}`;
+
+/**
+ * __useMeForUserPageQuery__
+ *
+ * To run a query within a React component, call `useMeForUserPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeForUserPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeForUserPageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeForUserPageQuery(baseOptions?: Apollo.QueryHookOptions<MeForUserPageQuery, MeForUserPageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeForUserPageQuery, MeForUserPageQueryVariables>(MeForUserPageDocument, options);
+      }
+export function useMeForUserPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeForUserPageQuery, MeForUserPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeForUserPageQuery, MeForUserPageQueryVariables>(MeForUserPageDocument, options);
+        }
+export type MeForUserPageQueryHookResult = ReturnType<typeof useMeForUserPageQuery>;
+export type MeForUserPageLazyQueryHookResult = ReturnType<typeof useMeForUserPageLazyQuery>;
+export type MeForUserPageQueryResult = Apollo.QueryResult<MeForUserPageQuery, MeForUserPageQueryVariables>;

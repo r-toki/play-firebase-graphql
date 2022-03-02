@@ -14,17 +14,17 @@ import {
 import { tweetEventsRef } from "../lib/typed-ref";
 
 gql`
-  query tweetEdge($id: ID!) {
+  query TweetEdge($id: ID!) {
     tweetEdge(id: $id) {
       node {
         id
-        ...tweetItem
+        ...TweetItem
       }
       cursor
     }
   }
 
-  query userForTweetsSubscription($id: ID!) {
+  query UserForTweetsSubscription($id: ID!) {
     user(id: $id) {
       id
       followings {

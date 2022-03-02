@@ -15,7 +15,36 @@ import {
 import { useTextInput } from "../../hooks/useTextInput";
 
 gql`
-  fragment tweetItem on Tweet {
+  mutation DeleteTweet($id: ID!) {
+    deleteTweet(id: $id) {
+      id
+    }
+  }
+
+  mutation UpdateTweet($id: ID!, $input: UpdateTweetInput!) {
+    updateTweet(id: $id, input: $input) {
+      id
+      ...TweetItem
+    }
+  }
+
+  mutation Like($tweetId: ID!) {
+    like(tweetId: $tweetId) {
+      id
+      ...TweetItem
+    }
+  }
+
+  mutation UnLike($tweetId: ID!) {
+    unLike(tweetId: $tweetId) {
+      id
+      ...TweetItem
+    }
+  }
+`;
+
+gql`
+  fragment TweetItem on Tweet {
     id
     content
     createdAt
@@ -24,33 +53,6 @@ gql`
       displayName
     }
     liked
-  }
-
-  mutation deleteTweet($id: ID!) {
-    deleteTweet(id: $id) {
-      id
-    }
-  }
-
-  mutation updateTweet($id: ID!, $input: UpdateTweetInput!) {
-    updateTweet(id: $id, input: $input) {
-      id
-      ...tweetItem
-    }
-  }
-
-  mutation like($tweetId: ID!) {
-    like(tweetId: $tweetId) {
-      id
-      ...tweetItem
-    }
-  }
-
-  mutation unLike($tweetId: ID!) {
-    unLike(tweetId: $tweetId) {
-      id
-      ...tweetItem
-    }
   }
 `;
 
