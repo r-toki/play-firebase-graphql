@@ -4,7 +4,7 @@ import { userTweetsRef } from "../typed-ref";
 
 export const deleteTweet = async (
   db: Firestore,
-  { userId, tweetId }: { userId: string; tweetId: string }
+  { userId, id }: { userId: string; id: string }
 ) => {
-  await userTweetsRef(db, { userId }).doc(tweetId).delete();
+  await userTweetsRef(db, { userId }).doc(id).delete();
 };

@@ -7,13 +7,13 @@ export const createTweet = async (
   db: Firestore,
   { userId, content }: { userId: string; content: string }
 ) => {
-  const tweetId = v4();
-  await userTweetsRef(db, { userId }).doc(tweetId).set({
+  const id = v4();
+  await userTweetsRef(db, { userId }).doc(id).set({
+    id,
     content,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
-    tweetId,
     userId,
   });
-  return { id: tweetId };
+  return { id };
 };
