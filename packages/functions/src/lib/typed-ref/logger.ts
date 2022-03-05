@@ -23,7 +23,7 @@ export class ReadCounter extends Counter {
     super(name);
   }
   out() {
-    console.log(`read ${this.name} doc : ${this.count}`);
+    console.log(`${this.name}`.padEnd(30, " "), `read doc : ${this.count}`);
   }
 }
 
@@ -32,6 +32,6 @@ export class WriteCounter extends Counter {
     super(name);
   }
   out() {
-    console.log(`write ${this.name} doc : ${this.count}`);
+    console.log(`${this.name}`.padEnd(30, " "), `write doc : ${this.count}`);
   }
 }

@@ -3,7 +3,7 @@ import { DocumentData, Firestore, FirestoreDataConverter } from "firebase-admin/
 
 import { ReadCounter, WriteCounter } from "./logger";
 
-const WITH_LOG = false;
+const WITH_LOG = true;
 
 export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
   const withLog = process.env.FUNCTIONS_EMULATOR && WITH_LOG;
