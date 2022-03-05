@@ -37,14 +37,14 @@ export class AuthUserFactory {
 export class UserTweetFactory {
   static n = 0;
   static of(init: Pick<UserTweetData, "userId"> & Partial<UserTweetData>) {
-    const tweetId = v4();
+    const id = v4();
     return userTweetsRef(db, { userId: init.userId })
-      .doc(tweetId)
+      .doc(id)
       .set({
+        id,
         content: StringFactory.of(),
         createdAt: Timestamp.fromDate(DateFactory.of()),
         updatedAt: Timestamp.fromDate(DateFactory.of()),
-        tweetId,
         ...init,
       });
   }

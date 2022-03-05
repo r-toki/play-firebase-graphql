@@ -24,15 +24,6 @@ const main = async () => {
   }
 
   await Promise.all(
-    authUsers.map((authUser, i) =>
-      ArrayFactory.of(25).map((_, j) => {
-        const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), 25 * i + j));
-        return UserTweetFactory.of({ userId: authUser.uid, createdAt, updatedAt: createdAt });
-      })
-    )
-  );
-
-  await Promise.all(
     authUsers.map((authUser, i) => {
       const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), i));
       return usersRef(db)
@@ -43,6 +34,20 @@ const main = async () => {
           updatedAt: createdAt,
         });
     })
+  );
+
+  await Promise.all(
+    authUsers.map((authUser, i) =>
+      ArrayFactory.of(25).map((_, j) => {
+        const createdAt = Timestamp.fromDate(addHours(DateFactory.of(), 25 * i + j));
+        return UserTweetFactory.of({
+          userId: authUser.uid,
+          content: `tweet-${j} by ${authUser.email?.split("@")[0] || "undefined"}`,
+          createdAt,
+          updatedAt: createdAt,
+        });
+      })
+    )
   );
 };
 
