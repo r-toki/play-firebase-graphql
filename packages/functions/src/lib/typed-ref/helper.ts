@@ -1,6 +1,8 @@
 import { ExtractPathParams, pathBuilder } from "@rei-sogawa/path-builder";
 import { DocumentData, Firestore, FirestoreDataConverter } from "firebase-admin/firestore";
 
+const WITH_LOG = false;
+
 class Counter {
   static _id = 0;
 
@@ -35,7 +37,7 @@ class WriteCounter extends Counter {
 }
 
 export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
-  const withLog = process.env.FUNCTIONS_EMULATOR && true;
+  const withLog = process.env.FUNCTIONS_EMULATOR && WITH_LOG;
 
   const readCounter = withLog ? new ReadCounter(path) : undefined;
   const writeCounter = withLog ? new WriteCounter(path) : undefined;
@@ -63,7 +65,7 @@ export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
 };
 
 export const typedCollectionGroupRef = <Data>(path: string) => {
-  const withLog = process.env.FUNCTIONS_EMULATOR && false;
+  const withLog = process.env.FUNCTIONS_EMULATOR && WITH_LOG;
 
   const readCounter = withLog ? new ReadCounter(path) : undefined;
   const writeCounter = withLog ? new WriteCounter(path) : undefined;
