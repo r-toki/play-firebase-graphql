@@ -6,10 +6,10 @@ import { likesRef } from "../typed-ref";
 
 export const checkLiked = async (
   db: Firestore,
-  { tweetId, userId }: { tweetId: string; userId: string }
+  { userId, tweetId }: { userId: string; tweetId: string }
 ) => {
   const likeDocs = await getDocs(
-    likesRef(db).where("tweetId", "==", tweetId).where("userId", "==", userId).limit(1)
+    likesRef(db).where("userId", "==", userId).where("tweetId", "==", tweetId).limit(1)
   );
   const likeDoc = first(likeDocs);
   return likeDoc ? true : false;

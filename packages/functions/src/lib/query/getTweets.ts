@@ -1,13 +1,13 @@
 import { Firestore, Timestamp } from "firebase-admin/firestore";
-import { first as head, orderBy } from "lodash";
+import { chunk, first as head, orderBy } from "lodash";
 
 import { Edge } from "../query-util/exec-multi-queries-with-cursor";
 import { getDocs } from "../query-util/get";
-import { likesRef, tweetsRef } from "../typed-ref";
+import { likesRef, tweetsRef, userLikesRef } from "../typed-ref";
 import { UserTweetDoc } from "../typed-ref/types";
 import { Tweet_Filter } from "./../../graphql/generated";
 import { execMultiQueriesWithCursor } from "./../query-util/exec-multi-queries-with-cursor";
-import { followRelationshipsRef } from "./../typed-ref/index";
+import { getFollowings } from "./getFollowings";
 
 type GetTweetsInput = {
   userId: string;
@@ -38,16 +38,14 @@ export const getTweets = async (
   }
 
   if (filters.includes("FOLLOWINGS")) {
-    const followRelationshipDocs = await getDocs(
-      followRelationshipsRef(db).where("followerId", "==", userId)
-    );
-    const followingIds = followRelationshipDocs.map((doc) => doc.followedId);
+    const followingDocs = await getFollowings(db, { userId });
+    const followingIds = followingDocs.map(({ id }) => id);
 
-    for (const followingId of followingIds) {
+    for (const chunkedFollowingIds of chunk(followingIds, 10)) {
       const query = async ({ after }: { after: string }) => {
         const tweetDocs = await getDocs(
           tweetsRef(db)
-            .where("userId", "==", followingId)
+            .where("userId", "in", chunkedFollowingIds)
             .orderBy("createdAt", "desc")
             .startAfter(Timestamp.fromDate(new Date(after)))
             .limit(1)
@@ -65,8 +63,7 @@ export const getTweets = async (
   if (filters.includes("LIKES")) {
     const query = async ({ after }: { after: string }) => {
       const likeDocs = await getDocs(
-        likesRef(db)
-          .where("userId", "==", userId)
+        userLikesRef(db, { userId })
           .orderBy("createdAt", "desc")
           .startAfter(Timestamp.fromDate(new Date(after)))
           .limit(1)
@@ -74,7 +71,7 @@ export const getTweets = async (
       const likeDoc = head(likeDocs);
       if (!likeDoc) return [];
 
-      const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", likeDoc.tweetId));
+      const tweetDocs = await getDocs(tweetsRef(db).where("id", "==", likeDoc.tweetId));
       const tweetDoc = head(tweetDocs);
       if (!tweetDoc) return [];
 

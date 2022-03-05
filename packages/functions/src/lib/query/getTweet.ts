@@ -5,8 +5,8 @@ import { getDocs } from "../query-util/get";
 import { tweetsRef } from "../typed-ref";
 
 export const getTweet = async (db: Firestore, { id }: { id: string }) => {
-  const tweetDocs = await getDocs(tweetsRef(db).where("tweetId", "==", id));
+  const tweetDocs = await getDocs(tweetsRef(db).where("id", "==", id));
   const tweetDoc = first(tweetDocs);
-  if (!tweetDoc) throw new Error("tweetDoc not found at getTweet");
+  if (!tweetDoc) throw new Error("tweetDoc not found");
   return tweetDoc;
 };
