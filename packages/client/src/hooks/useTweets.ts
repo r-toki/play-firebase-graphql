@@ -2,6 +2,8 @@ import { gql } from "@apollo/client";
 
 import { Tweet_Filter, useTweetsLazyQuery } from "./../graphql/generated";
 
+const LIMIT = 20;
+
 gql`
   query Tweets($userId: ID!, $input: TweetsInput!) {
     user(id: $userId) {
@@ -25,7 +27,7 @@ gql`
 
 export const useTweets = (userId: string, filters: Tweet_Filter[]) => {
   const [fetch, { data, loading, fetchMore }] = useTweetsLazyQuery({
-    variables: { userId, input: { first: 10, filters } },
+    variables: { userId, input: { first: LIMIT, filters } },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -34,7 +36,7 @@ export const useTweets = (userId: string, filters: Tweet_Filter[]) => {
   const endCursor = data?.user.tweets.pageInfo.endCursor;
 
   const loadMore = () => {
-    fetchMore({ variables: { userId, input: { first: 10, after: endCursor, filters } } });
+    fetchMore({ variables: { userId, input: { first: LIMIT, after: endCursor, filters } } });
   };
 
   return { tweets, hasNext, loading, loadMore, fetch };
