@@ -4,7 +4,8 @@ import { userFollowsRef } from "../typed-ref";
 
 export const unFollow = async (
   db: Firestore,
-  { followerId, followedId }: { followerId: string; followedId: string }
+  input: { followerId: string; followedId: string }
 ) => {
+  const { followerId, followedId } = input;
   await userFollowsRef(db, { userId: followerId }).doc(followedId).delete();
 };
