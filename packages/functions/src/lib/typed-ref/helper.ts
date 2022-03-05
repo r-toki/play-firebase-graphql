@@ -35,18 +35,24 @@ class WriteCounter extends Counter {
 }
 
 export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
-  const readCounter = new ReadCounter(path);
-  const writeCounter = new WriteCounter(path);
+  const withLog = process.env.FUNCTIONS_EMULATOR && true;
+
+  const readCounter = withLog ? new ReadCounter(path) : undefined;
+  const writeCounter = withLog ? new WriteCounter(path) : undefined;
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      writeCounter.inc();
-      writeCounter.out();
+      if (withLog) {
+        writeCounter!.inc();
+        writeCounter!.out();
+      }
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      readCounter.inc();
-      readCounter.out();
+      if (withLog) {
+        readCounter!.inc();
+        readCounter!.out();
+      }
       return snap.data() as Data;
     },
   };
@@ -57,18 +63,24 @@ export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
 };
 
 export const typedCollectionGroupRef = <Data>(path: string) => {
-  const readCounter = new ReadCounter(path);
-  const writeCounter = new WriteCounter(path);
+  const withLog = process.env.FUNCTIONS_EMULATOR && true;
+
+  const readCounter = withLog ? new ReadCounter(path) : undefined;
+  const writeCounter = withLog ? new WriteCounter(path) : undefined;
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      writeCounter.inc();
-      writeCounter.out();
+      if (withLog) {
+        writeCounter!.inc();
+        writeCounter!.out();
+      }
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      readCounter.inc();
-      readCounter.out();
+      if (withLog) {
+        readCounter!.inc();
+        readCounter!.out();
+      }
       return snap.data() as Data;
     },
   };
