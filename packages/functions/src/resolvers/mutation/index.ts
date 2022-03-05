@@ -50,7 +50,7 @@ export const Mutation: Resolvers["Mutation"] = {
   deleteTweet: async (parent, args, context) => {
     isSignedIn(context);
 
-    await deleteTweet(context.db, { tweetId: args.id, userId: context.uid });
+    await deleteTweet(context.db, { id: args.id, userId: context.uid });
     const meDoc = await getDoc(usersRef(context.db).doc(context.uid));
     return meDoc;
   },

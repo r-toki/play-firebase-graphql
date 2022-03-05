@@ -3,7 +3,7 @@ import { chunk, first as head, orderBy } from "lodash";
 
 import { Edge } from "../query-util/exec-multi-queries-with-cursor";
 import { getDocs } from "../query-util/get";
-import { likesRef, tweetsRef, userLikesRef } from "../typed-ref";
+import { tweetsRef, userLikesRef } from "../typed-ref";
 import { UserTweetDoc } from "../typed-ref/types";
 import { Tweet_Filter } from "./../../graphql/generated";
 import { execMultiQueriesWithCursor } from "./../query-util/exec-multi-queries-with-cursor";
