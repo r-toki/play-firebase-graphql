@@ -63,7 +63,7 @@ export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
 };
 
 export const typedCollectionGroupRef = <Data>(path: string) => {
-  const withLog = process.env.FUNCTIONS_EMULATOR && true;
+  const withLog = process.env.FUNCTIONS_EMULATOR && false;
 
   const readCounter = withLog ? new ReadCounter(path) : undefined;
   const writeCounter = withLog ? new WriteCounter(path) : undefined;
