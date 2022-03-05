@@ -6,5 +6,5 @@ export const like = async (db: Firestore, input: { userId: string; tweetId: stri
   const { userId, tweetId } = input;
   await userLikesRef(db, { userId })
     .doc(tweetId)
-    .set({ createdAt: Timestamp.now(), userId, tweetId });
+    .set({ userId, tweetId, createdAt: Timestamp.now() });
 };
