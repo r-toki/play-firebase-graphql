@@ -13,7 +13,7 @@ import type {
   UserTweetsPath,
 } from "interfaces/path";
 
-import { typedCollectionGroupRef, typedCollectionRef } from "./helper";
+import { typedCollectionGroupRef, typedCollectionRef } from "./typed-collection-ref";
 
 export const usersRef = typedCollectionRef<UserData, UsersPath>("users");
 

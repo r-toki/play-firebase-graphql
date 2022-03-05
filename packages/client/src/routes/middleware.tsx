@@ -23,7 +23,7 @@ export const AfterAuth: VFC<MiddlewareProps> = ({ children }) => {
   if (!called || loading) return null;
   if (error) throw new Error(error.message);
 
-  const currentUser = data!.me;
+  const currentUser = data?.me;
   if (!currentUser) return <Navigate to={routes["/users/new"].path()} />;
   return <CurrentUserProvider currentUser={currentUser}>{children}</CurrentUserProvider>;
 };
@@ -41,7 +41,7 @@ export const UserNewMiddleware: VFC<MiddlewareProps> = ({ children }) => {
   if (!called || loading) return null;
   if (error) throw new Error(error.message);
 
-  const currentUser = data!.me;
+  const currentUser = data?.me;
   if (currentUser) return <Navigate to={routes["/"].path()} />;
   return <>{children}</>;
 };
