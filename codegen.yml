@@ -1,5 +1,5 @@
 overwrite: true
-schema: "packages/functions/src/schema.graphql"
+schema: "schema.graphql"
 documents: "packages/client/src/**/*.{ts,tsx}"
 generates:
   packages/functions/src/graphql/generated.ts:
