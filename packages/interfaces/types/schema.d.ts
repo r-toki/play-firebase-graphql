@@ -7,31 +7,34 @@ export type _UserData<Timestamp> = {
 
 type UserTweetId = string;
 export type _UserTweetData<Timestamp> = {
+  id: UserTweetId;
+
   content: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  tweetId: UserTweetId;
+
   userId: UserId;
 };
 
-type FollowRelationshipId = string;
-export type _FollowRelationshipData<Timestamp> = {
+export type _UserFollowData<Timestamp> = {
+  createdAt: Timestamp;
+
   followerId: UserId;
   followedId: UserId;
+};
+
+export type _UserLikeDate<Timestamp> = {
   createdAt: Timestamp;
+
+  userId: UserId;
+  tweetId: UserTweetId;
 };
 
 type TweetEventId = string;
 export type _TweetEventData<Timestamp> = {
   type: "create" | "update" | "delete";
-  userId: UserId;
-  tweetId: UserTweetId;
   createdAt: Timestamp;
-};
 
-type LikeId = string;
-export type _LikeData<Timestamp> = {
   userId: UserId;
   tweetId: UserTweetId;
-  createdAt: Timestamp;
 };
