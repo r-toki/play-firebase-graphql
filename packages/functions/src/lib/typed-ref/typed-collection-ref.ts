@@ -13,12 +13,10 @@ export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (withLog) writeCounter!.log();
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (withLog) readCounter!.log();
       return snap.data() as Data;
     },
@@ -37,12 +35,10 @@ export const typedCollectionGroupRef = <Data>(path: string) => {
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (withLog) writeCounter!.log();
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (withLog) readCounter!.log();
       return snap.data() as Data;
     },
