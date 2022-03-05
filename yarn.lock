@@ -2354,10 +2354,10 @@
     prop-types "^15.7.2"
     tslib "^2.1.0"
 
-"@rei-sogawa/path-builder@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@rei-sogawa/path-builder/-/path-builder-1.0.0.tgz#dc53140b4aec603198e9c3db10ff41721eddd757"
-  integrity sha512-+2QsuPwarFrC4UAwHFtFX3MJ+5VFv1szajwwCgBjjvBCLFVs46nH6HlZUBqF8ttVesxjK2KKx18kre1PiVPiEA==
+"@rei-sogawa/path-builder@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@rei-sogawa/path-builder/-/path-builder-1.0.3.tgz#6cbab5218fad473c51c170c0e64d286d32775074"
+  integrity sha512-0Q3Dkp2OV6v12oH5S6n0bPvrrI6qJrLwcdmkH7GQppCDzJJpCDX61Ew7jdVNz4/1dIlbxWO2nsylSKv+RPk4SA==
 
 "@rollup/pluginutils@^4.1.2":
   version "4.1.2"

@@ -1,5 +1,3 @@
-import { pathBuilder } from "@rei-sogawa/path-builder";
-import { Firestore } from "firebase-admin/firestore";
 import type {
   TweetEventData,
   UserData,
@@ -15,38 +13,21 @@ import type {
   UserTweetsPath,
 } from "interfaces/path";
 
-import { createConverter, createTypedCollectionRef } from "./helper";
+import { typedCollectionGroupRef, typedCollectionRef } from "./helper";
 
-export const usersRef = createTypedCollectionRef(
-  pathBuilder<UsersPath>("users"),
-  createConverter<UserData>()
+export const usersRef = typedCollectionRef<UserData, UsersPath>("users");
+
+export const userTweetsRef = typedCollectionRef<UserTweetData, UserTweetsPath>(
+  "users/:userId/tweets"
 );
+export const tweetsRef = typedCollectionGroupRef<UserTweetData>("tweets");
 
-export const userTweetsRef = createTypedCollectionRef(
-  pathBuilder<UserTweetsPath>("users/:userId/tweets"),
-  createConverter<UserTweetData>()
+export const userFollowsRef = typedCollectionRef<UserFollowData, UserFollowsPath>(
+  "users/:userId/follows"
 );
+export const followsRef = typedCollectionGroupRef<UserFollowData>("follows");
 
-export const tweetsRef = (db: Firestore) =>
-  db.collectionGroup("tweets").withConverter(createConverter<UserTweetData>());
+export const userLikesRef = typedCollectionRef<UserLikeData, UserLikesPath>("users/:userId/likes");
+export const likesRef = typedCollectionGroupRef<UserLikeData>("likes");
 
-export const userFollowsRef = createTypedCollectionRef(
-  pathBuilder<UserFollowsPath>("users/:userId/follows"),
-  createConverter<UserFollowData>()
-);
-
-export const followsRef = (db: Firestore) =>
-  db.collectionGroup("follows").withConverter(createConverter<UserFollowData>());
-
-export const userLikesRef = createTypedCollectionRef(
-  pathBuilder<UserLikesPath>("users/:userId/likes"),
-  createConverter<UserLikeData>()
-);
-
-export const likesRef = (db: Firestore) =>
-  db.collectionGroup("likes").withConverter(createConverter<UserLikeData>());
-
-export const tweetEventsRef = createTypedCollectionRef(
-  pathBuilder<TweetEventsPath>("tweetEvents"),
-  createConverter<TweetEventData>()
-);
+export const tweetEventsRef = typedCollectionRef<TweetEventData, TweetEventsPath>("tweetEvents");
