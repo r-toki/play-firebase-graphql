@@ -1,40 +1,9 @@
 import { ExtractPathParams, pathBuilder } from "@rei-sogawa/path-builder";
 import { DocumentData, Firestore, FirestoreDataConverter } from "firebase-admin/firestore";
 
+import { ReadCounter, WriteCounter } from "./logger";
+
 const WITH_LOG = false;
-
-class Counter {
-  static _id = 0;
-
-  public id: string;
-  public name: string;
-  public count = 0;
-  constructor(name: string) {
-    this.id = (ReadCounter._id++).toString();
-    this.name = name;
-  }
-  public inc() {
-    this.count++;
-  }
-}
-
-class ReadCounter extends Counter {
-  constructor(name: string) {
-    super(name);
-  }
-  public out() {
-    console.log(`read ${this.name} doc : ${this.count}`);
-  }
-}
-
-class WriteCounter extends Counter {
-  constructor(name: string) {
-    super(name);
-  }
-  public out() {
-    console.log(`write ${this.name} doc : ${this.count}`);
-  }
-}
 
 export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
   const withLog = process.env.FUNCTIONS_EMULATOR && WITH_LOG;
@@ -44,17 +13,11 @@ export const typedCollectionRef = <Data, Path extends string>(path: Path) => {
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      if (withLog) {
-        writeCounter!.inc();
-        writeCounter!.out();
-      }
+      if (withLog) writeCounter!.log();
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      if (withLog) {
-        readCounter!.inc();
-        readCounter!.out();
-      }
+      if (withLog) readCounter!.log();
       return snap.data() as Data;
     },
   };
@@ -72,17 +35,11 @@ export const typedCollectionGroupRef = <Data>(path: string) => {
 
   const converter: FirestoreDataConverter<Data> = {
     toFirestore: (data) => {
-      if (withLog) {
-        writeCounter!.inc();
-        writeCounter!.out();
-      }
+      if (withLog) writeCounter!.log();
       return data as DocumentData;
     },
     fromFirestore: (snap) => {
-      if (withLog) {
-        readCounter!.inc();
-        readCounter!.out();
-      }
+      if (withLog) readCounter!.log();
       return snap.data() as Data;
     },
   };
