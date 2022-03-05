@@ -1,16 +1,16 @@
 import { pathBuilder } from "@rei-sogawa/path-builder";
 import { Firestore } from "firebase-admin/firestore";
 import type {
-  FollowRelationshipData,
-  LikeData,
   TweetEventData,
   UserData,
+  UserFollowData,
+  UserLikeData,
   UserTweetData,
 } from "interfaces/admin-schema";
 import type {
-  FollowRelationshipsPath,
-  LikesPath,
   TweetEventsPath,
+  UserFollowsPath,
+  UserLikesPath,
   UsersPath,
   UserTweetsPath,
 } from "interfaces/path";
@@ -30,17 +30,23 @@ export const userTweetsRef = createTypedCollectionRef(
 export const tweetsRef = (db: Firestore) =>
   db.collectionGroup("tweets").withConverter(createConverter<UserTweetData>());
 
-export const followRelationshipsRef = createTypedCollectionRef(
-  pathBuilder<FollowRelationshipsPath>("followRelationships"),
-  createConverter<FollowRelationshipData>()
+export const userFollowsRef = createTypedCollectionRef(
+  pathBuilder<UserFollowsPath>("users/:userId/follows"),
+  createConverter<UserFollowData>()
 );
+
+export const followsRef = (db: Firestore) =>
+  db.collectionGroup("follows").withConverter(createConverter<UserFollowData>());
+
+export const userLikesRef = createTypedCollectionRef(
+  pathBuilder<UserLikesPath>("users/:userId/likes"),
+  createConverter<UserLikeData>()
+);
+
+export const likesRef = (db: Firestore) =>
+  db.collectionGroup("likes").withConverter(createConverter<UserLikeData>());
 
 export const tweetEventsRef = createTypedCollectionRef(
   pathBuilder<TweetEventsPath>("tweetEvents"),
   createConverter<TweetEventData>()
-);
-
-export const likesRef = createTypedCollectionRef(
-  pathBuilder<LikesPath>("likes"),
-  createConverter<LikeData>()
 );
