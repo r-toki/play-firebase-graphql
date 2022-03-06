@@ -41,27 +41,29 @@ const Tweets: VFC<TweetsProps> = ({ tweets, loading, hasNext, loadMore }) => {
   );
 };
 
+const MY_PANEL_FILTER: { [key: number]: Tweet_Filter[] } = {
+  // NOTE: Feed
+  0: ["SELF", "FOLLOWINGS"],
+  // NOTE: Tweets
+  1: ["SELF"],
+  // NOTE: Likes
+  2: ["LIKES"],
+};
+
 const MyTweetsPanel: VFC = () => {
   const { user_id } = useUserPageContext();
 
   const [tabIndex, setTabIndex] = useState(0);
-  const filterMaps: { [key: number]: Tweet_Filter[] } = {
-    // NOTE: Feed
-    0: ["SELF", "FOLLOWINGS"],
 
-    // NOTE: Tweets
-    1: ["SELF"],
-
-    // NOTE: Likes
-    2: ["LIKES"],
-  };
-
-  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(user_id, filterMaps[tabIndex]);
+  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(
+    user_id,
+    MY_PANEL_FILTER[tabIndex]
+  );
   useEffect(() => {
     fetch();
   }, [tabIndex]);
 
-  useTweetsSubscription(user_id, filterMaps[tabIndex]);
+  useTweetsSubscription(user_id, MY_PANEL_FILTER[tabIndex]);
 
   return (
     <Tabs onChange={setTabIndex}>
@@ -75,24 +77,27 @@ const MyTweetsPanel: VFC = () => {
   );
 };
 
+const OTHER_PANEL_FILTER: { [key: number]: Tweet_Filter[] } = {
+  // NOTE: Tweets
+  0: ["SELF"],
+  // NOTE: Likes
+  1: ["LIKES"],
+};
+
 const OtherTweetsPanel: VFC = () => {
   const { user_id } = useUserPageContext();
 
   const [tabIndex, setTabIndex] = useState(0);
-  const filterMaps: { [key: number]: Tweet_Filter[] } = {
-    // NOTE: Tweets
-    0: ["SELF"],
 
-    // NOTE: Likes
-    1: ["LIKES"],
-  };
-
-  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(user_id, filterMaps[tabIndex]);
+  const { tweets, hasNext, loading, loadMore, fetch } = useTweets(
+    user_id,
+    OTHER_PANEL_FILTER[tabIndex]
+  );
   useEffect(() => {
     fetch();
   }, [tabIndex]);
 
-  useTweetsSubscription(user_id, filterMaps[tabIndex]);
+  useTweetsSubscription(user_id, OTHER_PANEL_FILTER[tabIndex]);
 
   return (
     <Tabs onChange={setTabIndex}>

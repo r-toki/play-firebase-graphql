@@ -77,10 +77,12 @@ export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
 
   return (
     <Stack>
-      <Flex justifyContent="space-between">
+      <HStack justifyContent="space-between">
         <HStack>
-          <Box fontWeight="bold">{tweet.postedBy.displayName}</Box>
-          <Box>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
+          <Box fontWeight="bold" noOfLines={1}>
+            {tweet.postedBy.displayName}
+          </Box>
+          <Box flexShrink={0}>{format(new Date(tweet.createdAt), "yyyy-MM-dd HH:mm")}</Box>
         </HStack>
         {tweet.postedBy.id === currentUser.id && (
           <HStack>
@@ -103,7 +105,7 @@ export const TweetItem: VFC<TweetItemProps> = ({ tweet }) => {
             </Button>
           </HStack>
         )}
-      </Flex>
+      </HStack>
 
       {isEditing ? (
         <VStack my="2">

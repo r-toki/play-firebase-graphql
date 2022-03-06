@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Box, Button, Flex, Stack } from "@chakra-ui/react";
+import { Box, Button, HStack, Stack } from "@chakra-ui/react";
 import { VFC } from "react";
 
 import { useCurrentUser } from "../../context/CurrentUser";
@@ -86,14 +86,14 @@ export const Users: VFC<UsersProps> = ({ users, me }) => {
           <AppList>
             {otherUsers.map((user) => (
               <AppListItem key={user.id}>
-                <Flex justifyContent="space-between">
-                  <AppLink to={routes["/users/:user_id"].path({ user_id: user.id })}>
-                    <Box fontWeight="bold" isTruncated>
+                <HStack justifyContent="space-between">
+                  <AppLink to={routes["/users/:user_id"].path({ user_id: user.id })} flex="1">
+                    <Box fontWeight="bold" noOfLines={1}>
                       {user.displayName}
                     </Box>
                   </AppLink>
                   <ToggleFollowButton userId={user.id} />
-                </Flex>
+                </HStack>
               </AppListItem>
             ))}
           </AppList>

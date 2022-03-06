@@ -17,7 +17,7 @@ type UserNameProps = {
 
 export const UserName: VFC<UserNameProps> = ({ user }) => {
   return (
-    <Box textAlign="center" fontWeight="bold">
+    <Box textAlign="center" fontWeight="bold" isTruncated>
       {user.displayName}
     </Box>
   );
